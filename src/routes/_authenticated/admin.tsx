@@ -37,9 +37,6 @@ function AdminLayout() {
     return <div className="p-8 text-muted-foreground">{t("common.loading")}</div>;
   }
   if (!role?.isAdmin) {
-    if (role?.roles.includes("housekeeper")) {
-      return <Navigate to="/staff" replace />;
-    }
     return (
       <div className="mx-auto max-w-md p-8">
         <h1 className="text-2xl font-semibold">{t("admin.noAdminTitle")}</h1>
