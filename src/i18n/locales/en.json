@@ -984,10 +984,10 @@
       "roleUser": "User",
       "role_administrator": "Administrator",
       "role_developer": "Developer",
-      "role_housekeeper": "Housekeeper",
       "role_owner": "Owner",
       "saveName": "Save",
-      "sending": "Sending…"
+      "sending": "Sending…",
+      "role_tenant": "Tenant"
     },
     "validation": {
       "email": "Invalid email format",

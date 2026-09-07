@@ -984,10 +984,10 @@
       "roleUser": "Vartotojas",
       "role_administrator": "Administratorius",
       "role_developer": "Developer",
-      "role_housekeeper": "Kambarių tvarkytoja",
       "role_owner": "Savininkas",
       "saveName": "Išsaugoti",
-      "sending": "Siunčiama…"
+      "sending": "Siunčiama…",
+      "role_tenant": "Nuomininkas"
     },
     "validation": {
       "email": "Neteisingas el. pašto formatas",

@@ -9,10 +9,10 @@ async function fetchRoles(ctx: Ctx): Promise<string[]> {
   return (data ?? []).map((r: { role: string }) => String(r.role));
 }
 
-/** Admin-level access: developer, owner, administrator (or legacy admin). */
+/** Admin-level access: developer, owner, administrator. */
 export async function assertAdmin(ctx: Ctx) {
   const roles = await fetchRoles(ctx);
-  const ok = ["developer", "owner", "administrator", "admin"].some((r) => roles.includes(r));
+  const ok = ["developer", "owner", "administrator"].some((r) => roles.includes(r));
   if (!ok) throw new Error("Neturite administratoriaus teisių.");
 }
 

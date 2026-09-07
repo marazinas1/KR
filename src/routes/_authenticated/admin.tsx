@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, useRouterState, Navigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -37,9 +37,6 @@ function AdminLayout() {
     return <div className="p-8 text-muted-foreground">{t("common.loading")}</div>;
   }
   if (!role?.isAdmin) {
-    if (role?.roles.includes("housekeeper")) {
-      return <Navigate to="/staff" replace />;
-    }
     return (
       <div className="mx-auto max-w-md p-8">
         <h1 className="text-2xl font-semibold">{t("admin.noAdminTitle")}</h1>

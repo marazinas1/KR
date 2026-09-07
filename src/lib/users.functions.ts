@@ -26,7 +26,7 @@ export const inviteUser = createServerFn({ method: "POST" })
     z
       .object({
         email: z.string().trim().email(),
-        role: z.enum(["owner", "administrator", "housekeeper"]),
+        role: z.enum(["developer", "owner", "administrator", "tenant"]),
         fullName: z.string().trim().max(120).optional(),
         redirectTo: z.string().url().optional(),
       })
@@ -34,6 +34,10 @@ export const inviteUser = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertOwner(context);
+    // Only a developer may create another developer account.
+    if (data.role === "developer" && !(await isDeveloper(context))) {
+      throw new Error("Šiam veiksmui reikia developer teisių.");
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { appLink } = await import("@/lib/app-url.server");
@@ -75,19 +79,23 @@ export const inviteUser = createServerFn({ method: "POST" })
 
     if (actionLink) {
       const { sendEmail } = await import("@/lib/notifications.server");
+      const { getPublicBrandName } = await import("@/lib/brand-name.server");
+      const brandName = await getPublicBrandName();
       const roleLabel =
-        data.role === "owner"
-          ? "savininko"
-          : data.role === "administrator"
-            ? "administratoriaus"
-            : "kambarių tvarkytojos";
+        data.role === "developer"
+          ? "developer"
+          : data.role === "owner"
+            ? "savininko"
+            : data.role === "administrator"
+              ? "administratoriaus"
+              : "nuomininko";
       await sendEmail({
         to: data.email,
-        subject: "Kvietimas prisijungti prie Dharma Stay sistemos",
+        subject: `Kvietimas prisijungti prie ${brandName} sistemos`,
         html: `
           <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#111;line-height:1.6">
             <p>Sveiki,</p>
-            <p>Jums sukurta ${roleLabel} paskyra Dharma Stay valdymo sistemoje.</p>
+            <p>Jums sukurta ${roleLabel} paskyra ${brandName} sistemoje.</p>
             <p>Paspauskite nuorodą ir susikurkite slaptažodį:</p>
             <p><a href="${actionLink}" style="display:inline-block;padding:10px 18px;background:#111;color:#fff;text-decoration:none;border-radius:6px">Susikurti slaptažodį</a></p>
             <p style="font-size:13px;color:#666">Jei mygtukas neveikia, nukopijuokite šią nuorodą:<br>${actionLink}</p>

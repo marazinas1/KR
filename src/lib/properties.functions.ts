@@ -29,7 +29,10 @@ const PROPERTY_ANON_COLUMNS =
   "id, name, category, year, price_per_night, cover_image_url, image_urls, price_tiers, is_active, sort_order, created_at, updated_at, status, property_type, description, address, city, country, lat, lng, area_m2, max_guests, beds, rooms, amenities, extra_services";
 /** Authenticated admin reads: internal fields included (still no door_code). */
 const PROPERTY_PUBLIC_COLUMNS = `${PROPERTY_ANON_COLUMNS}, location_note`;
-type PublicPropertyRow = Omit<PropertyRow, "door_code" | "features"> & {
+type PublicPropertyRow = Omit<
+  PropertyRow,
+  "door_code" | "features" | "ical_import_url" | "ical_last_status" | "ical_last_sync_at"
+> & {
   door_code?: string | null;
   features?: PropertyRow["features"];
 };
@@ -320,12 +323,11 @@ export const getMyRole = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
 
     const roles = (data ?? []).map((r) => String(r.role));
+    // Hierarchy: developer > owner > administrator > tenant.
     const isDeveloper = roles.includes("developer");
     const isOwner = isDeveloper || roles.includes("owner");
-    // Legacy "admin" rows keep full admin-level access.
-    const isAdmin =
-      isOwner || roles.includes("administrator") || roles.includes("admin");
-    const isHousekeeper = roles.includes("housekeeper");
+    const isAdmin = isOwner || roles.includes("administrator");
+    const isTenant = !isAdmin && roles.includes("tenant");
 
     // Highest role in the hierarchy, used for labels and menu gating.
     const role = isDeveloper
@@ -334,13 +336,13 @@ export const getMyRole = createServerFn({ method: "GET" })
         ? "owner"
         : isAdmin
           ? "administrator"
-          : isHousekeeper
-            ? "housekeeper"
+          : isTenant
+            ? "tenant"
             : "user";
 
     const email = (claims as { email?: string } | null)?.email ?? "";
 
-    return { userId, email, role, roles, isDeveloper, isOwner, isAdmin };
+    return { userId, email, role, roles, isDeveloper, isOwner, isAdmin, isTenant };
   });
 
 
