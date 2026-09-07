@@ -57,7 +57,6 @@ export type PropertyFormValues = {
   status: "active" | "maintenance" | "blocked";
   year: number;
   category: string;
-  icalImportUrl: string;
 };
 
 export function propertyToForm(p: Property | null | undefined): PropertyFormValues {
@@ -87,7 +86,6 @@ export function propertyToForm(p: Property | null | undefined): PropertyFormValu
     status: (p?.status as "active" | "maintenance" | "blocked") ?? "active",
     year: p?.year ?? new Date().getFullYear(),
     category: p?.category ?? "",
-    icalImportUrl: p?.icalImportUrl ?? "",
   };
 }
 

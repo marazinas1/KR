@@ -24,11 +24,11 @@ function publicClient() {
 }
 
 type PropertyRow = Database["public"]["Tables"]["properties"]["Row"];
-/** Anon reads: no door_code, no internal notes, no iCal feed URLs. */
+/** Anon reads: no door_code, no internal notes. */
 const PROPERTY_ANON_COLUMNS =
   "id, name, category, year, price_per_night, cover_image_url, image_urls, price_tiers, is_active, sort_order, created_at, updated_at, status, property_type, description, address, city, country, lat, lng, area_m2, max_guests, beds, rooms, amenities, extra_services";
 /** Authenticated admin reads: internal fields included (still no door_code). */
-const PROPERTY_PUBLIC_COLUMNS = `${PROPERTY_ANON_COLUMNS}, location_note, ical_import_url, ical_last_sync_at, ical_last_status`;
+const PROPERTY_PUBLIC_COLUMNS = `${PROPERTY_ANON_COLUMNS}, location_note`;
 type PublicPropertyRow = Omit<PropertyRow, "door_code" | "features"> & {
   door_code?: string | null;
   features?: PropertyRow["features"];
@@ -67,9 +67,6 @@ function mapProperty(row: PublicPropertyRow, bookings: BookingRow[] = []): Prope
     status: row.status,
     year: row.year,
     category: row.category ?? "",
-    icalImportUrl: row.ical_import_url ?? "",
-    icalLastSyncAt: row.ical_last_sync_at ?? null,
-    icalLastStatus: row.ical_last_status ?? null,
   };
 }
 
@@ -241,22 +238,6 @@ const propertyInputSchema = z.object({
   year: z.number().int().min(1800).max(2100).default(new Date().getFullYear()),
   category: z.string().max(100).default(""),
   doorCode: z.string().trim().max(100).default(""),
-  icalImportUrl: z
-    .string()
-    .trim()
-    .max(2000)
-    .default("")
-    .transform((v) => {
-      let cleaned = v.replace(/\s+/g, "");
-      if (!cleaned) return "";
-      // Strip any repeated / malformed scheme prefixes (https://https:/..., webcal://...)
-      let prev = "";
-      while (prev !== cleaned) {
-        prev = cleaned;
-        cleaned = cleaned.replace(/^(https?|webcal):\/{0,2}/i, "");
-      }
-      return `https://${cleaned}`;
-    }),
 });
 
 function toRow(input: z.infer<typeof propertyInputSchema>) {
@@ -286,7 +267,6 @@ function toRow(input: z.infer<typeof propertyInputSchema>) {
     status: input.status,
     year: input.year,
     category: input.category || input.propertyType,
-    ical_import_url: input.icalImportUrl || null,
   };
 }
 
