@@ -323,12 +323,11 @@ export const getMyRole = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
 
     const roles = (data ?? []).map((r) => String(r.role));
+    // Hierarchy: developer > owner > administrator > tenant.
     const isDeveloper = roles.includes("developer");
     const isOwner = isDeveloper || roles.includes("owner");
-    // Legacy "admin" rows keep full admin-level access.
-    const isAdmin =
-      isOwner || roles.includes("administrator") || roles.includes("admin");
-    const isHousekeeper = roles.includes("housekeeper");
+    const isAdmin = isOwner || roles.includes("administrator");
+    const isTenant = !isAdmin && roles.includes("tenant");
 
     // Highest role in the hierarchy, used for labels and menu gating.
     const role = isDeveloper
@@ -337,13 +336,13 @@ export const getMyRole = createServerFn({ method: "GET" })
         ? "owner"
         : isAdmin
           ? "administrator"
-          : isHousekeeper
-            ? "housekeeper"
+          : isTenant
+            ? "tenant"
             : "user";
 
     const email = (claims as { email?: string } | null)?.email ?? "";
 
-    return { userId, email, role, roles, isDeveloper, isOwner, isAdmin };
+    return { userId, email, role, roles, isDeveloper, isOwner, isAdmin, isTenant };
   });
 
 
