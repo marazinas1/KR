@@ -14,7 +14,7 @@ export function publicApiClient() {
 
 type PropertyRow = Database["public"]["Tables"]["properties"]["Row"];
 
-/** Tik viešai saugūs laukai — be vidinių pastabų, iCal nuorodų ir pan. */
+/** Tik viešai saugūs laukai — be vidinių pastabų. */
 export function publicProperty(row: PropertyRow) {
   return {
     id: row.id,
