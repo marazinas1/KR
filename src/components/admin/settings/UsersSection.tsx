@@ -33,14 +33,13 @@ import {
   updateUserName,
 } from "@/lib/users.functions";
 
-type InvitableRole = "owner" | "administrator" | "housekeeper";
+type InvitableRole = "owner" | "administrator" | "tenant";
 
 const ROLE_LABEL_KEYS: Record<string, string> = {
   developer: "settings.users.role_developer",
   owner: "settings.users.role_owner",
   administrator: "settings.users.role_administrator",
-  admin: "settings.users.roleAdmin",
-  housekeeper: "settings.users.role_housekeeper",
+  tenant: "settings.users.role_tenant",
   user: "settings.users.roleUser",
 };
 
@@ -62,7 +61,7 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
 
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState<InvitableRole>("housekeeper");
+  const [role, setRole] = useState<InvitableRole>("administrator");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
 
@@ -162,8 +161,8 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
                   <SelectItem value="administrator">
                     {t("settings.users.role_administrator")}
                   </SelectItem>
-                  <SelectItem value="housekeeper">
-                    {t("settings.users.role_housekeeper")}
+                  <SelectItem value="tenant">
+                    {t("settings.users.role_tenant")}
                   </SelectItem>
                 </SelectContent>
               </Select>
