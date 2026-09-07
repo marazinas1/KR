@@ -13,9 +13,11 @@ import { cn } from "@/lib/utils";
  * the real display name comes from org settings once that module exists.
  */
 export function SiteHeader() {
-  const { t } = useTranslation();
+  const { i18n } = useTranslation();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const locale = localeFromPath(pathname);
+  // Fixed to the URL locale so SSR and client render identical text.
+  const t = i18n.getFixedT(locale);
   const [scrolled, setScrolled] = useState(false);
   const links = mainNav(t("site.nav.home"));
 

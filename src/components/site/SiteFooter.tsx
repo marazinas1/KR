@@ -1,12 +1,16 @@
+import { useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
 import { LocaleLink } from "@/components/site/LocaleLink";
 import { footerNav } from "@/data/nav";
 import { contact } from "@/data/contact";
+import { localeFromPath } from "@/lib/locale";
 
 export function SiteFooter() {
-  const { t } = useTranslation();
+  const { i18n } = useTranslation();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const t = i18n.getFixedT(localeFromPath(pathname));
   const links = footerNav(t("site.nav.home"));
 
   return (

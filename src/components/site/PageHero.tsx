@@ -1,9 +1,10 @@
-import type { LinkProps } from "@tanstack/react-router";
+import { useRouterState, type LinkProps } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 
 import { LocaleLink } from "@/components/site/LocaleLink";
 import { Reveal } from "@/components/site/Reveal";
+import { localeFromPath } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
 export type Crumb = { label: string; to?: LinkProps["to"] };
@@ -28,7 +29,9 @@ export function PageHero({
   crumbs?: Crumb[];
   children?: ReactNode;
 }) {
-  const { t } = useTranslation();
+  const { i18n } = useTranslation();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const t = i18n.getFixedT(localeFromPath(pathname));
   const hasImage = Boolean(image);
 
   return (
