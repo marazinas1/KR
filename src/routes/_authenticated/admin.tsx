@@ -2,7 +2,7 @@ import { createFileRoute, Link, Outlet, useRouterState, Navigate } from "@tansta
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { BarChart3, Building2, Calendar, FileEdit, FileText, Globe, Home, LayoutDashboard, LogOut, Menu, Settings2, Sparkles, UserCog, Wallet } from "lucide-react";
+import { BarChart3, Building2, FileEdit, FileText, Globe, Home, LayoutDashboard, LogOut, Menu, Settings2, Sparkles, UserCog, Wallet } from "lucide-react";
 import { getMyRole } from "@/lib/properties.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
@@ -10,7 +10,6 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getPropertySettings } from "@/lib/property-settings.functions";
 import { useDefaultLanguage } from "@/hooks/useDefaultLanguage";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { AssistantWidget } from "@/components/admin/assistant/AssistantWidget";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminLayout,
@@ -51,7 +50,6 @@ function AdminLayout() {
 
   const links = [
     { to: "/admin", label: t("nav.dashboard"), icon: LayoutDashboard },
-    { to: "/admin/bookings", label: t("nav.bookings"), icon: Calendar },
     { to: "/admin/properties", label: t("nav.properties"), icon: Home },
     { to: "/admin/housekeeping", label: t("nav.housekeeping"), icon: Sparkles },
     { to: "/admin/contracts", label: t("nav.contracts"), icon: FileText },
@@ -112,9 +110,7 @@ function AdminLayout() {
           <LanguageSwitcher />
 
           <a
-            href="https://demo-rentals.deerva.com/"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/"
             onClick={() => setNavOpen(false)}
             className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           >
@@ -168,7 +164,6 @@ function AdminLayout() {
       <main className="flex-1 overflow-x-hidden px-4 py-4 md:px-6 md:py-6">
         <Outlet />
       </main>
-      <AssistantWidget />
     </div>
   );
 }

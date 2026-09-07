@@ -1,7 +1,8 @@
 /** Bendra viešo API duomenų logika (objektai, užimtumas, kainos). */
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import type { PriceTierLike, ExtraServiceLike } from "./booking-pricing";
+type PriceTierLike = { minNights: number; pricePerNight: number };
+type ExtraServiceLike = { name: string; price: number; unit?: string | null };
 
 export function publicApiClient() {
   return createClient<Database>(
