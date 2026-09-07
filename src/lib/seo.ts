@@ -13,7 +13,7 @@ export function pageHead({
   type = "website",
   locale = "lt",
 }: {
-  /** Canonical Lithuanian path, e.g. "/apartamentai". */
+  /** Canonical Lithuanian path, e.g. "/". */
   path: string;
   title: string;
   description: string;
