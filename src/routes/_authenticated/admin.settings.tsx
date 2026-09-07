@@ -86,33 +86,7 @@ function PropertySettingsPage() {
   });
 
   const integrations = useMemo<IntegrationCard[]>(() => {
-    const withIcal = (properties ?? []).filter((p) => Boolean(p.icalImportUrl));
-    const icalOn = withIcal.length > 0;
-    const lastSync = withIcal
-      .map((p) => p.icalLastSyncAt)
-      .filter(Boolean)
-      .sort()
-      .pop();
-    const syncedAt = lastSync ? new Date(lastSync as string).toLocaleString("lt-LT") : null;
-    const icalDetail = icalOn
-      ? t("settings.integrations.icalConnected", { count: withIcal.length }) +
-        (syncedAt ? t("settings.integrations.icalSyncedSuffix", { date: syncedAt }) : "")
-      : t("settings.integrations.icalNotConnected");
     return [
-      {
-        key: "booking",
-        name: "Booking.com",
-        description: t("settings.integrations.items.booking"),
-        status: icalOn ? "connected" : "coming_soon",
-        detail: icalDetail,
-      },
-      {
-        key: "airbnb",
-        name: "Airbnb",
-        description: t("settings.integrations.items.airbnb"),
-        status: icalOn ? "connected" : "coming_soon",
-        detail: icalDetail,
-      },
       {
         key: "gcal",
         name: "Google Calendar",

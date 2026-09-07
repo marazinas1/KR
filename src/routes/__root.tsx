@@ -13,13 +13,11 @@ import appCss from "../styles.css?url";
 import "@/i18n";
 import { LanguageProvider } from "@/components/LanguageProvider";
 import { Toaster } from "@/components/ui/sonner";
-import { BookingProvider } from "@/components/site/BookingDialog";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { useRememberedLocaleRedirect } from "@/components/site/LanguageSwitcher";
-import { useLocale } from "@/content";
-import { htmlLang } from "@/lib/locale";
+import { htmlLang, localeFromPath } from "@/lib/locale";
 
 /** Core (administravimo / personalo) maršrutai neturi svetainės antraštės ir poraštės. */
 const CORE_PREFIXES = ["/admin", "/staff", "/auth", "/reset-password", "/api"];
@@ -90,7 +88,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "author", content: "Deerva" },
       { name: "robots", content: "noindex, nofollow" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -110,7 +107,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
-  const locale = useLocale();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const locale = localeFromPath(pathname);
   return (
     <html lang={htmlLang[locale]}>
       <head>
@@ -144,14 +142,12 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="site-theme min-h-screen bg-background text-foreground">
-        <BookingProvider>
-          <SiteHeader />
-          <main>
-            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-            <Outlet />
-          </main>
-          <SiteFooter />
-        </BookingProvider>
+        <SiteHeader />
+        <main>
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+        </main>
+        <SiteFooter />
       </div>
       <Toaster />
     </QueryClientProvider>

@@ -1,91 +1,81 @@
-import { MapPin } from "lucide-react";
+import { useRouterState } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 
-import { Enso } from "@/components/site/Enso";
 import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
 import { LocaleLink } from "@/components/site/LocaleLink";
-import { Logo } from "@/components/site/Logo";
-import { useContent, useLocale } from "@/content";
 import { footerNav } from "@/data/nav";
 import { contact } from "@/data/contact";
+import { localeFromPath } from "@/lib/locale";
 
 export function SiteFooter() {
-  const locale = useLocale();
-  const { common, legal } = useContent();
-  const links = footerNav(locale);
+  const { i18n } = useTranslation();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const t = i18n.getFixedT(localeFromPath(pathname));
+  const links = footerNav(t("site.nav.home"));
+
   return (
-    <footer id="kontaktai" className="bg-sage-deep text-warm-white">
-      <div className="mx-auto max-w-[84rem] px-6 py-20 lg:px-12">
-        <div className="grid gap-12 md:grid-cols-3">
+    <footer className="border-t border-border bg-background">
+      <div className="mx-auto max-w-[84rem] px-6 py-14 lg:px-12">
+        <div className="grid gap-10 md:grid-cols-3">
           <div>
-            <Enso className="h-9 w-9 text-warm-white/60" />
-            <LocaleLink to="/" aria-label={common.brand} className="mt-5 inline-flex">
-              <Logo className="h-24 w-24 text-warm-white" />
+            <LocaleLink
+              to="/"
+              className="font-mono text-sm font-semibold uppercase tracking-[0.18em] text-foreground"
+            >
+              {t("site.brand")}
             </LocaleLink>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-warm-white/70">
-              {common.footer.intro}
-            </p>
           </div>
 
           <div>
-            <h2 className="label-caps font-sans text-warm-white/60">{common.labels.contacts}</h2>
-            <address className="mt-5 space-y-2 text-sm not-italic text-warm-white/85">
-              <p>{contact.address}</p>
+            <h2 className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              {t("site.labels.contacts")}
+            </h2>
+            <address className="mt-4 space-y-1 text-sm not-italic text-foreground/85">
+              {contact.address ? <p>{contact.address}</p> : null}
               {contact.phones.map((phone) => (
                 <p key={phone}>
-                  <a className="hover:text-warm-white" href={`tel:${phone.replace(/\s/g, "")}`}>
+                  <a className="hover:underline" href={`tel:${phone.replace(/\s/g, "")}`}>
                     {phone}
                   </a>
                 </p>
               ))}
-              <p>
-                <a className="hover:text-warm-white" href={`mailto:${contact.email}`}>
-                  {contact.email}
-                </a>
-              </p>
+              {contact.email ? (
+                <p>
+                  <a className="hover:underline" href={`mailto:${contact.email}`}>
+                    {contact.email}
+                  </a>
+                </p>
+              ) : null}
             </address>
-            <a
-              href={contact.mapUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-4 inline-flex items-center gap-2 text-sm text-warm-white/85 hover:text-warm-white"
-            >
-              <MapPin className="h-4 w-4" aria-hidden />
-              {common.cta.openMap}
-            </a>
           </div>
 
           <div>
-            <h2 className="label-caps font-sans text-warm-white/60">{common.nav.site}</h2>
-            <nav aria-label="Footer" className="mt-5 flex flex-col gap-2 text-sm">
+            <h2 className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              {t("site.labels.site")}
+            </h2>
+            <nav aria-label="Footer" className="mt-4 flex flex-col gap-2 text-sm">
               {links.map((item) => (
                 <LocaleLink
                   key={item.to}
                   to={item.to}
-                  className="text-warm-white/85 hover:text-warm-white"
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   {item.label}
                 </LocaleLink>
               ))}
             </nav>
           </div>
-
         </div>
 
-        <div className="mt-16 flex flex-col gap-3 border-t border-warm-white/15 pt-6 text-xs text-warm-white/55 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {common.brand}. {common.footer.rights}
+            © {new Date().getFullYear()} {t("site.brand")}. {t("site.footer.rights")}
           </p>
-          <nav aria-label="Legal" className="flex gap-5">
-            <LocaleLink to="/taisykles" className="hover:text-warm-white">
-              {legal.rental.title}
-            </LocaleLink>
-            <LocaleLink to="/privatumo-politika" className="hover:text-warm-white">
-              {legal.privacy.title}
-            </LocaleLink>
-            <a href="/admin" className="hover:text-warm-white">
-              Admin
+          <nav aria-label="Secondary" className="flex items-center gap-5">
+            <a href="/admin" className="hover:text-foreground">
+              {t("site.nav.admin")}
             </a>
-            <LanguageSwitcher tone="light" className="text-warm-white/70" />
+            <LanguageSwitcher />
           </nav>
         </div>
       </div>

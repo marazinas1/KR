@@ -3,7 +3,7 @@ export const LOCALES = ["lt", "en"] as const;
 export type Locale = (typeof LOCALES)[number];
 
 export const DEFAULT_LOCALE: Locale = "lt";
-export const LOCALE_COOKIE = "dharma_locale";
+export const LOCALE_COOKIE = "site_locale";
 export const LOCALE_PREFIX = "/en";
 
 export const htmlLang: Record<Locale, string> = { lt: "lt", en: "en" };
@@ -34,7 +34,7 @@ export function localizePath(path: string, locale: Locale): string {
 }
 
 /**
- * Maps a router route id (e.g. "/apartamentai/$propertyId") to its counterpart
+ * Maps a router route id (e.g. "/objektai/$id") to its counterpart
  * in the target locale. The LT and EN route trees mirror each other, so this is
  * the same prefix rule as localizePath, applied to route patterns.
  */

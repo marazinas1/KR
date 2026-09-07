@@ -1,9 +1,9 @@
+// TEMPLATE — converts to the tenant portal / long-term modules in a later step.
 import { useTranslation } from "react-i18next";
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getPropertyForEdit, updateProperty } from "@/lib/properties.functions";
-import { syncPropertyIcal } from "@/lib/ical.functions";
 import { PropertyForm, propertyToForm, type PropertyFormValues } from "@/components/admin/PropertyForm";
 import { TranslationPanel } from "@/components/admin/TranslationPanel";
 import {
@@ -24,9 +24,7 @@ function EditPropertyPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
 
-  const syncIcal = useServerFn(syncPropertyIcal);
-
-  const { data: prop, isLoading, refetch } = useQuery({
+  const { data: prop, isLoading } = useQuery({
     queryKey: ["property-edit", id],
     queryFn: () => fetchOne({ data: { id } }),
   });
@@ -43,11 +41,6 @@ function EditPropertyPage() {
       ]);
       navigate({ to: "/admin/properties" });
     },
-  });
-
-  const sync = useMutation({
-    mutationFn: () => syncIcal({ data: { propertyId: id } }),
-    onSuccess: () => refetch(),
   });
 
   if (isLoading) return <p className="text-muted-foreground">{t("common.loading")}</p>;
@@ -81,12 +74,6 @@ function EditPropertyPage() {
         initial={propertyToForm(prop)}
         onSubmit={(v) => m.mutate(v)}
         submitting={m.isPending}
-        icalMeta={{
-          lastSyncAt: prop.icalLastSyncAt,
-          lastStatus: prop.icalLastStatus,
-          onSync: prop.icalImportUrl ? () => sync.mutate() : undefined,
-          syncing: sync.isPending,
-        }}
       />
       <p className="mt-6 text-sm text-muted-foreground">
         {t("properties.translationsNote")}

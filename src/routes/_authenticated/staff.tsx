@@ -1,3 +1,4 @@
+// TEMPLATE — converts to the tenant portal / long-term modules in a later step.
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";

@@ -140,9 +140,6 @@ export type Property = {
   status: "active" | "maintenance" | "blocked" | string;
   year: number;
   category: string;
-  icalImportUrl: string;
-  icalLastSyncAt: string | null;
-  icalLastStatus: string | null;
 };
 
 export function nightsBetween(from: Date, to: Date): number {

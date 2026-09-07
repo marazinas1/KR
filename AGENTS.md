@@ -26,6 +26,11 @@ Rapolas arrives at work, opens the dashboard, and immediately sees what needs at
 **B. The tenant portal (`/nuomininkas`)** — for tenants, on a phone.
 A tenant logs in and sees only their own unit. They submit meter readings (electricity, water, gas) with a photo of the meter, report faults and damage with photos, see their lease and its end date, see what they owe, and read messages from the manager. They see nothing about any other unit, tenant, or the portfolio.
 
+**C. The public vacancy site** — no login, open to anyone.
+A public visitor sees which units are vacant now or becoming vacant soon, with a real move-in date, and can send a rental inquiry directly from a listing. This list is not manually maintained — it is derived automatically from the same `units` and `leases` data Rapolas manages in the admin. When a lease is marked as not renewing, or a unit's status changes to vacant, that unit appears on the public site with its true available-from date, with no separate step for anyone to remember. A submitted inquiry notifies the owners the same way an internal event would, and appears in the admin as something to act on — convert it into a viewing, then into a new lease, or dismiss it.
+
+This third surface reuses the listing-grid and inquiry-dialog pattern already proven in `demo-rentals`'s public apartment pages, converted from nightly availability to lease-based availability. See PLAN.md step 1 and step 5.
+
 ## 3. This is a product, not a one-off site
 
 Revoo will sell this system to other landlords with similar portfolios once it works for Kazimieras and Rapolas. That has one non-negotiable consequence:
@@ -47,6 +52,10 @@ Everything that is short-term-specific is leftover and wrong here. See PLAN.md s
 nightly prices, price tiers per night, guests / adults / children / infants, max_guests, check-in and check-out times, quiet hours, city tax, availability search, iCal import/export, door codes for short stays, cars and fleet, restobaras / sauna / banketinė salė / dovanų kuponai, the Rentivo "Core ↔ Booking Engine" split, housekeeping as a daily room-cleaning cycle.
 
 Where an old module is being converted rather than deleted, PLAN.md says so explicitly. Do not delete anything PLAN.md marks as a conversion template before the conversion step runs.
+
+Correction after inspecting the actual import graph: the public apartment listing pages, `PropertyCard`/`PropertyGrid`, `BookingDialog`, and their supporting `property-slug.ts` / `property-category.ts` / `property-view.ts` / `property-queries.ts` are not self-contained presentation code — every one of them fetches data through `rentivo.functions.ts` → `rentivo-api.server.ts`, is typed by `rentivo-schemas.ts`, and reads copy from `@/content`. There is no seam where the Rentivo Core-client layer can be deleted while this module keeps working untouched. It is deleted in step 1 along with the rest of the Rentivo layer, exactly like every other public route. `PropertyGallery.tsx` is the one exception worth checking individually — if it turns out to be a pure image-carousel with no Rentivo/content import, it can survive as a generic gallery component; if it imports any of the above, it goes too.
+
+The public vacancy site in step 5 is a **fresh build**, not a conversion. It reuses the layout shell (`SiteHeader`, `SiteFooter`, `PageHero`, `ContactForm`, `ContactCta`, `LanguageSwitcher`, `LocaleLink`, `Prose`, `Reveal` — none of which touch Rentivo or content) and takes its visual direction from the board-metaphor HTML mockup, but its data layer is written from scratch against `units` and `leases` once those exist after step 3. No file from the old listing module is edited in place; step 5 writes new routes, new pages, new components.
 
 ---
 
@@ -103,11 +112,17 @@ A reading turns into money on an invoice, so it needs the discipline of a financ
 
 Every upload goes through the existing client-side optimisation pipeline (resize, WebP, EXIF strip). No direct-to-storage paths. Replacing an image deletes the file it replaced. Meter photos and fault photos are evidence — do not over-compress them to the point where a meter dial is unreadable; use a higher size ceiling for those than for marketing images.
 
-### 5.7 Language
+### 5.7 Public availability is computed, never entered twice
+
+The public site must never have its own "is this unit available" field that someone fills in by hand. `available_from` for a listed unit is derived, in this order: a unit with status `vacant` is available today; a unit with status `occupied` whose active lease has `renewal = false` and an `end_date` is available from that end date; anything else is not shown. Recompute this at read time (a view or a server function), not by writing it into a column on a schedule — a stale cached date on a rental listing is worse than no listing.
+
+A unit only appears on the public site if `is_listed` is true. `is_listed` and availability are independent: an owner can hide an available unit, but can never make an occupied-with-no-notice unit appear available.
+
+### 5.8 Language
 
 Lithuanian is the working and default language. The inherited i18n layer (`lt` / `en`) already works and stays — Revoo will need English for the next client. Every user-facing string goes through i18n. No hardcoded Lithuanian in components.
 
-### 5.8 The app must be usable on a phone
+### 5.9 The app must be usable on a phone
 
 Rapolas walks around buildings. Tenants have cheap Android phones. The tenant portal is phone-first, not phone-tolerant: large tap targets, a numeric keypad for readings, camera capture for photos, and it must work on a slow connection. The admin is desktop-first but every screen must survive a phone.
 
@@ -120,7 +135,7 @@ New tables, on top of what is kept from the base project.
 | Table | Purpose |
 |---|---|
 | `buildings` | Optional parent for units. Address, city, type (apartment building / dormitory / house), notes. A standalone flat can have no building. |
-| `units` | The rentable object. Converted from the inherited `properties` table. Building, unit number, floor, area, rooms, monthly rent, deposit, status (`vacant` / `occupied` / `reserved` / `renovation` / `inactive`), photos, notes. |
+| `units` | The rentable object. Converted from the inherited `properties` table. Building, unit number, floor, area, rooms, monthly rent, deposit, status (`vacant` / `occupied` / `reserved` / `renovation` / `inactive`), photos, notes, `is_listed` (owner opts a unit into the public site). |
 | `tenants` | A person. Name, phone, email, notes, optional `user_id` link to a portal account. See 5.1. |
 | `leases` | The contract. Unit, primary tenant, start date, end date, monthly rent, deposit, payment day of month, notice period, status (`draft` / `active` / `ending` / `expired` / `terminated`), renewal flag. **Replaces the inherited `bookings` table entirely — do not adapt `bookings`, create `leases` clean and drop `bookings`.** |
 | `lease_occupants` | Additional people on one lease, for shared rooms. |
@@ -133,6 +148,7 @@ New tables, on top of what is kept from the base project.
 | `issue_comments` | Thread between tenant and manager on one issue. |
 | `unit_events` | Timeline per unit: occupied from/to, vacancy, renovation, inspection. Converted from `property_events`. |
 | `documents` | Files attached to a unit, lease or tenant, with `expires_at` so the dashboard can warn. Converted from `property_documents`. Private bucket. |
+| `rental_inquiries` | Public-site lead. Unit, name, phone, email, desired move-in date, message, status (`new` / `contacted` / `viewing_scheduled` / `converted` / `dismissed`), created_at. Same shape and RLS pattern as the `leads` table proven in Halliday Architects: public insert, admin-only read. Converting one into a lease is a manual action by a manager or owner, never automatic. |
 | `org_settings` | The single white-label row: display name, logo, colours, company and VAT details, bank details, invoice series and next number, currency, timezone, default language, notification toggles, reading-window dates. Converted from the inherited `property_settings` (drop every short-term field). |
 | `user_roles` | `developer` / `owner` / `manager` / `tenant`. |
 
@@ -142,7 +158,7 @@ Dropped: `bookings`, `booking_notifications`, `cars`, `car_investments`, `car_ma
 
 ---
 
-## 7. The two portals
+## 7. The three surfaces
 
 ### Admin dashboard — what Rapolas sees first
 
@@ -170,6 +186,12 @@ One unit, nothing else:
 - Contact the manager
 
 The old `/staff` housekeeping portal in this codebase is the structural template for this: separate layout, its own role gate, its own API namespace, mobile card UI. Convert it, do not reinvent it, and do not delete it before the conversion step.
+
+### Public vacancy site — what a visitor sees
+
+No login. A list of vacant and soon-to-be-vacant units, soonest first, each showing location, room type, rent, and a real available-from date — never a vague "contact us." Clicking a unit opens an inquiry form: name, phone, email, desired move-in date, a short message. Submitting creates a `rental_inquiries` row, sends the owners a notification the same way the internal notification system already does, and shows the visitor a plain confirmation, not a fake "we'll get back to you in 24 hours" unless that is a real commitment the owners intend to keep.
+
+This is a fresh build, not a conversion — see the correction in AGENTS.md section 4. The old `demo-rentals` listing grid and inquiry dialog are gone by the time step 5 starts; they exist only as a git-history and visual reference. What changes conceptually: a date range with nightly pricing becomes a single move-in date with monthly rent.
 
 ---
 

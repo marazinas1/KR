@@ -2,8 +2,6 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 import type { LinkProps } from "@tanstack/react-router";
 
-
-import { useLocale } from "@/content";
 import {
   LOCALES,
   LOCALE_COOKIE,
@@ -25,31 +23,33 @@ function readLocaleCookie(): Locale | null {
   return isLocale(value) ? value : null;
 }
 
-/**
- * English is the default language for visitors: any Lithuanian (root) path is
- * redirected to its /en counterpart unless the visitor explicitly picked LT.
- * Runs on the client only, so the LT URLs stay canonical for crawlers.
- */
 const NON_SITE_PREFIXES = ["/admin", "/staff", "/auth", "/reset-password", "/api"];
 
+/**
+ * Lithuanian is canonical at the root; visitors who explicitly picked English
+ * are moved to the /en mirror on the client only.
+ */
 export function useRememberedLocaleRedirect() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   useEffect(() => {
     if (NON_SITE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return;
     if (localeFromPath(pathname) === "en") return;
-    if (readLocaleCookie() === "lt") return;
+    if (readLocaleCookie() !== "en") return;
     const target = localizePath(pathname, "en");
     if (target === pathname) return;
     window.location.replace(`${target}${window.location.search}${window.location.hash}`);
   }, [pathname]);
 }
 
-
-export function LanguageSwitcher({ className, tone = "dark" }: { className?: string; tone?: "dark" | "light" }) {
-  const current = useLocale();
+export function LanguageSwitcher({
+  className,
+  tone = "dark",
+}: {
+  className?: string;
+  tone?: "dark" | "light";
+}) {
   const location = useRouterState({ select: (state) => state.location });
-  // Use the matched route pattern + params so dynamic routes ($propertyId,
-  // $categorySlug) resolve instead of 404-ing on a pre-resolved concrete path.
+  const current = localeFromPath(location.pathname);
   const leaf = useRouterState({
     select: (state) => {
       const match = state.matches[state.matches.length - 1];
@@ -60,7 +60,10 @@ export function LanguageSwitcher({ className, tone = "dark" }: { className?: str
   });
 
   return (
-    <div className={cn("flex items-center gap-1 text-xs font-medium", className)} aria-label="Language">
+    <div
+      className={cn("flex items-center gap-1 text-xs font-medium", className)}
+      aria-label="Language"
+    >
       {LOCALES.map((locale, index) => (
         <span key={locale} className="flex items-center gap-1">
           {index > 0 ? <span className="opacity-40">/</span> : null}
@@ -78,8 +81,8 @@ export function LanguageSwitcher({ className, tone = "dark" }: { className?: str
                 "uppercase tracking-wide transition-opacity",
                 locale === current
                   ? tone === "light"
-                    ? "text-warm-white"
-                    : "text-sage"
+                    ? "text-white"
+                    : "text-foreground"
                   : "opacity-60 hover:opacity-100",
               ),
               children: locale,

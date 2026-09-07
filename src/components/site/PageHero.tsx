@@ -1,19 +1,15 @@
-import type { LinkProps } from "@tanstack/react-router";
+import { useRouterState, type LinkProps } from "@tanstack/react-router";
 import type { ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 
-import { Enso } from "@/components/site/Enso";
 import { LocaleLink } from "@/components/site/LocaleLink";
 import { Reveal } from "@/components/site/Reveal";
-import { useContent } from "@/content";
+import { localeFromPath } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
 export type Crumb = { label: string; to?: LinkProps["to"] };
 
-/**
- * Shared inner-page header: the calm sibling of the home hero. Without an
- * image it is a linen band; with one it becomes a short photo banner using the
- * same warm gradient as the hero (no Ken Burns — that stays unique to home).
- */
+/** Shared inner-page header for the public surface. */
 export function PageHero({
   eyebrow,
   title,
@@ -33,11 +29,15 @@ export function PageHero({
   crumbs?: Crumb[];
   children?: ReactNode;
 }) {
-  const { common } = useContent();
+  const { i18n } = useTranslation();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const t = i18n.getFixedT(localeFromPath(pathname));
   const hasImage = Boolean(image);
 
   return (
-    <section className={cn("relative isolate overflow-hidden", hasImage ? "bg-ink" : "bg-linen")}>
+    <section
+      className={cn("relative isolate overflow-hidden", hasImage ? "bg-foreground" : "bg-muted")}
+    >
       {hasImage ? (
         <>
           <picture>
@@ -52,7 +52,7 @@ export function PageHero({
               className="absolute inset-0 h-full w-full object-cover"
             />
           </picture>
-          <div className="absolute inset-0 bg-gradient-to-b from-ink/55 via-ink/35 to-ink/65" />
+          <div className="absolute inset-0 bg-black/45" />
         </>
       ) : null}
 
@@ -65,18 +65,20 @@ export function PageHero({
         )}
       >
         <Reveal>
-          <Enso
-            className={cn("mx-auto h-9 w-9", hasImage ? "text-warm-white/60" : "text-sage/70")}
-          />
           {eyebrow ? (
-            <p className={cn("label-caps mt-6", hasImage ? "text-warm-white/75" : "text-sage")}>
+            <p
+              className={cn(
+                "text-xs font-medium uppercase tracking-[0.14em]",
+                hasImage ? "text-white/75" : "text-muted-foreground",
+              )}
+            >
               {eyebrow}
             </p>
           ) : null}
           <h1
             className={cn(
-              "mt-4 font-display text-[clamp(2.25rem,5vw,3.25rem)] leading-[1.12] font-medium",
-              hasImage ? "text-warm-white" : "text-ink",
+              "mt-4 text-[clamp(2rem,4.5vw,3rem)] font-semibold leading-[1.12]",
+              hasImage ? "text-white" : "text-foreground",
             )}
           >
             {title}
@@ -85,7 +87,7 @@ export function PageHero({
             <p
               className={cn(
                 "mx-auto mt-5 max-w-2xl text-base leading-relaxed sm:text-lg",
-                hasImage ? "text-warm-white/85" : "text-stone",
+                hasImage ? "text-white/85" : "text-muted-foreground",
               )}
             >
               {lead}
@@ -94,10 +96,10 @@ export function PageHero({
           {children ? <div className="mt-8">{children}</div> : null}
           {crumbs?.length ? (
             <nav
-              aria-label={common.labels.breadcrumb}
+              aria-label={t("site.labels.breadcrumb")}
               className={cn(
                 "mt-8 flex flex-wrap items-center justify-center gap-2 text-xs",
-                hasImage ? "text-warm-white/70" : "text-stone/80",
+                hasImage ? "text-white/70" : "text-muted-foreground",
               )}
             >
               {crumbs.map((crumb, index) => (
