@@ -34,7 +34,7 @@ export function localizePath(path: string, locale: Locale): string {
 }
 
 /**
- * Maps a router route id (e.g. "/apartamentai/$propertyId") to its counterpart
+ * Maps a router route id (e.g. "/objektai/$id") to its counterpart
  * in the target locale. The LT and EN route trees mirror each other, so this is
  * the same prefix rule as localizePath, applied to route patterns.
  */
