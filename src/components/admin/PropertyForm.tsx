@@ -95,17 +95,10 @@ export function PropertyForm({
   initial,
   onSubmit,
   submitting,
-  icalMeta,
 }: {
   initial: PropertyFormValues;
   onSubmit: (v: PropertyFormValues) => void;
   submitting?: boolean;
-  icalMeta?: {
-    lastSyncAt: string | null;
-    lastStatus: string | null;
-    onSync?: () => void;
-    syncing?: boolean;
-  };
 }) {
   const { t } = useTranslation();
   const [v, setV] = useState<PropertyFormValues>(initial);
@@ -400,44 +393,6 @@ export function PropertyForm({
           />
           {t("properties.form.activeLabel")}
         </label>
-      </section>
-
-      <section className="rounded-lg border p-4">
-        <h3 className="mb-2 text-sm font-semibold">{t("properties.form.icalTitle")}</h3>
-        <label className="text-sm block">
-          {t("properties.form.icalUrl")}
-          <input
-            type="url"
-            placeholder="https://ical.booking.com/v1/export?t=..."
-            value={v.icalImportUrl}
-            onChange={(e) => set("icalImportUrl", e.target.value)}
-            className="mt-1 w-full rounded border px-2 py-1"
-          />
-        </label>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {t("properties.form.icalHelp")}
-        </p>
-        {icalMeta && (
-          <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-            <span>
-              {t("properties.form.lastSync")}{" "}
-              {icalMeta.lastSyncAt
-                ? new Date(icalMeta.lastSyncAt).toLocaleString("lt-LT")
-                : "—"}
-              {icalMeta.lastStatus ? ` · ${icalMeta.lastStatus}` : ""}
-            </span>
-            {icalMeta.onSync && (
-              <button
-                type="button"
-                onClick={icalMeta.onSync}
-                disabled={icalMeta.syncing}
-                className="rounded border px-3 py-1 text-xs font-medium hover:bg-muted disabled:opacity-50"
-              >
-                {icalMeta.syncing ? t("properties.form.syncing") : t("properties.form.syncNow")}
-              </button>
-            )}
-          </div>
-        )}
       </section>
 
       <section className="rounded-lg border p-4">

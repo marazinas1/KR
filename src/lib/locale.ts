@@ -3,7 +3,7 @@ export const LOCALES = ["lt", "en"] as const;
 export type Locale = (typeof LOCALES)[number];
 
 export const DEFAULT_LOCALE: Locale = "lt";
-export const LOCALE_COOKIE = "dharma_locale";
+export const LOCALE_COOKIE = "site_locale";
 export const LOCALE_PREFIX = "/en";
 
 export const htmlLang: Record<Locale, string> = { lt: "lt", en: "en" };
