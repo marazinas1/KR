@@ -1,3 +1,4 @@
+// TEMPLATE — converts to the tenant portal / long-term modules in a later step.
 import { useTranslation } from "react-i18next";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
