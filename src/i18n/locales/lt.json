@@ -1,0 +1,1277 @@
+{
+  "admin": {
+    "noAdminText": "Susisiekite su sistemos administratoriumi, kad jums būtų suteiktos teisės.",
+    "noAdminTitle": "Neturite administratoriaus teisių"
+  },
+  "assistant": {
+    "clear": "Išvalyti pokalbį",
+    "cleared": "Pokalbis išvalytas.",
+    "disclaimer": "Asistentas tik pataria – nustatymų nekeičia.",
+    "empty": "Atsakymo negavau – pabandykite performuluoti klausimą.",
+    "error": "Nepavyko gauti atsakymo. Pabandykite dar kartą.",
+    "intro": "Sveiki! 👋 Esu Eva –  virtuali Deerva asistentė. Galiu atsakyti į klausimus, paaiškinti, kaip atlikti užduotis šioje sistemoje ir padėti rasti reikiamą informaciją. Kuo galiu padėti?",
+    "open": "Atidaryti pagalbininką",
+    "placeholder": "Paklauskite, kaip ką nors padaryti…",
+    "send": "Siųsti",
+    "subtitle": "\n",
+    "suggestions": [
+      "Koks šiuo metu viešbučio užimtumas ir ar jis normalus rinkoje?",
+      "Kiek pajamų uždirbome šiandien, vakar ir šiais metais?",
+      "Koks dabartinis ROI ir ką daryti, kad padidinčiau užimtumą?",
+      "Kaip pakeisti kambarių nuotraukas svetainėje?"
+    ],
+    "title": "Deerva Asistentė",
+    "tooLong": "Žinutė per ilga (iki {{max}} simbolių)."
+  },
+  "auth": {
+    "backToLogin": "← Atgal į prisijungimą",
+    "busy": "Vykdoma...",
+    "email": "El. paštas",
+    "error": "Klaida",
+    "forgotLink": "Pamiršai slaptažodį?",
+    "forgotSubtitle": "Įvesk el. paštą — atsiųsime nuorodą naujam slaptažodžiui nustatyti.",
+    "forgotTitle": "Slaptažodžio atstatymas",
+    "home": "← Į pradžią",
+    "loginSubtitle": "Prieiga tik pakviestiems vartotojams.",
+    "loginTitle": "Prisijungimas",
+    "mismatch": "Slaptažodžiai nesutampa",
+    "newPassword": "Naujas slaptažodis",
+    "newPasswordPending": "Atveriama nuoroda... Jei nieko nevyksta, atidaryk nuorodą iš el. laiško dar kartą.",
+    "newPasswordReady": "Įvesk naują slaptažodį.",
+    "newPasswordTitle": "Naujas slaptažodis",
+    "openCalendar": "Atidaryti kalendorių",
+    "password": "Slaptažodis",
+    "pickDate": "Pasirinkti datą",
+    "repeatPassword": "Pakartok slaptažodį",
+    "resetSent": "Slaptažodžio atstatymo nuoroda išsiųsta į el. paštą.",
+    "save": "Išsaugoti",
+    "saving": "Atnaujinama...",
+    "signedIn": "Prisijungta",
+    "submitLogin": "Prisijungti",
+    "submitReset": "Siųsti nuorodą",
+    "toLogin": "← Į prisijungimą",
+    "updated": "Slaptažodis atnaujintas"
+  },
+  "bookings": {
+    "actions": "Veiksmai",
+    "apply": "Pritaikyti",
+    "clear": "Išvalyti",
+    "clearAllFilters": "Išvalyti visus filtrus",
+    "cols": {
+      "booking_number": "Užsakymo Nr",
+      "customer_email": "El. paštas",
+      "customer_name": "Klientas",
+      "customer_phone": "Telefonas",
+      "date_from": "Užsakymas nuo",
+      "date_to": "Užsakymas iki",
+      "duration": "Trukmė (d.)",
+      "property": "Objektas",
+      "status": "Statusas",
+      "total_amount": "Suma (€)"
+    },
+    "confirmDelete": "Ištrinti rezervaciją {{name}}?",
+    "delete": "Trinti",
+    "deleted": "Ištrinta",
+    "detail": {
+      "generateInvoice": "Generuoti sąskaitą",
+      "invoiceAuto": "Sąskaita bus sugeneruota automatiškai, kai rezervacija taps „Apmokėta“.",
+      "invoiceError": "Nepavyko sugeneruoti sąskaitos.",
+      "invoiceGenerated": "Sąskaita sugeneruota.",
+      "title": "Rezervacija {{number}}"
+    },
+    "dialog": {
+      "address": "Adresas",
+      "amount": "Suma",
+      "customer": "Klientas",
+      "days": "{{value}} d.",
+      "duration": "Trukmė",
+      "email": "El. paštas",
+      "from": "Nuo",
+      "guests": "Svečių",
+      "idCode": "Asmens kodas",
+      "location": "Vieta",
+      "phone": "Telefonas",
+      "property": "Objektas",
+      "title": "Rezervacijos peržiūra",
+      "to": "Iki"
+    },
+    "edit": "Redaguoti",
+    "error": "Klaida",
+    "filter": "Filtras",
+    "form": {
+      "address": "Adresas",
+      "addressPlaceholder": "Gatvė 1, Vilnius",
+      "birthDate": "Gimimo data",
+      "cancel": "Atšaukti",
+      "checkIn": "Atvykimo laikas",
+      "checkOut": "Išvykimo laikas",
+      "clientType": "Kliento tipas",
+      "company": "Juridinis asmuo",
+      "companyAddress": "Įmonės buveinės adresas",
+      "companyCode": "Įmonės kodas *",
+      "companyName": "Įmonės pavadinimas *",
+      "companyNamePlaceholder": "UAB „Pavyzdys“",
+      "computed": "Apskaičiuota: {{total}} € (nakvynė {{stay}} € · {{nightly}} €/naktis × {{days}}{{extras}})",
+      "computedExtras": " + paslaugos {{amount}} €",
+      "conflict": "Šios datos šiam objektui jau užimtos: {{list}}. Pasirinkite kitas datas arba kitą objektą.",
+      "conflictSave": "Negalima išsaugoti – datos kertasi su esama rezervacija.",
+      "country": "Valstybė",
+      "countryPlaceholder": "Lietuva",
+      "dates": "Atvykimo – išvykimo datos *",
+      "email": "El. paštas *",
+      "emailPlaceholder": "vardas@pastas.lt",
+      "extras": "Papildomos paslaugos",
+      "extrasHint": "Skaičiuojama pagal naktų skaičių ({{nights}}) ir svečius. Kūdikiai iki 3 m. neįskaičiuojami.",
+      "extrasTotal": "Paslaugų suma: {{amount}} €",
+      "guestsCount": "Svečių skaičius",
+      "isVatPayer": "Ar PVM mokėtojas",
+      "name": "Vardas Pavardė",
+      "namePlaceholder": "Vardenis Pavardenis",
+      "nights": "Naktų skaičius: {{count}}",
+      "note": "Pastaba",
+      "notePlaceholder": "Vidinė pastaba apie rezervaciją…",
+      "perDay": "€/d.",
+      "person": "Fizinis asmuo",
+      "phone": "Telefonas *",
+      "phonePlaceholder": "+370 600 00000",
+      "property": "Objektas *",
+      "recalculate": "Perskaičiuoti",
+      "saving": "Saugoma…",
+      "sectionClient": "Kliento duomenys",
+      "sectionClientDesc": "Kontaktinė ir sąskaitos informacija",
+      "sectionFinance": "Finansai ir sistemos parametrai",
+      "sectionFinanceDesc": "Paslaugos, kaina ir rezervacijos būsena",
+      "sectionInfo": "Rezervacijos informacija",
+      "sectionInfoDesc": "Objektas, datos ir svečiai",
+      "selectDates": "Pasirinkite datas",
+      "selectProperty": "Pasirinkite objektą",
+      "selectSource": "Pasirinkite šaltinį",
+      "selectStatus": "Pasirinkite statusą",
+      "source": "Šaltinis",
+      "status": "Statusas",
+      "submit": "Išsaugoti rezervaciją",
+      "total": "Suma (€)",
+      "vatNumber": "PVM mokėtojo kodas *"
+    },
+    "found_few": "{{count}} rastos",
+    "found_many": "{{count}} rastos",
+    "found_one": "{{count}} rasta",
+    "found_other": "{{count}} rastų",
+    "from": "Nuo",
+    "invoice": {
+      "issuedOn": "Sugeneruota {{date}}.",
+      "titleNumbered": "Sąskaita Nr. {{number}}",
+      "viewNumbered": "Peržiūrėti sąskaitą Nr. {{number}}"
+    },
+    "new": "Nauja rezervacija",
+    "noValues": "Nėra reikšmių",
+    "notFound": "Rezervacijų nerasta",
+    "rescheduled": "Rezervacija perkelta",
+    "title": "Rezervacijos",
+    "to": "Iki",
+    "totalRow": "Viso: {{count}} rezervacijų | {{sum}}€",
+    "view": "Peržiūrėti",
+    "viewCalendar": "Kalendorius",
+    "viewList": "Sąrašas"
+  },
+  "common": {
+    "back": "Atgal",
+    "cancel": "Atšaukti",
+    "close": "Uždaryti",
+    "delete": "Ištrinti",
+    "downloadPdf": "Atsisiųsti PDF",
+    "edit": "Redaguoti",
+    "generatingPreview": "Generuojama peržiūra…",
+    "loading": "Kraunama…",
+    "noPermission": "Neturite teisių.",
+    "notFound": "Nerasta.",
+    "save": "Išsaugoti",
+    "saving": "Saugoma…",
+    "search": "Ieškoti"
+  },
+  "content": {
+    "fields": {
+      "description": "Aprašymas",
+      "title": "Pavadinimas",
+      "url": "Nuoroda",
+      "wifiName": "WiFi pavadinimas",
+      "wifiPassword": "WiFi slaptažodis"
+    },
+    "sections": {
+      "email": {
+        "description": "Automatiniai laiškai, siunčiami klientams rezervacijos metu.",
+        "title": "Pranešimai el. paštu"
+      },
+      "guest_info": {
+        "description": "Praktinė informacija, pasiekiama svečiui apsilankymo metu.",
+        "title": "Informacija svečiams"
+      },
+      "whatsapp": {
+        "description": "Trumposios žinutės svečiams prieš atvykimą.",
+        "title": "WhatsApp"
+      }
+    },
+    "templates": {
+      "booking_cancellation": {
+        "description": "Siunčiama klientui, kai rezervacija atšaukiama.",
+        "title": "Rezervacijos atšaukimas"
+      },
+      "booking_change": {
+        "description": "Siunčiama, kai pasikeičia rezervacijos duomenys.",
+        "title": "Rezervacijos pakeitimas"
+      },
+      "booking_confirmation": {
+        "description": "Siunčiama klientui, kai rezervacija patvirtinama.",
+        "title": "Rezervacijos patvirtinimas"
+      },
+      "checkin_reminder": {
+        "description": "Priminimas svečiui likus kelioms dienoms iki atvykimo.",
+        "title": "Priminimas prieš atvykimą"
+      },
+      "door_code": {
+        "description": "WhatsApp žinutė su atvykimo instrukcijomis ir durų kodu.",
+        "title": "Durų kodas"
+      },
+      "eturistas": {
+        "description": "Svečių registracijos forma E. turisto sistemoje.",
+        "title": "E. turistas"
+      },
+      "restaurant": {
+        "description": "Informacija apie pusryčius, restoraną ar maitinimą.",
+        "title": "Restorano informacija"
+      },
+      "review_request": {
+        "description": "Siunčiama svečiui po išvykimo.",
+        "title": "Prašymas palikti atsiliepimą"
+      },
+      "wifi": {
+        "description": "Interneto prisijungimo duomenys, rodomi svečiui.",
+        "title": "WiFi"
+      }
+    },
+    "ui": {
+      "body": "Turinys",
+      "cancel": "Atšaukti",
+      "disabled": "Išjungta",
+      "editor": {
+        "bold": "Paryškinti",
+        "bulletList": "Sąrašas",
+        "heading": "Antraštė",
+        "italic": "Pasvirasis",
+        "orderedList": "Numeruotas sąrašas",
+        "redo": "Pakartoti",
+        "undo": "Atšaukti"
+      },
+      "emailPlaceholder": "vardas@pastas.lt",
+      "enabled": "Įjungta",
+      "leave": "Išeiti",
+      "loading": "Kraunama…",
+      "openLink": "Atidaryti nuorodą",
+      "openWhatsapp": "Atidaryti WhatsApp",
+      "pageDescription": "Informacija, siunčiama klientams el. paštu, WhatsApp žinutėmis ar rodoma svečiui. Nustatymai galioja visiems objektams.",
+      "phoneHint": "Su šalies kodu, pvz. +370 600 00000.",
+      "phonePlaceholder": "+370 600 00000",
+      "preview": "Peržiūra",
+      "previewDescription": "Kintamieji pakeisti pavyzdinėmis reikšmėmis.",
+      "previewTitle": "Peržiūra — {{name}}",
+      "recipientEmail": "Gavėjo el. paštas",
+      "recipientPhone": "Gavėjo telefono nr.",
+      "save": "Išsaugoti",
+      "saveFailed": "Nepavyko išsaugoti.",
+      "saved": "Turinys išsaugotas.",
+      "saving": "Saugoma…",
+      "send": "Siųsti",
+      "sendTest": "Siųsti testinį laišką",
+      "sendTestWhatsapp": "Siųsti testinę WhatsApp žinutę",
+      "stay": "Likti",
+      "subject": "Laiško tema",
+      "testDescription": "Laiškas bus išsiųstas su pavyzdinėmis kintamųjų reikšmėmis.",
+      "testFailed": "Nepavyko išsiųsti testinio laiško.",
+      "testSent": "Testinis laiškas išsiųstas.",
+      "testTitle": "Testinis laiškas",
+      "title": "Turinys",
+      "translationsHint": "Vertimus bus galima suvesti, kai šis šablonas bus bent kartą išsaugotas.",
+      "unsavedBadge": "Neišsaugota",
+      "unsavedBody": "Turite neišsaugotų pakeitimų. Ar tikrai norite išeiti?",
+      "unsavedTitle": "Neišsaugoti pakeitimai",
+      "variablesHint": "Palaikomi kintamieji — spustelėkite, kad įterptumėte",
+      "waDescription": "Įveskite gavėjo telefono numerį — atidarysime WhatsApp su paruošta žinute (kintamieji pakeisti pavyzdinėmis reikšmėmis).",
+      "waTitle": "Testinė WhatsApp žinutė",
+      "whatsappBody": "Žinutės tekstas"
+    },
+    "validation": {
+      "contentRequired": "Turinys privalomas.",
+      "contentTooLong": "Per ilgas turinys.",
+      "fieldRequired": "{{field}} privalomas.",
+      "invalidUrl": "Neteisingas nuorodos formatas.",
+      "subjectRequired": "Laiško tema privaloma.",
+      "subjectTooLong": "Per ilga tema."
+    },
+    "variables": {
+      "booking_number": "Rezervacijos nr.",
+      "check_in": "Atvykimo laikas",
+      "check_in_until": "Check-in iki",
+      "check_out": "Išvykimo laikas",
+      "currency": "Valiuta",
+      "date_from": "Atvykimo data",
+      "date_to": "Išvykimo data",
+      "door_code": "Durų kodas",
+      "email": "El. paštas",
+      "guest_name": "Svečio vardas",
+      "guest_name_vocative": "Svečio vardas (kreipinys)",
+      "location": "Vieta",
+      "phone": "Telefonas",
+      "property_name": "Objekto pavadinimas",
+      "quiet_hours_from": "Ramybės laikas nuo",
+      "quiet_hours_to": "Ramybės laikas iki",
+      "review_link": "Atsiliepimo nuoroda",
+      "room_name": "Kambario pavadinimas",
+      "total_amount": "Bendra suma",
+      "wifi_name": "WiFi pavadinimas",
+      "wifi_password": "WiFi slaptažodis"
+    }
+  },
+  "contracts": {
+    "actions": "Veiksmai",
+    "active": "Aktyvus",
+    "activeHint": "Aktyvus šablonas (tik vienas tos pačios kalbos ir tipo)",
+    "body": "Sutarties tekstas",
+    "cancel": "Atšaukti",
+    "confirmDelete": "Ištrinti šabloną „{{name}}“?",
+    "created": "Sukurta",
+    "created_toast": "Šablonas sukurtas",
+    "delete": "Trinti",
+    "deleted": "Šablonas ištrintas",
+    "edit": "Redaguoti",
+    "editTitle": "Redaguoti šabloną",
+    "empty": "Šablonų dar nėra. Sukurkite pirmąjį.",
+    "error": "Klaida",
+    "inactive": "Neaktyvus",
+    "kind": "Tipas",
+    "kindPrivacy": "Privatumo politika",
+    "kindRental": "Nuomos sutartis",
+    "langEn": "English",
+    "langLt": "Lietuvių",
+    "language": "Kalba",
+    "loading": "Kraunama...",
+    "name": "Pavadinimas",
+    "namePlaceholder": "pvz. Standartinė nuomos sutartis LT",
+    "nameRequired": "Įveskite pavadinimą",
+    "new": "Naujas šablonas",
+    "newTitle": "Naujas šablonas",
+    "preview": "Peržiūrėti",
+    "save": "Išsaugoti",
+    "saving": "Saugoma...",
+    "sectionDesc": "Redaguokite nuomos sutarties tekstą kurį klientas pasirašys rezervacijos metu.",
+    "sectionTitle": "Sutarčių šablonai",
+    "status": "Statusas",
+    "subtitle": "Nuomos sutarties šablonai.",
+    "title": "Sutartys",
+    "toolbar": {
+      "bold": "Bold",
+      "bulletList": "Sąrašas",
+      "h1": "Antraštė 1",
+      "h2": "Antraštė 2",
+      "italic": "Italic",
+      "orderedList": "Numeruotas sąrašas",
+      "paragraph": "Pastraipa"
+    },
+    "updated": "Šablonas atnaujintas",
+    "variables": "Kintamieji",
+    "vars": {
+      "data": "Data (šiandien)",
+      "iki": "Iki",
+      "kliento_vardas": "Kliento vardas",
+      "naktys": "Naktų skaičius",
+      "nuo": "Nuo",
+      "objektas": "Objektas",
+      "rezervacijos_nr": "Rezervacijos Nr.",
+      "suma": "Suma €",
+      "sveciai": "Svečių skaičius",
+      "vieta": "Vieta"
+    }
+  },
+  "dashboard": {
+    "biz": {
+      "avgStay": "Vid. viešnagė",
+      "days": "{{value}} d.",
+      "expenses": "Išlaidos",
+      "expensesByCategory": "Išlaidos pagal kategoriją",
+      "netProfit": "Grynasis pelnas",
+      "noExpenses": "Nėra išlaidų.",
+      "revenue": "Pajamos"
+    },
+    "checkinsToday": "Atvykimai šiandien",
+    "checkoutsToday": "Išvykimai šiandien",
+    "emptyList": "Nieko nėra.",
+    "fleet": {
+      "activeHint_one": "{{count}} aktyvus",
+      "activeHint_other": "{{count}} aktyvūs",
+      "avgPrice": "Vid. paros kaina",
+      "byType": "Objektai pagal tipą",
+      "empty": "Nėra objektų.",
+      "missingDescription": "Be aprašymo",
+      "missingPhotos": "Be nuotraukų",
+      "total": "Viso objektų"
+    },
+    "noRecent": "Naujų rezervacijų nėra.",
+    "ops": {
+      "abv": "ABV",
+      "abvHint": "Vidutinė rezervacija",
+      "awaitingPayment": "Laukia apmokėjimo",
+      "awaitingPaymentHint_one": "{{count}} rezervacija",
+      "awaitingPaymentHint_other": "{{count}} rezervacijos",
+      "confirmed30d": "30d patvirtinta",
+      "confirmed30dHint": "Ateinančios rezervacijos",
+      "freeToday": "Laisvi šiandien",
+      "revenue": "Pajamos",
+      "revenueHint": "Pasirinktas laikotarpis",
+      "utilization": "Užimtumas",
+      "utilizationHint": "Parko užimtumas"
+    },
+    "period": {
+      "all": "Visas laikotarpis",
+      "custom": "Pasirinktas laikotarpis",
+      "last30": "Paskutinės 30 dienų",
+      "last7": "Paskutinės 7 dienos",
+      "mtd": "Šis mėnuo",
+      "prev_month": "Praėjęs mėnuo",
+      "today": "Šiandien",
+      "yesterday": "Vakar",
+      "ytd": "Šie metai"
+    },
+    "recent24h": "Naujausios rezervacijos (24h)",
+    "subtitle": "Verslo valdymo centras — viskas vienoje vietoje.",
+    "tabs": {
+      "biz": "Verslas",
+      "fleet": "Objektai",
+      "ops": "Operacijos"
+    },
+    "title": "Skydelis"
+  },
+  "enums": {
+    "amenities": {
+      "air_conditioning": "Oro kondicionierius",
+      "balcony": "Balkonas",
+      "bbq": "Kepsninė",
+      "coffee_machine": "Kavos aparatas",
+      "extra_baby_bed": "Papildoma lovytė kambaryje (vaikui)",
+      "first_aid": "Pirmosios pagalbos rinkinys",
+      "hair_dryer": "Plaukų džiovintuvas",
+      "hot_tub": "Kubilas",
+      "iron": "Lygintuvas",
+      "kitchen": "Virtuvėlė",
+      "parking": "Vieta automobiliui",
+      "pet_friendly": "Su augintiniais",
+      "pool": "Baseinas",
+      "sauna": "Sauna",
+      "smoke_alarm": "Dūmų detektorius",
+      "terrace": "Terasa",
+      "tv": "Televizorius",
+      "washing_machine": "Skalbimo mašina",
+      "wifi": "Wi‑Fi",
+      "workspace": "Darbo vieta"
+    },
+    "bedType": {
+      "double": "Standartinė dvigulė lova",
+      "extra_large_double": "Labai didelė dvigulė lova",
+      "large_double": "Didelė dvigulė lova",
+      "single": "Vienvietė lova",
+      "sofa_bed": "Miegamoji sofa"
+    },
+    "bookingSource": {
+      "airbnb": "Airbnb",
+      "booking": "Booking",
+      "direct": "Tiesioginis",
+      "other": "Kita",
+      "phone": "Telefonu",
+      "website": "Svetainė",
+      "whatsapp": "WhatsApp"
+    },
+    "bookingStatus": {
+      "blocked_external": "Išorinė / užblokuota",
+      "cancelled": "Atšaukta",
+      "completed": "Užbaigta",
+      "confirmed": "Apmokėta",
+      "pending": "Laukiama apmokėjimo"
+    },
+    "country": {
+      "DE": "Vokietija",
+      "EE": "Estija",
+      "GB": "Jungtinė Karalystė",
+      "LT": "Lietuva",
+      "LV": "Latvija",
+      "PL": "Lenkija"
+    },
+    "currency": {
+      "EUR": "EUR — Euras",
+      "GBP": "GBP — Svaras sterlingų",
+      "ISK": "ISK — Islandijos krona",
+      "NOK": "NOK — Norvegijos krona",
+      "USD": "USD — JAV doleris"
+    },
+    "depositType": {
+      "fixed": "Fiksuota suma",
+      "full": "Visa suma",
+      "percent": "Procentas"
+    },
+    "extraCalc": {
+      "flat_per_day": "Fiksuota už dieną",
+      "per_child": "Pagal vaikų sk.",
+      "per_person": "Pagal asmenų sk. (vaikai iki 3 m. nemokamai)"
+    },
+    "extraServices": {
+      "babyBed": "Vaikiška lovytė",
+      "breakfast": "Pusryčiai",
+      "dinner": "Vakarienė",
+      "hotTub": "Kubilo nuoma",
+      "lunch": "Pietūs",
+      "sauna": "Pirties nuoma"
+    },
+    "feeType": {
+      "first_night": "Pirmos nakties kaina",
+      "fixed": "Fiksuota suma",
+      "percent": "Procentas nuo sumos"
+    },
+    "paymentMethod": {
+      "bank_transfer": "Banko pavedimu",
+      "card": "Banko kortele",
+      "cash": "Grynaisiais"
+    },
+    "propertyType": {
+      "cottage": "Namelis su pirtimi ir kubilu",
+      "standard": "Standartiniai apartamentai",
+      "terrace": "Apartamentai su terasa"
+    },
+    "roomKind": {
+      "bedroom_1": "Miegamasis 1",
+      "bedroom_2": "Miegamasis 2",
+      "bedroom_3": "Miegamasis 3",
+      "bedroom_4": "Miegamasis 4",
+      "living_room": "Svetainė"
+    }
+  },
+  "expenses": {
+    "add": "Pridėti",
+    "amount": "Suma",
+    "categories": {
+      "cleaning": "Valymas",
+      "insurance": "Draudimas",
+      "internet": "Internetas",
+      "maintenance": "Priežiūra",
+      "marketing": "Rinkodara",
+      "office": "Biuras",
+      "other": "Kita",
+      "supplies": "Priemonės",
+      "taxes": "Mokesčiai",
+      "utilities": "Komunaliniai"
+    },
+    "category": "Kategorija",
+    "confirmDelete": "Ištrinti?",
+    "date": "Data",
+    "delete": "Šalinti",
+    "empty": "Kol kas nėra išlaidų.",
+    "note": "Pastaba",
+    "notePlaceholder": "Pastaba",
+    "property": "Objektas",
+    "title": "Išlaidos",
+    "unlinked": "Nesusieta"
+  },
+  "gantt": {
+    "amount": "Suma",
+    "back": "Atgal",
+    "booking": "Rezervacija",
+    "confirm": "Patvirtinti",
+    "confirmTitle": "Patvirtinti pakeitimą",
+    "customer": "Klientas",
+    "dragHint": "Vilkite rezervacijos juostą, kad perkeltumėte į kitą objektą ar datas; tempkite juostos kraštus, kad pakeistumėte trukmę.",
+    "email": "El. paštas",
+    "forward": "Pirmyn",
+    "location": "Vieta",
+    "noProperties": "Nėra objektų",
+    "period": "Laikotarpis",
+    "phone": "Telefonas",
+    "property": "Objektas",
+    "status": "Statusas",
+    "today": "Šiandien"
+  },
+  "guests": {
+    "adults": "Suaugusieji",
+    "adultsHint": "Amžius 12+ m.",
+    "children": "Vaikai",
+    "childrenHint": "Amžius 3–11 m.",
+    "decrease": "Sumažinti: {{title}}",
+    "increase": "Padidinti: {{title}}",
+    "infants": "Kūdikiai / maži vaikai",
+    "infantsHint": "Iki 3 m. · Maitinimas nemokamas",
+    "summaryAdults_few": "{{count}} suaugusieji",
+    "summaryAdults_many": "{{count}} suaugusiųjų",
+    "summaryAdults_one": "{{count}} suaugęs",
+    "summaryAdults_other": "{{count}} suaugusiųjų",
+    "summaryChildren_few": "{{count}} vaikai",
+    "summaryChildren_many": "{{count}} vaikų",
+    "summaryChildren_one": "{{count}} vaikas",
+    "summaryChildren_other": "{{count}} vaikų",
+    "summaryInfants_few": "{{count}} kūdikiai",
+    "summaryInfants_many": "{{count}} kūdikių",
+    "summaryInfants_one": "{{count}} kūdikis",
+    "summaryInfants_other": "{{count}} kūdikių"
+  },
+  "housekeeping": {
+    "assignee": "Priskirta",
+    "commentPlaceholder": "Rašykite kambarinei…",
+    "done": "Atlikta",
+    "nextWeek": "Kita savaitė",
+    "noRooms": "Kambarių nerasta.",
+    "prevWeek": "Ankstesnė savaitė",
+    "room": "Kambarys",
+    "thisWeek": "Šiandien",
+    "unassigned": "Nepriskirta"
+  },
+  "language": {
+    "en": "English",
+    "label": "Kalba",
+    "lt": "Lietuvių"
+  },
+  "nav": {
+    "analytics": "Analitika",
+    "bookings": "Rezervacijos",
+    "content": "Turinys",
+    "contracts": "Sutartys",
+    "dashboard": "Skydelis",
+    "expenses": "Finansai",
+    "housekeeping": "Kambarių tvarkymas",
+    "properties": "Objektai",
+    "settings": "Bendrieji nustatymai",
+    "signOut": "Atsijungti",
+    "users": "Vartotojai",
+    "website": "Svetainė"
+  },
+  "properties": {
+    "active": "Aktyvus",
+    "allStatuses": "Visos būsenos",
+    "allTypes": "Visi tipai",
+    "clearFilters": "Išvalyti filtrus",
+    "copied": "Nuoroda nukopijuota",
+    "copyFailed": "Nepavyko nukopijuoti",
+    "copyLink": "Kopijuoti nuorodą",
+    "count_one": "{{count}} objektas iš viso",
+    "count_other": "{{count}} objektų iš viso",
+    "deleteDesc": "„{{name}}“ bus negrįžtamai pašalintas.",
+    "deleteTitle": "Šalinti objektą?",
+    "deleted": "Objektas pašalintas",
+    "editTitle": "Redaguoti: {{name}}",
+    "emptyText": "Pridėkite pirmą objektą, kad pradėtumėte.",
+    "emptyTitle": "Dar nėra objektų",
+    "extraServiceLabel": "Papildoma paslauga: {{name}}",
+    "form": {
+      "activeLabel": "Aktyvus (rodomas svetainėje)",
+      "addRoom": "+ Pridėti kambarį",
+      "addService": "+ Pridėti paslaugą",
+      "addTier": "+ Pridėti tarifą",
+      "address": "Adresas",
+      "amenities": "Patogumai",
+      "area": "Plotas m²",
+      "bathrooms": "Vonių",
+      "bedCount": "Lovų sk.",
+      "bedType": "Lovos tipas",
+      "calcType": "Skaičiavimo tipas",
+      "city": "Miestas",
+      "country": "Šalis (ISO)",
+      "customOption": "Kita (įvesti)…",
+      "deleteRoom": "Trinti kambarį",
+      "deleteService": "Trinti paslaugą",
+      "description": "Aprašymas",
+      "doorCode": "Durų kodo numeris",
+      "doorCodeHelp": "Vidinė informacija — nerodoma svetainėje ir viešame API.",
+      "doorCodePlaceholder": "pvz. 1234#",
+      "extrasTitle": "Papildomos paslaugos",
+      "icalHelp": "Užimtos datos iš išorinio kalendoriaus importuojamos automatiškai kas 15 min.",
+      "icalTitle": "Kalendoriaus sinchronizacija (iCal)",
+      "icalUrl": "Booking.com / Airbnb iCal nuoroda",
+      "lastSync": "Paskutinė sinchronizacija:",
+      "location": "Vieta",
+      "locationHelpPre": "Tekstinis aprašymas, kur tiksliai randasi objektas. Galima naudoti laiškuose kaip",
+      "locationPlaceholder": "pvz. Vilniaus g. 10, 2 aukštas, durys Nr. 3 — įėjimas iš kiemo pusės",
+      "maxGuests": "Max svečių",
+      "maxNights": "Max naktų",
+      "minNights": "Min naktų",
+      "name": "Pavadinimas",
+      "noRooms": "Nėra pridėtų kambarių.",
+      "pricePerDay": "€ / dienai",
+      "pricePerNight": "Kaina už naktį (€)",
+      "pricePerNightShort": "€ / naktis",
+      "roomType": "Kambario tipas",
+      "roomsTitle": "Miegojimo vietos / Kambariai",
+      "save": "Išsaugoti",
+      "saving": "Saugoma…",
+      "serviceName": "Paslaugos pavadinimas",
+      "sortOrder": "Rikiavimas",
+      "syncNow": "Sinchronizuoti dabar",
+      "syncing": "Sinchronizuojama…",
+      "tierLabel": "Etiketė",
+      "tiersTitle": "Sezoninės kainos (pagal naktų skaičių)",
+      "totalBeds": "Iš viso lovų: {{count}}",
+      "type": "Tipas"
+    },
+    "images": {
+      "alt": "Nuotrauka {{index}}",
+      "cover": "Viršelis",
+      "dropzone": "Vilkite nuotraukas čia arba spustelėkite pasirinkti",
+      "empty": "Dar nėra nuotraukų.",
+      "error": "Klaida",
+      "help": "Vilkite failus arba spustelėkite pasirinkti (iki {{max}} nuotraukų). Nuotraukos automatiškai optimizuojamos: WebP, max 1200px, ~80% kokybės, iki ~200 KB. Pažymėkite vieną kaip viršelį.",
+      "hint": "JPG, PNG arba WebP · konvertuojama į WebP · max {{max}}",
+      "label": "Nuotraukos",
+      "limitReached": "Pasiektas limitas ({{max}} nuotraukos)",
+      "maxToast": "Maksimaliai {{max}} nuotraukos",
+      "onlyFirst": "Įkeltos tik pirmos {{count}} nuotraukos (max {{max}})",
+      "onlyImages": "Palaikomi tik nuotraukų failai (JPG, PNG, WebP)",
+      "optimizing": "Optimizuojama…",
+      "remove": "Pašalinti",
+      "retry": "Bandyti dar kartą",
+      "uploadFailed": "Nepavyko įkelti",
+      "uploading": "Keliama…"
+    },
+    "inactive": "Neaktyvus",
+    "moreActions": "Daugiau veiksmų",
+    "new": "Naujas objektas",
+    "newTitle": "Naujas objektas",
+    "noResultsText": "Pabandykite pakeisti paiešką arba filtrus.",
+    "noResultsTitle": "Nerasta objektų pagal filtrus",
+    "notFound": "Nerasta.",
+    "perNight": "/ naktis",
+    "searchPlaceholder": "Ieškoti pagal pavadinimą ar miestą…",
+    "sortDefault": "Numatytas rikiavimas",
+    "sortNameAsc": "Pavadinimas A–Z",
+    "sortPlaceholder": "Rūšiuoti",
+    "sortPriceAsc": "Kaina ↑",
+    "sortPriceDesc": "Kaina ↓",
+    "statusPlaceholder": "Būsena",
+    "table": {
+      "actions": "Veiksmai",
+      "capacity": "Talpa",
+      "city": "Miestas",
+      "price": "Kaina/naktis",
+      "property": "Objektas",
+      "status": "Būsena",
+      "type": "Tipas"
+    },
+    "title": "Objektai",
+    "translationsNote": "Papildomų paslaugų vertimai rišami prie išsaugotų pavadinimų. Jei ką tik pridėjote ar pervadinote paslaugą, pirmiausia išsaugokite objektą — tik tada ji atsiras vertimų sąraše.",
+    "typePlaceholder": "Tipas",
+    "viewGrid": "Kortelės",
+    "viewTable": "Lentelė"
+  },
+  "settings": {
+    "api": {
+      "active": "Aktyvus",
+      "altLabel": "Alternatyva — stabilus techninis adresas (nesikeis pervadinus projektą)",
+      "close": "Uždaryti",
+      "confirmDelete": "Ištrinti raktą „{{name}}“?",
+      "copied": "Nukopijuota.",
+      "copy": "Kopijuoti",
+      "copyFailed": "Nepavyko nukopijuoti automatiškai — pažymėkite tekstą ir kopijuokite ranka.",
+      "create": "Sukurti raktą",
+      "createFailed": "Nepavyko sukurti rakto.",
+      "created": "API raktas sukurtas. Nukopijuokite jį dabar.",
+      "createdAt": "sukurta {{date}}",
+      "deleteFailed": "Nepavyko ištrinti.",
+      "deleted": "Raktas ištrintas.",
+      "description": "Raktai išorinei klientinei svetainei, kuri kviečia šio projekto viešą API. Raktą naudokite tik serverio pusėje.",
+      "devHint": "Privalo turėti „-dev“. Be jo testai rašys į realius duomenis.",
+      "devLabel": "Testavimo (peržiūros) aplinka",
+      "disable": "Išjungti",
+      "disabled": "Išjungtas",
+      "domains": "Domenai: {{list}}",
+      "empty": "Raktų kol kas nėra.",
+      "enable": "Įjungti",
+      "envHint": "Šiuos du kintamuosius perduokite klientinei svetainei.",
+      "loading": "Kraunama…",
+      "name": "Pavadinimas",
+      "namePlaceholder": "Klientinė svetainė",
+      "nameRequired": "Įveskite rakto pavadinimą.",
+      "neverUsed": "dar nenaudotas",
+      "newKeyTitle": "Naujas raktas (rodomas tik vieną kartą)",
+      "origins": "Leidžiami domenai (nebūtina)",
+      "previewWarning": "Dabar esate peržiūros lange — nekopijuokite naršyklės adreso, naudokite gamybinį adresą aukščiau.",
+      "prodHint": "Šį adresą naudoja realūs klientai.",
+      "prodLabel": "Gamybinė aplinka (publikuota versija)",
+      "title": "API prieiga",
+      "updateFailed": "Nepavyko atnaujinti.",
+      "usedAt": "naudota {{date}}"
+    },
+    "email": {
+      "accepted": "Laiškas priimtas siuntimui iš {{from}}. {{detail}}",
+      "description": "Išsiųskite testinį laišką ir patikrinkite, ar laiškų siuntimas veikia.",
+      "error": "Klaida ({{status}}) siunčiant iš {{from}}: {{detail}}",
+      "fallbackFrom": " (naudojamas testinis Resend adresas — laiškai pasiekia tik paskyros savininką)",
+      "loading": "Kraunama…",
+      "send": "Siųsti testinį laišką",
+      "sendFailed": "Nepavyko išsiųsti testinio laiško.",
+      "sender": "Siuntėjas:",
+      "sent": "Testinis laiškas išsiųstas.",
+      "title": "El. pašto patikra",
+      "to": "Gavėjo el. paštas",
+      "unknownError": "Nežinoma klaida."
+    },
+    "form": {
+      "invalid": "Patikrinkite pažymėtus laukus.",
+      "readOnly": "Neturite teisių keisti nustatymų — rodomas tik peržiūros režimas.",
+      "sectionOnly": "Pakeitimai išsaugomi tik šiai skilčiai."
+    },
+    "integrations": {
+      "apiDetail": "Valdoma skiltyje „API prieiga“",
+      "apiName": "API raktai",
+      "comingSoon": "Greitai",
+      "connected": "Veikia",
+      "description": "Išorinių sistemų prijungimas. Naujos integracijos atsiras šioje skiltyje.",
+      "icalConnected": "iCal susietas {{count}} objekt(-uose)",
+      "icalNotConnected": "iCal nuoroda nurodoma objekto kortelėje",
+      "icalSyncedSuffix": " · sinchronizuota {{date}}",
+      "items": {
+        "airbnb": "Užimtumo importas per iCal kalendorių.",
+        "api": "Prieigos raktai išorinėms sistemoms.",
+        "booking": "Užimtumo importas per iCal kalendorių.",
+        "gcal": "Rezervacijų sinchronizacija su Google kalendoriumi.",
+        "landing": "Landing page, per kurią ateina rezervacijos.",
+        "paysera": "Mokėjimai per Lietuvos bankus.",
+        "sms": "SMS priminimai svečiams.",
+        "smtp": "Išeinančių el. laiškų siuntimo serveris.",
+        "stripe": "Kortelių mokėjimai ir avansų surinkimas.",
+        "webhook": "Įvykių pranešimai į išorinę sistemą."
+      },
+      "landingName": "Klientinė svetainė",
+      "smsName": "SMS paslaugų teikėjas",
+      "title": "Integracijos",
+      "webhookName": "Webhook URL"
+    },
+    "invoicePreview": {
+      "description": "Pavyzdys su testiniais rezervacijos duomenimis — atsinaujina pagal formoje įvestas (dar neišsaugotas) reikšmes. Realiai sąskaitai bus naudojami tikros rezervacijos duomenys.",
+      "open": "Peržiūrėti sąskaitą",
+      "sampleCompanyName": "Jūsų įmonės pavadinimas",
+      "sampleExtraLine": "Papildoma paslauga — Pusryčiai (pavyzdys)",
+      "sampleStayLine": "Nakvynė — Standard kambarys (pavyzdys)",
+      "title": "Sąskaitos peržiūra"
+    },
+    "nav": {
+      "api": "API prieiga",
+      "integrations": "Integracijos",
+      "users": "Vartotojai"
+    },
+    "saveFailed": "Nepavyko išsaugoti nustatymų.",
+    "saved": "Nustatymai išsaugoti.",
+    "sections": {
+      "branding": {
+        "description": "Spalvos ir logotipai, naudojami svetainėje, laiškuose ir PDF dokumentuose.",
+        "fields": {
+          "brandEmailLogoUrl": {
+            "label": "El. laiškų logotipas"
+          },
+          "brandLogoUrl": {
+            "label": "Logotipas"
+          },
+          "brandPdfLogoUrl": {
+            "label": "PDF dokumentų logotipas"
+          },
+          "brandPrimaryColor": {
+            "label": "Pagrindinė spalva"
+          },
+          "brandSecondaryColor": {
+            "label": "Antrinė spalva"
+          }
+        },
+        "title": "Prekės ženklas"
+      },
+      "cancellation": {
+        "description": "Sąlygos, taikomos atšaukus rezervaciją arba neatvykus.",
+        "fields": {
+          "cancellationFee": {
+            "label": "Atšaukimo mokestis"
+          },
+          "cancellationFeeType": {
+            "label": "Atšaukimo mokesčio tipas"
+          },
+          "cancellationPolicyText": {
+            "help": "Tekstas rodomas svečiui rezervacijos metu ir patvirtinimo laiške.",
+            "label": "Atšaukimo taisyklės"
+          },
+          "freeCancellationDays": {
+            "label": "Nemokamo atšaukimo terminas"
+          },
+          "noShowFee": {
+            "label": "Neatvykimo mokestis"
+          }
+        },
+        "title": "Atšaukimo politika"
+      },
+      "general": {
+        "description": "Bendri valdytojo duomenys, naudojami sąskaitose, laiškuose ir svetainėje (galioja visiems objektams).",
+        "fields": {
+          "address": {
+            "help": "Gatvė ir namo numeris.",
+            "label": "Adresas"
+          },
+          "city": {
+            "label": "Miestas"
+          },
+          "country": {
+            "label": "Šalis"
+          },
+          "currency": {
+            "label": "Valiuta"
+          },
+          "defaultLanguage": {
+            "label": "Numatytoji kalba"
+          },
+          "displayName": {
+            "help": "Rodomas svečiams ir dokumentuose.",
+            "label": "Pavadinimas"
+          },
+          "email": {
+            "help": "Iš šio adreso siunčiami pranešimai.",
+            "label": "El. paštas"
+          },
+          "lat": {
+            "help": "Pvz. 54.687157",
+            "label": "GPS platuma"
+          },
+          "lng": {
+            "help": "Pvz. 25.279652",
+            "label": "GPS ilguma"
+          },
+          "phone": {
+            "help": "Kontaktinis numeris svečiams.",
+            "label": "Telefonas"
+          },
+          "postalCode": {
+            "label": "Pašto kodas"
+          },
+          "timezone": {
+            "help": "Naudojama atvykimo laikams ir priminimams.",
+            "label": "Laiko zona"
+          }
+        },
+        "title": "Objekto informacija"
+      },
+      "guests": {
+        "description": "Taisyklės vaikams, augintiniams ir ramybės laikui.",
+        "fields": {
+          "childrenFreeUntilAge": {
+            "label": "Vaikai gyvena nemokamai iki"
+          },
+          "minGuestAge": {
+            "label": "Minimalus svečio amžius"
+          },
+          "partiesAllowed": {
+            "label": "Leidžiami vakarėliai"
+          },
+          "petsAllowed": {
+            "label": "Leidžiami augintiniai"
+          },
+          "quietHoursFrom": {
+            "label": "Ramybės laikas nuo"
+          },
+          "quietHoursTo": {
+            "label": "Ramybės laikas iki"
+          }
+        },
+        "title": "Svečių politika"
+      },
+      "invoicing": {
+        "description": "Rekvizitai ir numeracija, naudojami generuojant sąskaitas.",
+        "fields": {
+          "bankName": {
+            "label": "Banko pavadinimas"
+          },
+          "companyAddress": {
+            "label": "Įmonės adresas"
+          },
+          "companyCode": {
+            "label": "Įmonės kodas"
+          },
+          "companyName": {
+            "label": "Įmonės pavadinimas"
+          },
+          "companyVatCode": {
+            "label": "PVM kodas"
+          },
+          "iban": {
+            "label": "IBAN"
+          },
+          "invoiceIssuerName": {
+            "help": "Neprivaloma — rodoma sąskaitos apačioje.",
+            "label": "Sąskaitą išrašo (vardas pavardė)"
+          },
+          "invoiceLogoUrl": {
+            "help": "Nuoroda į logotipo paveikslėlį.",
+            "label": "Logotipas sąskaitose"
+          },
+          "invoiceNextNumber": {
+            "label": "Sekantis numeris"
+          },
+          "invoiceNotes": {
+            "label": "Sąskaitos pastabos"
+          },
+          "invoiceSeries": {
+            "help": "Pvz. RNT",
+            "label": "Sąskaitos serija"
+          }
+        },
+        "title": "Sąskaitų nustatymai"
+      },
+      "notifications": {
+        "description": "Kokius laiškus sistema siunčia svečiams automatiškai.",
+        "fields": {
+          "checkinReminderHoursBefore": {
+            "label": "Atvykimo priminimas prieš"
+          },
+          "notifyBookingChange": {
+            "label": "Rezervacijos pakeitimas"
+          },
+          "notifyBookingConfirmation": {
+            "label": "Rezervacijos patvirtinimas"
+          },
+          "notifyCancellationConfirmation": {
+            "label": "Atšaukimo patvirtinimas"
+          },
+          "notifyCheckinReminder": {
+            "label": "Atvykimo priminimas"
+          },
+          "notifyReviewRequest": {
+            "label": "Atsiliepimo prašymas"
+          },
+          "reviewLink": {
+            "help": "Naudokite kintamąjį {{review_link}} atsiliepimo prašymo laiške.",
+            "label": "Atsiliepimų rinkimo nuoroda"
+          },
+          "reviewRequestHoursAfter": {
+            "label": "Atsiliepimo prašymas po išvykimo"
+          }
+        },
+        "title": "Automatiniai pranešimai"
+      },
+      "payments": {
+        "description": "Avanso reikalavimai ir priimami mokėjimo būdai.",
+        "fields": {
+          "autoRefundDeposit": {
+            "label": "Automatiškai grąžinti užstatą"
+          },
+          "depositAmount": {
+            "help": "Priklauso nuo pasirinkto avanso tipo.",
+            "label": "Avanso dydis"
+          },
+          "depositRequired": {
+            "label": "Reikalingas avansas"
+          },
+          "depositType": {
+            "label": "Avanso tipas"
+          },
+          "paymentDueDays": {
+            "label": "Apmokėjimo terminas"
+          },
+          "paymentMethods": {
+            "label": "Leidžiami mokėjimo būdai"
+          }
+        },
+        "title": "Mokėjimai"
+      },
+      "stay": {
+        "description": "Atvykimo ir išvykimo laikai bei rezervacijų apribojimai.",
+        "fields": {
+          "autoConfirmBookings": {
+            "help": "Naujos rezervacijos iškart gauna patvirtintos būseną.",
+            "label": "Automatiškai patvirtinti rezervacijas"
+          },
+          "checkinFrom": {
+            "label": "Check-in nuo"
+          },
+          "checkinUntil": {
+            "label": "Check-in iki"
+          },
+          "checkoutUntil": {
+            "label": "Check-out iki"
+          },
+          "maxAdvanceDays": {
+            "help": "Kiek dienų į priekį svečiai gali rezervuoti.",
+            "label": "Rezervacijos laikotarpis į priekį"
+          },
+          "maxNights": {
+            "label": "Maksimalus nakvynių skaičius"
+          },
+          "minNights": {
+            "label": "Minimalus nakvynių skaičius"
+          },
+          "requireEmail": {
+            "label": "Rezervacijai privalomas el. paštas"
+          },
+          "requirePhone": {
+            "label": "Rezervacijai privalomas telefono numeris"
+          },
+          "stayoverCleanEveryDays": {
+            "help": "Kas kiek parų tvarkomi kambariai, kuriuose svečias tebegyvena. 0 — tarpinis tvarkymas nevykdomas.",
+            "label": "Tarpinis tvarkymas kas"
+          }
+        },
+        "title": "Viešnagės taisyklės"
+      },
+      "taxes": {
+        "description": "Mokesčiai, taikomi skaičiuojant galutinę rezervacijos kainą.",
+        "fields": {
+          "cityTax": {
+            "label": "Miesto mokestis"
+          },
+          "cityTaxMinAge": {
+            "help": "Jaunesniems svečiams mokestis netaikomas.",
+            "label": "Miesto mokesčio amžiaus riba"
+          },
+          "extraGuestFee": {
+            "label": "Mokestis už papildomą svečią"
+          },
+          "vatRate": {
+            "label": "PVM tarifas"
+          }
+        },
+        "title": "Mokesčiai"
+      }
+    },
+    "selectPlaceholder": "Pasirinkite…",
+    "subtitle": "Bendrieji nustatymai, galiojantys visiems objektams.",
+    "title": "Bendrieji nustatymai",
+    "units": {
+      "days": "dienos",
+      "daysBeforeArrival": "dienos iki atvykimo",
+      "hours": "val.",
+      "nights": "naktys",
+      "perGuestNight": "€ / svečiui už naktį",
+      "perNight": "€ / naktis",
+      "percent": "%",
+      "percentOrEur": "% arba €",
+      "years": "metų"
+    },
+    "users": {
+      "colAdded": "Pridėtas",
+      "colLastSignIn": "Paskutinis prisijungimas",
+      "deleteAria": "Ištrinti vartotoją",
+      "deleteDesc": "{{name}} paskyra bus visam laikui ištrinta kartu su visomis rolėmis. Veiksmo atšaukti negalima.",
+      "deleteFailed": "Nepavyko ištrinti.",
+      "deleteTitle": "Ištrinti vartotoją?",
+      "deleted": "Vartotojas ištrintas.",
+      "editName": "Redaguoti vardą",
+      "email": "El. paštas",
+      "empty": "Vartotojų nėra.",
+      "invite": "Pakviesti",
+      "inviteFailed": "Nepavyko pakviesti.",
+      "inviteHint": "Pakviestasis gaus el. laišką su nuoroda, kurioje pats susikurs slaptažodį. Viešos registracijos nėra.",
+      "inviteSent": "Kvietimas išsiųstas.",
+      "inviteTitle": "Pakviesti darbuotoją",
+      "listTitle": "Vartotojai",
+      "loading": "Kraunama…",
+      "name": "Vardas",
+      "namePlaceholder": "Vardas Pavardė",
+      "nameSaved": "Vardas išsaugotas",
+      "neverSignedIn": "Neprisijungė",
+      "role": "Rolė",
+      "roleAdmin": "Administratorius",
+      "roleHousekeeper": "Kambarių tvarkytoja",
+      "roleUser": "Vartotojas",
+      "role_administrator": "Administratorius",
+      "role_developer": "Developer",
+      "role_housekeeper": "Kambarių tvarkytoja",
+      "role_owner": "Savininkas",
+      "saveName": "Išsaugoti",
+      "sending": "Siunčiama…"
+    },
+    "validation": {
+      "email": "Neteisingas el. pašto formatas",
+      "hexColor": "Naudokite HEX formatą, pvz. #0F172A",
+      "timeFormat": "Formatas turi būti HH:MM"
+    }
+  },
+  "staff": {
+    "adults": "Suaugusieji: {{count}}",
+    "arrivingAt": "Atvyksta nuo {{time}}",
+    "arrivingGuest": "Atvyksta: {{guests}}",
+    "arrivingToday": "Atvyksta šiandien",
+    "assignedTo": "Priskirta: {{name}}",
+    "children": "Vaikai: {{count}}",
+    "commentPlaceholder": "Rašykite administratorei…",
+    "comments": "Komentarai",
+    "dayAfter": "Poryt",
+    "departingAt": "Išvyksta iki {{time}}",
+    "departingGuest": "Išvyksta: {{guests}}",
+    "error": "Klaida",
+    "filterAll": "Visi",
+    "filterMine": "Mano",
+    "infants": "Kūdikiai: {{count}}",
+    "issue": "Gedimas",
+    "issueNote": "Gedimo aprašymas",
+    "issueSaved": "Gedimo žyma išsaugota.",
+    "leavingToday": "Išvyksta šiandien",
+    "noAccessText": "Susisiekite su administratoriumi, kad jums būtų suteikta tvarkytojos rolė.",
+    "noAccessTitle": "Prieiga negalima",
+    "noComments": "Komentarų dar nėra.",
+    "noRooms": "Kambarių nerasta.",
+    "noWorkToday": "Tvarkytinų kambarių nėra.",
+    "note": "Pastaba",
+    "notePlaceholder": "Pastaba (nebūtina)",
+    "occupied": "Užimta",
+    "prepare": "Paruošti",
+    "releaseRoom": "Atsisakyti",
+    "roleAdmin": "Administratorė",
+    "roleHousekeeper": "Kambarinė",
+    "roomStatus": {
+      "nesvarus": "Nešvarus",
+      "svarus": "Švarus",
+      "tvarkoma": "Tvarkomas"
+    },
+    "send": "Siųsti",
+    "statusUpdated": "Būsena atnaujinta",
+    "takeRoom": "Priimti valyti",
+    "title": "Kambarių tvarkymas",
+    "today": "Šiandien",
+    "tomorrow": "Rytoj",
+    "workType": {
+      "departure": "Išvykimo tvarkymas",
+      "none": "Nieko nereikia",
+      "pre_arrival": "Paruošimas prieš atvykimą",
+      "stayover": "Tarpinis tvarkymas",
+      "turnover": "Apyvarta (išvyksta ir atvyksta)"
+    }
+  },
+  "translations": {
+    "bulk": {
+      "button": "Išversti viską į {{lang}}",
+      "confirmDesc": "Bus automatiškai išversti visų objektų ir turinio šablonų tekstai, kurių vertimų dar nėra. Esami vertimai nebus perrašyti. Tai gali užtrukti kelias minutes.",
+      "confirmTitle": "Automatinis vertimas į {{lang}}",
+      "done": "Išversta laukų: {{translated}}, praleista: {{skipped}}, nepavyko: {{failed}}.",
+      "running": "Verčiama…",
+      "start": "Pradėti vertimą"
+    },
+    "fields": {
+      "description": "Aprašymas",
+      "location_note": "Vietos pastabos",
+      "name": "Pavadinimas",
+      "rooms_notes": "Kambarių pastabos"
+    },
+    "panel": {
+      "autoDone": "Automatiškai išversta laukų: {{count}}. Nepamirškite išsaugoti.",
+      "autoFailed": "Nepavyko automatiškai išversti.",
+      "autoNothing": "Nėra ką versti — visi laukai jau užpildyti.",
+      "autoTranslate": "Išversti automatiškai",
+      "blockedDesc": "Įvedėte vertimų, kurių neišsaugojote. Išėję iš šio puslapio juos prarasite. Vertimai saugomi atskiru mygtuku „Išsaugoti vertimus“ — objekto formos išsaugojimas jų neįrašo.",
+      "blockedTitle": "Neišsaugoti vertimai",
+      "description": "Neprivaloma. Jei vertimo nėra, svečiui rodomas tekstas numatytąja kalba ({{lang}}). Išversta {{filled}} iš {{total}}.",
+      "empty": "(tuščias)",
+      "leave": "Išeiti neišsaugojus",
+      "loading": "Kraunama…",
+      "placeholder": "{{lang}} vertimas",
+      "save": "Išsaugoti vertimus",
+      "saveFailed": "Nepavyko išsaugoti vertimų.",
+      "saved": "Vertimai išsaugoti.",
+      "stay": "Likti puslapyje",
+      "title": "Vertimai",
+      "unsaved": "Yra neišsaugotų vertimų."
+    }
+  }
+}

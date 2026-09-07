@@ -1,0 +1,1275 @@
+{
+  "admin": {
+    "noAdminText": "Please contact the system administrator to be granted access.",
+    "noAdminTitle": "You don't have administrator rights"
+  },
+  "assistant": {
+    "clear": "Clear conversation",
+    "cleared": "Conversation cleared.",
+    "disclaimer": "The assistant only advises – it never changes settings.",
+    "empty": "No reply received – try rephrasing the question.",
+    "error": "Could not get a reply. Please try again.",
+    "intro": "Hi! I'll help you find your way around the admin panel. For example:",
+    "open": "Open assistant",
+    "placeholder": "Ask how to do something…",
+    "send": "Send",
+    "subtitle": "Explains where and how to do something. You make the changes yourself.",
+    "suggestions": [
+      "What is our current occupancy and is it normal for the market?",
+      "How much revenue did we make today, yesterday and this year?",
+      "What is our ROI and how can I increase occupancy?",
+      "How do I change room photos on the website?"
+    ],
+    "title": "Deerva assistant",
+    "tooLong": "Message too long (max {{max}} characters)."
+  },
+  "auth": {
+    "backToLogin": "← Back to sign in",
+    "busy": "Working...",
+    "email": "Email",
+    "error": "Error",
+    "forgotLink": "Forgot your password?",
+    "forgotSubtitle": "Enter your email — we'll send a link to set a new password.",
+    "forgotTitle": "Password reset",
+    "home": "← Home",
+    "loginSubtitle": "Access for invited users only.",
+    "loginTitle": "Sign in",
+    "mismatch": "Passwords do not match",
+    "newPassword": "New password",
+    "newPasswordPending": "Opening link... If nothing happens, open the link from the email again.",
+    "newPasswordReady": "Enter a new password.",
+    "newPasswordTitle": "New password",
+    "openCalendar": "Open calendar",
+    "password": "Password",
+    "pickDate": "Pick a date",
+    "repeatPassword": "Repeat password",
+    "resetSent": "Password reset link sent to your email.",
+    "save": "Save",
+    "saving": "Updating...",
+    "signedIn": "Signed in",
+    "submitLogin": "Sign in",
+    "submitReset": "Send link",
+    "toLogin": "← To sign in",
+    "updated": "Password updated"
+  },
+  "bookings": {
+    "actions": "Actions",
+    "apply": "Apply",
+    "clear": "Clear",
+    "clearAllFilters": "Clear all filters",
+    "cols": {
+      "booking_number": "Booking no.",
+      "customer_email": "Email",
+      "customer_name": "Guest",
+      "customer_phone": "Phone",
+      "date_from": "Check-in",
+      "date_to": "Check-out",
+      "duration": "Nights",
+      "property": "Property",
+      "status": "Status",
+      "total_amount": "Amount (€)"
+    },
+    "confirmDelete": "Delete booking {{name}}?",
+    "delete": "Delete",
+    "deleted": "Deleted",
+    "detail": {
+      "generateInvoice": "Generate invoice",
+      "invoiceAuto": "The invoice will be generated automatically once the booking is marked as paid.",
+      "invoiceError": "Could not generate the invoice.",
+      "invoiceGenerated": "Invoice generated.",
+      "title": "Booking {{number}}"
+    },
+    "dialog": {
+      "address": "Address",
+      "amount": "Amount",
+      "customer": "Guest",
+      "days": "{{value}} nights",
+      "duration": "Duration",
+      "email": "Email",
+      "from": "From",
+      "guests": "Guests",
+      "idCode": "ID code",
+      "location": "Location",
+      "phone": "Phone",
+      "property": "Property",
+      "title": "Booking details",
+      "to": "To"
+    },
+    "edit": "Edit",
+    "error": "Error",
+    "filter": "Filter",
+    "form": {
+      "address": "Address",
+      "addressPlaceholder": "Street 1, Vilnius",
+      "birthDate": "Date of birth",
+      "cancel": "Cancel",
+      "checkIn": "Check-in time",
+      "checkOut": "Check-out time",
+      "clientType": "Client type",
+      "company": "Company",
+      "companyAddress": "Company registered address",
+      "companyCode": "Company code *",
+      "companyName": "Company name *",
+      "companyNamePlaceholder": "Example Ltd.",
+      "computed": "Calculated: {{total}} € (stay {{stay}} € · {{nightly}} €/night × {{days}}{{extras}})",
+      "computedExtras": " + services {{amount}} €",
+      "conflict": "These dates are already booked for this property: {{list}}. Choose other dates or another property.",
+      "conflictSave": "Cannot save – dates overlap with an existing booking.",
+      "country": "Country",
+      "countryPlaceholder": "Lithuania",
+      "dates": "Check-in – check-out dates *",
+      "email": "Email *",
+      "emailPlaceholder": "name@email.com",
+      "extras": "Extra services",
+      "extrasHint": "Calculated by number of nights ({{nights}}) and guests. Infants under 3 are not counted.",
+      "extrasTotal": "Services total: {{amount}} €",
+      "guestsCount": "Number of guests",
+      "isVatPayer": "VAT payer",
+      "name": "Full name",
+      "namePlaceholder": "John Doe",
+      "nights": "Nights: {{count}}",
+      "note": "Note",
+      "notePlaceholder": "Internal note about the booking…",
+      "perDay": "€/day",
+      "person": "Individual",
+      "phone": "Phone *",
+      "phonePlaceholder": "+370 600 00000",
+      "property": "Property *",
+      "recalculate": "Recalculate",
+      "saving": "Saving…",
+      "sectionClient": "Client details",
+      "sectionClientDesc": "Contact and invoicing information",
+      "sectionFinance": "Finance and system parameters",
+      "sectionFinanceDesc": "Services, price and booking status",
+      "sectionInfo": "Booking details",
+      "sectionInfoDesc": "Property, dates and guests",
+      "selectDates": "Select dates",
+      "selectProperty": "Select a property",
+      "selectSource": "Select a source",
+      "selectStatus": "Select a status",
+      "source": "Source",
+      "status": "Status",
+      "submit": "Save booking",
+      "total": "Amount (€)",
+      "vatNumber": "VAT number *"
+    },
+    "found_one": "{{count}} found",
+    "found_other": "{{count}} found",
+    "from": "From",
+    "invoice": {
+      "issuedOn": "Generated {{date}}.",
+      "titleNumbered": "Invoice No. {{number}}",
+      "viewNumbered": "View invoice No. {{number}}"
+    },
+    "new": "New booking",
+    "noValues": "No values",
+    "notFound": "No bookings found",
+    "rescheduled": "Booking moved",
+    "title": "Bookings",
+    "to": "To",
+    "totalRow": "Total: {{count}} bookings | {{sum}}€",
+    "view": "View",
+    "viewCalendar": "Calendar",
+    "viewList": "List"
+  },
+  "common": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "close": "Close",
+    "delete": "Delete",
+    "downloadPdf": "Download PDF",
+    "edit": "Edit",
+    "generatingPreview": "Generating preview…",
+    "loading": "Loading…",
+    "noPermission": "You don't have permission.",
+    "notFound": "Not found.",
+    "save": "Save",
+    "saving": "Saving…",
+    "search": "Search"
+  },
+  "content": {
+    "fields": {
+      "description": "Description",
+      "title": "Name",
+      "url": "Link",
+      "wifiName": "WiFi name",
+      "wifiPassword": "WiFi password"
+    },
+    "sections": {
+      "email": {
+        "description": "Automated emails sent to guests during the booking process.",
+        "title": "Email notifications"
+      },
+      "guest_info": {
+        "description": "Practical information available to the guest during the stay.",
+        "title": "Guest information"
+      },
+      "whatsapp": {
+        "description": "Short messages to guests before arrival.",
+        "title": "WhatsApp"
+      }
+    },
+    "templates": {
+      "booking_cancellation": {
+        "description": "Sent to the guest when a booking is cancelled.",
+        "title": "Booking cancellation"
+      },
+      "booking_change": {
+        "description": "Sent when booking details change.",
+        "title": "Booking change"
+      },
+      "booking_confirmation": {
+        "description": "Sent to the guest when a booking is confirmed.",
+        "title": "Booking confirmation"
+      },
+      "checkin_reminder": {
+        "description": "Reminder to the guest a few days before arrival.",
+        "title": "Pre-arrival reminder"
+      },
+      "door_code": {
+        "description": "WhatsApp message with arrival instructions and the door code.",
+        "title": "Door code"
+      },
+      "eturistas": {
+        "description": "Guest registration form in the E-tourist system.",
+        "title": "E-tourist"
+      },
+      "restaurant": {
+        "description": "Information about breakfast, the restaurant or catering.",
+        "title": "Restaurant information"
+      },
+      "review_request": {
+        "description": "Sent to the guest after check-out.",
+        "title": "Review request"
+      },
+      "wifi": {
+        "description": "Internet access details shown to the guest.",
+        "title": "WiFi"
+      }
+    },
+    "ui": {
+      "body": "Content",
+      "cancel": "Cancel",
+      "disabled": "Disabled",
+      "editor": {
+        "bold": "Bold",
+        "bulletList": "Bullet list",
+        "heading": "Heading",
+        "italic": "Italic",
+        "orderedList": "Numbered list",
+        "redo": "Redo",
+        "undo": "Undo"
+      },
+      "emailPlaceholder": "name@email.com",
+      "enabled": "Enabled",
+      "leave": "Leave",
+      "loading": "Loading…",
+      "openLink": "Open link",
+      "openWhatsapp": "Open WhatsApp",
+      "pageDescription": "Information sent to guests by email, WhatsApp, or shown on site. Settings apply to all properties.",
+      "phoneHint": "Include the country code, e.g. +370 600 00000.",
+      "phonePlaceholder": "+370 600 00000",
+      "preview": "Preview",
+      "previewDescription": "Variables are replaced with sample values.",
+      "previewTitle": "Preview — {{name}}",
+      "recipientEmail": "Recipient email",
+      "recipientPhone": "Recipient phone number",
+      "save": "Save",
+      "saveFailed": "Could not save.",
+      "saved": "Content saved.",
+      "saving": "Saving…",
+      "send": "Send",
+      "sendTest": "Send test email",
+      "sendTestWhatsapp": "Send test WhatsApp message",
+      "stay": "Stay",
+      "subject": "Email subject",
+      "testDescription": "The email will be sent with sample variable values.",
+      "testFailed": "Could not send the test email.",
+      "testSent": "Test email sent.",
+      "testTitle": "Test email",
+      "title": "Content",
+      "translationsHint": "Translations can be added once this template has been saved at least once.",
+      "unsavedBadge": "Unsaved",
+      "unsavedBody": "You have unsaved changes. Are you sure you want to leave?",
+      "unsavedTitle": "Unsaved changes",
+      "variablesHint": "Supported variables — click to insert",
+      "waDescription": "Enter the recipient's phone number — we'll open WhatsApp with the prepared message (variables replaced with sample values).",
+      "waTitle": "Test WhatsApp message",
+      "whatsappBody": "Message text"
+    },
+    "validation": {
+      "contentRequired": "Content is required.",
+      "contentTooLong": "Content is too long.",
+      "fieldRequired": "{{field}} is required.",
+      "invalidUrl": "Invalid link format.",
+      "subjectRequired": "Subject is required.",
+      "subjectTooLong": "Subject is too long."
+    },
+    "variables": {
+      "booking_number": "Booking no.",
+      "check_in": "Check-in time",
+      "check_in_until": "Check-in until",
+      "check_out": "Check-out time",
+      "currency": "Currency",
+      "date_from": "Arrival date",
+      "date_to": "Departure date",
+      "door_code": "Door code",
+      "email": "Email",
+      "guest_name": "Guest name",
+      "guest_name_vocative": "Guest name (vocative)",
+      "location": "Location",
+      "phone": "Phone",
+      "property_name": "Property name",
+      "quiet_hours_from": "Quiet hours from",
+      "quiet_hours_to": "Quiet hours until",
+      "review_link": "Review link",
+      "room_name": "Room name",
+      "total_amount": "Total amount",
+      "wifi_name": "WiFi name",
+      "wifi_password": "WiFi password"
+    }
+  },
+  "contracts": {
+    "actions": "Actions",
+    "active": "Active",
+    "activeHint": "Active template (only one per language and type)",
+    "body": "Agreement text",
+    "cancel": "Cancel",
+    "confirmDelete": "Delete template “{{name}}”?",
+    "created": "Created",
+    "created_toast": "Template created",
+    "delete": "Delete",
+    "deleted": "Template deleted",
+    "edit": "Edit",
+    "editTitle": "Edit template",
+    "empty": "No templates yet. Create the first one.",
+    "error": "Error",
+    "inactive": "Inactive",
+    "kind": "Type",
+    "kindPrivacy": "Privacy policy",
+    "kindRental": "Rental agreement",
+    "langEn": "English",
+    "langLt": "Lithuanian",
+    "language": "Language",
+    "loading": "Loading...",
+    "name": "Name",
+    "namePlaceholder": "e.g. Standard rental agreement EN",
+    "nameRequired": "Enter a name",
+    "new": "New template",
+    "newTitle": "New template",
+    "preview": "Preview",
+    "save": "Save",
+    "saving": "Saving...",
+    "sectionDesc": "Edit the rental agreement text the guest signs when booking.",
+    "sectionTitle": "Contract templates",
+    "status": "Status",
+    "subtitle": "Rental agreement templates.",
+    "title": "Contracts",
+    "toolbar": {
+      "bold": "Bold",
+      "bulletList": "Bullet list",
+      "h1": "Heading 1",
+      "h2": "Heading 2",
+      "italic": "Italic",
+      "orderedList": "Numbered list",
+      "paragraph": "Paragraph"
+    },
+    "updated": "Template updated",
+    "variables": "Variables",
+    "vars": {
+      "data": "Date (today)",
+      "iki": "To",
+      "kliento_vardas": "Guest name",
+      "naktys": "Number of nights",
+      "nuo": "From",
+      "objektas": "Property",
+      "rezervacijos_nr": "Booking no.",
+      "suma": "Amount €",
+      "sveciai": "Number of guests",
+      "vieta": "Location"
+    }
+  },
+  "dashboard": {
+    "biz": {
+      "avgStay": "Avg. stay",
+      "days": "{{value}} nights",
+      "expenses": "Expenses",
+      "expensesByCategory": "Expenses by category",
+      "netProfit": "Net profit",
+      "noExpenses": "No expenses.",
+      "revenue": "Revenue"
+    },
+    "checkinsToday": "Check-ins today",
+    "checkoutsToday": "Check-outs today",
+    "emptyList": "Nothing here.",
+    "fleet": {
+      "activeHint_one": "{{count}} active",
+      "activeHint_other": "{{count}} active",
+      "avgPrice": "Avg. nightly rate",
+      "byType": "Properties by type",
+      "empty": "No properties.",
+      "missingDescription": "Without description",
+      "missingPhotos": "Without photos",
+      "total": "Total properties"
+    },
+    "noRecent": "No new bookings.",
+    "ops": {
+      "abv": "ABV",
+      "abvHint": "Average booking value",
+      "awaitingPayment": "Awaiting payment",
+      "awaitingPaymentHint_one": "{{count}} booking",
+      "awaitingPaymentHint_other": "{{count}} bookings",
+      "confirmed30d": "Confirmed 30d",
+      "confirmed30dHint": "Upcoming bookings",
+      "freeToday": "Free today",
+      "revenue": "Revenue",
+      "revenueHint": "Selected period",
+      "utilization": "Occupancy",
+      "utilizationHint": "Portfolio occupancy"
+    },
+    "period": {
+      "all": "All time",
+      "custom": "Custom period",
+      "last30": "Last 30 days",
+      "last7": "Last 7 days",
+      "mtd": "This month",
+      "prev_month": "Previous month",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "ytd": "This year"
+    },
+    "recent24h": "Latest bookings (24h)",
+    "subtitle": "Your business control centre — everything in one place.",
+    "tabs": {
+      "biz": "Business",
+      "fleet": "Properties",
+      "ops": "Operations"
+    },
+    "title": "Dashboard"
+  },
+  "enums": {
+    "amenities": {
+      "air_conditioning": "Air conditioning",
+      "balcony": "Balcony",
+      "bbq": "BBQ",
+      "coffee_machine": "Coffee machine",
+      "extra_baby_bed": "Extra baby bed in the room",
+      "first_aid": "First aid kit",
+      "hair_dryer": "Hair dryer",
+      "hot_tub": "Hot tub",
+      "iron": "Iron",
+      "kitchen": "Kitchenette",
+      "parking": "Parking space",
+      "pet_friendly": "Pet friendly",
+      "pool": "Pool",
+      "sauna": "Sauna",
+      "smoke_alarm": "Smoke alarm",
+      "terrace": "Terrace",
+      "tv": "TV",
+      "washing_machine": "Washing machine",
+      "wifi": "Wi‑Fi",
+      "workspace": "Workspace"
+    },
+    "bedType": {
+      "double": "Standard double bed",
+      "extra_large_double": "Extra large double bed",
+      "large_double": "Large double bed",
+      "single": "Single bed",
+      "sofa_bed": "Sofa bed"
+    },
+    "bookingSource": {
+      "airbnb": "Airbnb",
+      "booking": "Booking",
+      "direct": "Direct",
+      "other": "Other",
+      "phone": "Phone",
+      "website": "Website",
+      "whatsapp": "WhatsApp"
+    },
+    "bookingStatus": {
+      "blocked_external": "External / blocked",
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "confirmed": "Paid",
+      "pending": "Awaiting payment"
+    },
+    "country": {
+      "DE": "Germany",
+      "EE": "Estonia",
+      "GB": "United Kingdom",
+      "LT": "Lithuania",
+      "LV": "Latvia",
+      "PL": "Poland"
+    },
+    "currency": {
+      "EUR": "EUR — Euro",
+      "GBP": "GBP — Pound sterling",
+      "ISK": "ISK — Icelandic króna",
+      "NOK": "NOK — Norwegian krone",
+      "USD": "USD — US dollar"
+    },
+    "depositType": {
+      "fixed": "Fixed amount",
+      "full": "Full amount",
+      "percent": "Percentage"
+    },
+    "extraCalc": {
+      "flat_per_day": "Flat rate per day",
+      "per_child": "Per child",
+      "per_person": "Per person (children under 3 free)"
+    },
+    "extraServices": {
+      "babyBed": "Baby bed",
+      "breakfast": "Breakfast",
+      "dinner": "Dinner",
+      "hotTub": "Hot tub rental",
+      "lunch": "Lunch",
+      "sauna": "Sauna rental"
+    },
+    "feeType": {
+      "first_night": "First night price",
+      "fixed": "Fixed amount",
+      "percent": "Percentage of the total"
+    },
+    "paymentMethod": {
+      "bank_transfer": "Bank transfer",
+      "card": "Bank card",
+      "cash": "Cash"
+    },
+    "propertyType": {
+      "cottage": "Cabin with sauna and hot tub",
+      "standard": "Standard apartments",
+      "terrace": "Apartments with terrace"
+    },
+    "roomKind": {
+      "bedroom_1": "Bedroom 1",
+      "bedroom_2": "Bedroom 2",
+      "bedroom_3": "Bedroom 3",
+      "bedroom_4": "Bedroom 4",
+      "living_room": "Living room"
+    }
+  },
+  "expenses": {
+    "add": "Add",
+    "amount": "Amount",
+    "categories": {
+      "cleaning": "Cleaning",
+      "insurance": "Insurance",
+      "internet": "Internet",
+      "maintenance": "Maintenance",
+      "marketing": "Marketing",
+      "office": "Office",
+      "other": "Other",
+      "supplies": "Supplies",
+      "taxes": "Taxes",
+      "utilities": "Utilities"
+    },
+    "category": "Category",
+    "confirmDelete": "Delete?",
+    "date": "Date",
+    "delete": "Delete",
+    "empty": "No expenses yet.",
+    "note": "Note",
+    "notePlaceholder": "Note",
+    "property": "Property",
+    "title": "Expenses",
+    "unlinked": "Unlinked"
+  },
+  "gantt": {
+    "amount": "Amount",
+    "back": "Back",
+    "booking": "Booking",
+    "confirm": "Confirm",
+    "confirmTitle": "Confirm change",
+    "customer": "Guest",
+    "dragHint": "Drag a booking bar to move it to another property or dates; drag the bar edges to change its length.",
+    "email": "Email",
+    "forward": "Forward",
+    "location": "Location",
+    "noProperties": "No properties",
+    "period": "Period",
+    "phone": "Phone",
+    "property": "Property",
+    "status": "Status",
+    "today": "Today"
+  },
+  "guests": {
+    "adults": "Adults",
+    "adultsHint": "Age 12+",
+    "children": "Children",
+    "childrenHint": "Ages 3–11",
+    "decrease": "Decrease: {{title}}",
+    "increase": "Increase: {{title}}",
+    "infants": "Infants / toddlers",
+    "infantsHint": "Under 3 · Meals free",
+    "summaryAdults_few": "{{count}} adults",
+    "summaryAdults_many": "{{count}} adults",
+    "summaryAdults_one": "{{count}} adult",
+    "summaryAdults_other": "{{count}} adults",
+    "summaryChildren_few": "{{count}} children",
+    "summaryChildren_many": "{{count}} children",
+    "summaryChildren_one": "{{count}} child",
+    "summaryChildren_other": "{{count}} children",
+    "summaryInfants_few": "{{count}} infants",
+    "summaryInfants_many": "{{count}} infants",
+    "summaryInfants_one": "{{count}} infant",
+    "summaryInfants_other": "{{count}} infants"
+  },
+  "housekeeping": {
+    "assignee": "Assigned to",
+    "commentPlaceholder": "Write to the housekeeper…",
+    "done": "Done",
+    "nextWeek": "Next week",
+    "noRooms": "No rooms found.",
+    "prevWeek": "Previous week",
+    "room": "Room",
+    "thisWeek": "Today",
+    "unassigned": "Unassigned"
+  },
+  "language": {
+    "en": "English",
+    "label": "Language",
+    "lt": "Lietuvių"
+  },
+  "nav": {
+    "analytics": "Analytics",
+    "bookings": "Bookings",
+    "content": "Content",
+    "contracts": "Contracts",
+    "dashboard": "Dashboard",
+    "expenses": "Finances",
+    "housekeeping": "Housekeeping",
+    "properties": "Properties",
+    "settings": "General settings",
+    "signOut": "Sign out",
+    "users": "Users",
+    "website": "Website"
+  },
+  "properties": {
+    "active": "Active",
+    "allStatuses": "All statuses",
+    "allTypes": "All types",
+    "clearFilters": "Clear filters",
+    "copied": "Link copied",
+    "copyFailed": "Could not copy",
+    "copyLink": "Copy link",
+    "count_one": "{{count}} property in total",
+    "count_other": "{{count}} properties in total",
+    "deleteDesc": "“{{name}}” will be permanently removed.",
+    "deleteTitle": "Delete property?",
+    "deleted": "Property removed",
+    "editTitle": "Edit: {{name}}",
+    "emptyText": "Add your first property to get started.",
+    "emptyTitle": "No properties yet",
+    "extraServiceLabel": "Extra service: {{name}}",
+    "form": {
+      "activeLabel": "Active (shown on the website)",
+      "addRoom": "+ Add room",
+      "addService": "+ Add service",
+      "addTier": "+ Add tier",
+      "address": "Address",
+      "amenities": "Amenities",
+      "area": "Area m²",
+      "bathrooms": "Bathrooms",
+      "bedCount": "Beds",
+      "bedType": "Bed type",
+      "calcType": "Calculation type",
+      "city": "City",
+      "country": "Country (ISO)",
+      "customOption": "Other (enter)…",
+      "deleteRoom": "Delete room",
+      "deleteService": "Delete service",
+      "description": "Description",
+      "doorCode": "Door code",
+      "doorCodeHelp": "Internal information — not shown on the website or in the public API.",
+      "doorCodePlaceholder": "e.g. 1234#",
+      "extrasTitle": "Extra services",
+      "icalHelp": "Busy dates from the external calendar are imported automatically every 15 min.",
+      "icalTitle": "Calendar synchronisation (iCal)",
+      "icalUrl": "Booking.com / Airbnb iCal link",
+      "lastSync": "Last sync:",
+      "location": "Location",
+      "locationHelpPre": "A text description of exactly where the property is. Can be used in emails as",
+      "locationPlaceholder": "e.g. Vilniaus st. 10, 2nd floor, door No. 3 — entrance from the yard",
+      "maxGuests": "Max guests",
+      "maxNights": "Max nights",
+      "minNights": "Min nights",
+      "name": "Name",
+      "noRooms": "No rooms added.",
+      "pricePerDay": "€ / day",
+      "pricePerNight": "Price per night (€)",
+      "pricePerNightShort": "€ / night",
+      "roomType": "Room type",
+      "roomsTitle": "Sleeping areas / Rooms",
+      "save": "Save",
+      "saving": "Saving…",
+      "serviceName": "Service name",
+      "sortOrder": "Order",
+      "syncNow": "Sync now",
+      "syncing": "Syncing…",
+      "tierLabel": "Label",
+      "tiersTitle": "Seasonal prices (by number of nights)",
+      "totalBeds": "Total beds: {{count}}",
+      "type": "Type"
+    },
+    "images": {
+      "alt": "Photo {{index}}",
+      "cover": "Cover",
+      "dropzone": "Drag photos here or click to select",
+      "empty": "No photos yet.",
+      "error": "Error",
+      "help": "Drag files or click to select (up to {{max}} photos). Photos are optimised automatically: WebP, max 1200px, ~80% quality, up to ~200 KB. Mark one as the cover.",
+      "hint": "JPG, PNG or WebP · converted to WebP · max {{max}}",
+      "label": "Photos",
+      "limitReached": "Limit reached ({{max}} photos)",
+      "maxToast": "Maximum {{max}} photos",
+      "onlyFirst": "Only the first {{count}} photos were uploaded (max {{max}})",
+      "onlyImages": "Only image files are supported (JPG, PNG, WebP)",
+      "optimizing": "Optimising…",
+      "remove": "Remove",
+      "retry": "Try again",
+      "uploadFailed": "Upload failed",
+      "uploading": "Uploading…"
+    },
+    "inactive": "Inactive",
+    "moreActions": "More actions",
+    "new": "New property",
+    "newTitle": "New property",
+    "noResultsText": "Try changing the search or filters.",
+    "noResultsTitle": "No properties match the filters",
+    "notFound": "Not found.",
+    "perNight": "/ night",
+    "searchPlaceholder": "Search by name or city…",
+    "sortDefault": "Default order",
+    "sortNameAsc": "Name A–Z",
+    "sortPlaceholder": "Sort",
+    "sortPriceAsc": "Price ↑",
+    "sortPriceDesc": "Price ↓",
+    "statusPlaceholder": "Status",
+    "table": {
+      "actions": "Actions",
+      "capacity": "Capacity",
+      "city": "City",
+      "price": "Price/night",
+      "property": "Property",
+      "status": "Status",
+      "type": "Type"
+    },
+    "title": "Properties",
+    "translationsNote": "Extra service translations are tied to saved names. If you just added or renamed a service, save the property first — only then it appears in the translations list.",
+    "typePlaceholder": "Type",
+    "viewGrid": "Cards",
+    "viewTable": "Table"
+  },
+  "settings": {
+    "api": {
+      "active": "Active",
+      "altLabel": "Alternative — stable technical address (does not change if the project is renamed)",
+      "close": "Close",
+      "confirmDelete": "Delete key “{{name}}”?",
+      "copied": "Copied.",
+      "copy": "Copy",
+      "copyFailed": "Could not copy automatically — select the text and copy manually.",
+      "create": "Create key",
+      "createFailed": "Could not create the key.",
+      "created": "API key created. Copy it now.",
+      "createdAt": "created {{date}}",
+      "deleteFailed": "Could not delete.",
+      "deleted": "Key deleted.",
+      "description": "Keys for the external client website that calls this project's public API. Use the key on the server side only.",
+      "devHint": "Must contain “-dev”. Without it tests write to real data.",
+      "devLabel": "Test (preview) environment",
+      "disable": "Disable",
+      "disabled": "Disabled",
+      "domains": "Domains: {{list}}",
+      "empty": "No keys yet.",
+      "enable": "Enable",
+      "envHint": "Pass these two variables to the client website.",
+      "loading": "Loading…",
+      "name": "Name",
+      "namePlaceholder": "Client website",
+      "nameRequired": "Enter a key name.",
+      "neverUsed": "not used yet",
+      "newKeyTitle": "New key (shown only once)",
+      "origins": "Allowed domains (optional)",
+      "previewWarning": "You are in the preview window — do not copy the browser address, use the production address above.",
+      "prodHint": "This address is used by real clients.",
+      "prodLabel": "Production environment (published version)",
+      "title": "API access",
+      "updateFailed": "Could not update.",
+      "usedAt": "used {{date}}"
+    },
+    "email": {
+      "accepted": "Email accepted for delivery from {{from}}. {{detail}}",
+      "description": "Send a test email and verify that email delivery works.",
+      "error": "Error ({{status}}) sending from {{from}}: {{detail}}",
+      "fallbackFrom": " (a test Resend address is used — emails only reach the account owner)",
+      "loading": "Loading…",
+      "send": "Send test email",
+      "sendFailed": "Could not send the test email.",
+      "sender": "Sender:",
+      "sent": "Test email sent.",
+      "title": "Email check",
+      "to": "Recipient email",
+      "unknownError": "Unknown error."
+    },
+    "form": {
+      "invalid": "Please check the highlighted fields.",
+      "readOnly": "You do not have permission to change settings — view-only mode.",
+      "sectionOnly": "Changes are saved for this section only."
+    },
+    "integrations": {
+      "apiDetail": "Managed in the “API access” section",
+      "apiName": "API keys",
+      "comingSoon": "Coming soon",
+      "connected": "Active",
+      "description": "Connecting external systems. New integrations will appear in this section.",
+      "icalConnected": "iCal linked on {{count}} property(-ies)",
+      "icalNotConnected": "The iCal link is set on the property card",
+      "icalSyncedSuffix": " · synced {{date}}",
+      "items": {
+        "airbnb": "Occupancy import via iCal calendar.",
+        "api": "Access keys for external systems.",
+        "booking": "Occupancy import via iCal calendar.",
+        "gcal": "Booking synchronisation with Google Calendar.",
+        "landing": "Landing page that bookings come from.",
+        "paysera": "Payments via Lithuanian banks.",
+        "sms": "SMS reminders for guests.",
+        "smtp": "Outgoing email server.",
+        "stripe": "Card payments and deposit collection.",
+        "webhook": "Event notifications to an external system."
+      },
+      "landingName": "Client website",
+      "smsName": "SMS provider",
+      "title": "Integrations",
+      "webhookName": "Webhook URL"
+    },
+    "invoicePreview": {
+      "description": "An example with test booking data — it updates according to the values entered in the form (not yet saved). Real invoices will use actual booking data.",
+      "open": "Preview invoice",
+      "sampleCompanyName": "Your company name",
+      "sampleExtraLine": "Extra service — Breakfast (sample)",
+      "sampleStayLine": "Stay — Standard room (sample)",
+      "title": "Invoice preview"
+    },
+    "nav": {
+      "api": "API access",
+      "integrations": "Integrations",
+      "users": "Users"
+    },
+    "saveFailed": "Could not save settings.",
+    "saved": "Settings saved.",
+    "sections": {
+      "branding": {
+        "description": "Colours and logos used on the website, in emails and PDF documents.",
+        "fields": {
+          "brandEmailLogoUrl": {
+            "label": "Email logo"
+          },
+          "brandLogoUrl": {
+            "label": "Logo"
+          },
+          "brandPdfLogoUrl": {
+            "label": "PDF document logo"
+          },
+          "brandPrimaryColor": {
+            "label": "Primary colour"
+          },
+          "brandSecondaryColor": {
+            "label": "Secondary colour"
+          }
+        },
+        "title": "Branding"
+      },
+      "cancellation": {
+        "description": "Terms applied when a booking is cancelled or the guest does not arrive.",
+        "fields": {
+          "cancellationFee": {
+            "label": "Cancellation fee"
+          },
+          "cancellationFeeType": {
+            "label": "Cancellation fee type"
+          },
+          "cancellationPolicyText": {
+            "help": "Text shown to the guest during booking and in the confirmation email.",
+            "label": "Cancellation terms"
+          },
+          "freeCancellationDays": {
+            "label": "Free cancellation period"
+          },
+          "noShowFee": {
+            "label": "No-show fee"
+          }
+        },
+        "title": "Cancellation policy"
+      },
+      "general": {
+        "description": "General operator details used in invoices, emails and the website (applies to all properties).",
+        "fields": {
+          "address": {
+            "help": "Street and house number.",
+            "label": "Address"
+          },
+          "city": {
+            "label": "City"
+          },
+          "country": {
+            "label": "Country"
+          },
+          "currency": {
+            "label": "Currency"
+          },
+          "defaultLanguage": {
+            "label": "Default language"
+          },
+          "displayName": {
+            "help": "Shown to guests and in documents.",
+            "label": "Name"
+          },
+          "email": {
+            "help": "Notifications are sent from this address.",
+            "label": "Email"
+          },
+          "lat": {
+            "help": "E.g. 54.687157",
+            "label": "GPS latitude"
+          },
+          "lng": {
+            "help": "E.g. 25.279652",
+            "label": "GPS longitude"
+          },
+          "phone": {
+            "help": "Contact number for guests.",
+            "label": "Phone"
+          },
+          "postalCode": {
+            "label": "Postal code"
+          },
+          "timezone": {
+            "help": "Used for check-in times and reminders.",
+            "label": "Time zone"
+          }
+        },
+        "title": "Property information"
+      },
+      "guests": {
+        "description": "Rules for children, pets and quiet hours.",
+        "fields": {
+          "childrenFreeUntilAge": {
+            "label": "Children stay free until"
+          },
+          "minGuestAge": {
+            "label": "Minimum guest age"
+          },
+          "partiesAllowed": {
+            "label": "Parties allowed"
+          },
+          "petsAllowed": {
+            "label": "Pets allowed"
+          },
+          "quietHoursFrom": {
+            "label": "Quiet hours from"
+          },
+          "quietHoursTo": {
+            "label": "Quiet hours until"
+          }
+        },
+        "title": "Guest policy"
+      },
+      "invoicing": {
+        "description": "Company details and numbering used when generating invoices.",
+        "fields": {
+          "bankName": {
+            "label": "Bank name"
+          },
+          "companyAddress": {
+            "label": "Company address"
+          },
+          "companyCode": {
+            "label": "Company code"
+          },
+          "companyName": {
+            "label": "Company name"
+          },
+          "companyVatCode": {
+            "label": "VAT code"
+          },
+          "iban": {
+            "label": "IBAN"
+          },
+          "invoiceIssuerName": {
+            "help": "Optional — shown at the bottom of the invoice.",
+            "label": "Invoice issued by (full name)"
+          },
+          "invoiceLogoUrl": {
+            "help": "Link to the logo image.",
+            "label": "Invoice logo"
+          },
+          "invoiceNextNumber": {
+            "label": "Next number"
+          },
+          "invoiceNotes": {
+            "label": "Invoice notes"
+          },
+          "invoiceSeries": {
+            "help": "E.g. RNT",
+            "label": "Invoice series"
+          }
+        },
+        "title": "Invoice settings"
+      },
+      "notifications": {
+        "description": "Which emails the system sends to guests automatically.",
+        "fields": {
+          "checkinReminderHoursBefore": {
+            "label": "Check-in reminder before"
+          },
+          "notifyBookingChange": {
+            "label": "Booking change"
+          },
+          "notifyBookingConfirmation": {
+            "label": "Booking confirmation"
+          },
+          "notifyCancellationConfirmation": {
+            "label": "Cancellation confirmation"
+          },
+          "notifyCheckinReminder": {
+            "label": "Check-in reminder"
+          },
+          "notifyReviewRequest": {
+            "label": "Review request"
+          },
+          "reviewLink": {
+            "help": "Use the {{review_link}} variable in the review request email.",
+            "label": "Review collection link"
+          },
+          "reviewRequestHoursAfter": {
+            "label": "Review request after check-out"
+          }
+        },
+        "title": "Automated notifications"
+      },
+      "payments": {
+        "description": "Deposit requirements and accepted payment methods.",
+        "fields": {
+          "autoRefundDeposit": {
+            "label": "Refund deposit automatically"
+          },
+          "depositAmount": {
+            "help": "Depends on the selected deposit type.",
+            "label": "Deposit amount"
+          },
+          "depositRequired": {
+            "label": "Deposit required"
+          },
+          "depositType": {
+            "label": "Deposit type"
+          },
+          "paymentDueDays": {
+            "label": "Payment due"
+          },
+          "paymentMethods": {
+            "label": "Allowed payment methods"
+          }
+        },
+        "title": "Payments"
+      },
+      "stay": {
+        "description": "Check-in and check-out times and booking limits.",
+        "fields": {
+          "autoConfirmBookings": {
+            "help": "New bookings immediately get the confirmed status.",
+            "label": "Confirm bookings automatically"
+          },
+          "checkinFrom": {
+            "label": "Check-in from"
+          },
+          "checkinUntil": {
+            "label": "Check-in until"
+          },
+          "checkoutUntil": {
+            "label": "Check-out until"
+          },
+          "maxAdvanceDays": {
+            "help": "How many days ahead guests can book.",
+            "label": "Booking window ahead"
+          },
+          "maxNights": {
+            "label": "Maximum nights"
+          },
+          "minNights": {
+            "label": "Minimum nights"
+          },
+          "requireEmail": {
+            "label": "Email required for booking"
+          },
+          "requirePhone": {
+            "label": "Phone number required for booking"
+          },
+          "stayoverCleanEveryDays": {
+            "help": "How often occupied rooms are cleaned during a stay. 0 — no stayover cleaning.",
+            "label": "Stayover cleaning every"
+          }
+        },
+        "title": "Stay rules"
+      },
+      "taxes": {
+        "description": "Taxes applied when calculating the final booking price.",
+        "fields": {
+          "cityTax": {
+            "label": "City tax"
+          },
+          "cityTaxMinAge": {
+            "help": "Younger guests are exempt from the tax.",
+            "label": "City tax age limit"
+          },
+          "extraGuestFee": {
+            "label": "Extra guest fee"
+          },
+          "vatRate": {
+            "label": "VAT rate"
+          }
+        },
+        "title": "Taxes"
+      }
+    },
+    "selectPlaceholder": "Select…",
+    "subtitle": "General settings that apply to all properties.",
+    "title": "General settings",
+    "units": {
+      "days": "days",
+      "daysBeforeArrival": "days before arrival",
+      "hours": "h",
+      "nights": "nights",
+      "perGuestNight": "€ / guest per night",
+      "perNight": "€ / night",
+      "percent": "%",
+      "percentOrEur": "% or €",
+      "years": "years"
+    },
+    "users": {
+      "colAdded": "Added",
+      "colLastSignIn": "Last sign-in",
+      "deleteAria": "Delete user",
+      "deleteDesc": "The {{name}} account will be permanently deleted together with all roles. This action cannot be undone.",
+      "deleteFailed": "Could not delete.",
+      "deleteTitle": "Delete user?",
+      "deleted": "User deleted.",
+      "editName": "Edit name",
+      "email": "Email",
+      "empty": "No users.",
+      "invite": "Invite",
+      "inviteFailed": "Could not invite.",
+      "inviteHint": "The invitee will receive an email with a link to set their own password. There is no public registration.",
+      "inviteSent": "Invitation sent.",
+      "inviteTitle": "Invite an employee",
+      "listTitle": "Users",
+      "loading": "Loading…",
+      "name": "Name",
+      "namePlaceholder": "Full name",
+      "nameSaved": "Name saved",
+      "neverSignedIn": "Never signed in",
+      "role": "Role",
+      "roleAdmin": "Administrator",
+      "roleHousekeeper": "Housekeeper",
+      "roleUser": "User",
+      "role_administrator": "Administrator",
+      "role_developer": "Developer",
+      "role_housekeeper": "Housekeeper",
+      "role_owner": "Owner",
+      "saveName": "Save",
+      "sending": "Sending…"
+    },
+    "validation": {
+      "email": "Invalid email format",
+      "hexColor": "Use HEX format, e.g. #0F172A",
+      "timeFormat": "Format must be HH:MM"
+    }
+  },
+  "staff": {
+    "adults": "Adults: {{count}}",
+    "arrivingAt": "Arrives from {{time}}",
+    "arrivingGuest": "Arriving: {{guests}}",
+    "arrivingToday": "Arriving today",
+    "assignedTo": "Assigned to: {{name}}",
+    "children": "Children: {{count}}",
+    "commentPlaceholder": "Write to the manager…",
+    "comments": "Comments",
+    "dayAfter": "In 2 days",
+    "departingAt": "Leaves by {{time}}",
+    "departingGuest": "Leaving: {{guests}}",
+    "error": "Error",
+    "filterAll": "All",
+    "filterMine": "Mine",
+    "infants": "Infants: {{count}}",
+    "issue": "Issue",
+    "issueNote": "Issue description",
+    "issueSaved": "Issue saved.",
+    "leavingToday": "Departing today",
+    "noAccessText": "Please contact the administrator to be granted the housekeeper role.",
+    "noAccessTitle": "Access denied",
+    "noComments": "No comments yet.",
+    "noRooms": "No rooms found.",
+    "noWorkToday": "No rooms to clean.",
+    "note": "Note",
+    "notePlaceholder": "Note (optional)",
+    "occupied": "Occupied",
+    "prepare": "Prepare",
+    "releaseRoom": "Release",
+    "roleAdmin": "Manager",
+    "roleHousekeeper": "Housekeeper",
+    "roomStatus": {
+      "nesvarus": "Dirty",
+      "svarus": "Clean",
+      "tvarkoma": "In progress"
+    },
+    "send": "Send",
+    "statusUpdated": "Status updated",
+    "takeRoom": "Take room",
+    "title": "Housekeeping",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "workType": {
+      "departure": "Departure clean",
+      "none": "Nothing needed",
+      "pre_arrival": "Pre-arrival prep",
+      "stayover": "Stayover clean",
+      "turnover": "Turnover (out and in)"
+    }
+  },
+  "translations": {
+    "bulk": {
+      "button": "Translate all to {{lang}}",
+      "confirmDesc": "All property and content template texts without a translation will be translated automatically. Existing translations are kept. This may take a few minutes.",
+      "confirmTitle": "Auto-translate to {{lang}}",
+      "done": "Translated {{translated}} field(s), skipped {{skipped}}, failed {{failed}}.",
+      "running": "Translating…",
+      "start": "Start translating"
+    },
+    "fields": {
+      "description": "Description",
+      "location_note": "Location notes",
+      "name": "Name",
+      "rooms_notes": "Room notes"
+    },
+    "panel": {
+      "autoDone": "Auto-translated {{count}} field(s). Don’t forget to save.",
+      "autoFailed": "Auto-translation failed.",
+      "autoNothing": "Nothing to translate — all fields are filled.",
+      "autoTranslate": "Auto-translate",
+      "blockedDesc": "You entered translations that were not saved. If you leave this page you will lose them. Translations are saved with the separate “Save translations” button — saving the property form does not store them.",
+      "blockedTitle": "Unsaved translations",
+      "description": "Optional. If a translation is missing, the guest sees the text in the default language ({{lang}}). Translated {{filled}} of {{total}}.",
+      "empty": "(empty)",
+      "leave": "Leave without saving",
+      "loading": "Loading…",
+      "placeholder": "{{lang}} translation",
+      "save": "Save translations",
+      "saveFailed": "Could not save translations.",
+      "saved": "Translations saved.",
+      "stay": "Stay on page",
+      "title": "Translations",
+      "unsaved": "There are unsaved translations."
+    }
+  }
+}
