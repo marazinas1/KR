@@ -49,6 +49,7 @@ function AdminLayout() {
     { to: "/admin", label: t("nav.dashboard"), icon: LayoutDashboard },
     { to: "/admin/units", label: t("rental.nav.units"), icon: Building2 },
     { to: "/admin/tenants", label: t("rental.nav.tenants"), icon: Users },
+    { to: "/admin/inquiries", label: t("rental.nav.inquiries"), icon: Inbox },
     { to: "/admin/housekeeping", label: t("nav.housekeeping"), icon: Sparkles },
     { to: "/admin/contracts", label: t("nav.contracts"), icon: FileText },
     { to: "/admin/invoices", label: t("nav.invoices"), icon: Receipt },
