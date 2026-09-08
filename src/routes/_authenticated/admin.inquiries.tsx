@@ -303,11 +303,11 @@ function ConvertDialog({
           {!tenantId ? (
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label>{t("rental.tenants.firstName")}</Label>
+                <Label>{t("rental.tenants.fFirstName")}</Label>
                 <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} className="mt-1.5" />
               </div>
               <div>
-                <Label>{t("rental.tenants.lastName")}</Label>
+                <Label>{t("rental.tenants.fLastName")}</Label>
                 <Input value={lastName} onChange={(e) => setLastName(e.target.value)} className="mt-1.5" />
               </div>
             </div>
@@ -323,7 +323,7 @@ function ConvertDialog({
               <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="mt-1.5" />
             </div>
             <div>
-              <Label>{t("rental.lease.monthlyRent")}</Label>
+              <Label>{t("rental.lease.rent")}</Label>
               <Input type="number" min={0} value={rent} onChange={(e) => setRent(e.target.value)} className="mt-1.5" />
             </div>
             <div>
@@ -335,7 +335,7 @@ function ConvertDialog({
               <Input type="number" min={1} max={28} value={paymentDay} onChange={(e) => setPaymentDay(e.target.value)} className="mt-1.5" />
             </div>
             <div>
-              <Label>{t("rental.lease.noticeDays")}</Label>
+              <Label>{t("rental.lease.notice")}</Label>
               <Input type="number" min={0} value={noticeDays} onChange={(e) => setNoticeDays(e.target.value)} className="mt-1.5" />
             </div>
           </div>
