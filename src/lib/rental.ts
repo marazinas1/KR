@@ -99,3 +99,8 @@ export const INQUIRY_STATUSES = [
   "dismissed",
 ] as const;
 export type InquiryStatus = (typeof INQUIRY_STATUSES)[number];
+
+/** Money display; currency comes from org settings later (step 8) — EUR default. */
+export function formatMoney(value: number, currency = "EUR"): string {
+  return new Intl.NumberFormat("lt-LT", { style: "currency", currency, maximumFractionDigits: 2 }).format(value);
+}
