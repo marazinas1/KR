@@ -394,7 +394,8 @@
     "paymentMethod": {
       "bank_transfer": "Bank transfer",
       "card": "Bank card",
-      "cash": "Cash"
+      "cash": "Cash",
+      "other": "Other"
     },
     "propertyType": {
       "cottage": "Cabin with sauna and hot tub",
@@ -690,28 +691,6 @@
         },
         "title": "Branding"
       },
-      "cancellation": {
-        "description": "Terms applied when a booking is cancelled or the guest does not arrive.",
-        "fields": {
-          "cancellationFee": {
-            "label": "Cancellation fee"
-          },
-          "cancellationFeeType": {
-            "label": "Cancellation fee type"
-          },
-          "cancellationPolicyText": {
-            "help": "Text shown to the guest during booking and in the confirmation email.",
-            "label": "Cancellation terms"
-          },
-          "freeCancellationDays": {
-            "label": "Free cancellation period"
-          },
-          "noShowFee": {
-            "label": "No-show fee"
-          }
-        },
-        "title": "Cancellation policy"
-      },
       "general": {
         "description": "General operator details used in invoices, emails and the website (applies to all properties).",
         "fields": {
@@ -761,30 +740,6 @@
         },
         "title": "Property information"
       },
-      "guests": {
-        "description": "Rules for children, pets and quiet hours.",
-        "fields": {
-          "childrenFreeUntilAge": {
-            "label": "Children stay free until"
-          },
-          "minGuestAge": {
-            "label": "Minimum guest age"
-          },
-          "partiesAllowed": {
-            "label": "Parties allowed"
-          },
-          "petsAllowed": {
-            "label": "Pets allowed"
-          },
-          "quietHoursFrom": {
-            "label": "Quiet hours from"
-          },
-          "quietHoursTo": {
-            "label": "Quiet hours until"
-          }
-        },
-        "title": "Guest policy"
-      },
       "invoicing": {
         "description": "Company details and numbering used when generating invoices.",
         "fields": {
@@ -830,116 +785,53 @@
       "notifications": {
         "description": "Which emails the system sends to guests automatically.",
         "fields": {
-          "checkinReminderHoursBefore": {
-            "label": "Check-in reminder before"
+          "notifyReadingReminder": {
+            "label": "Meter reading reminder"
           },
-          "notifyBookingChange": {
-            "label": "Booking change"
+          "notifyLeaseExpiring": {
+            "label": "Lease expiring warning"
           },
-          "notifyBookingConfirmation": {
-            "label": "Booking confirmation"
+          "notifyPaymentOverdue": {
+            "label": "Overdue payment notice"
           },
-          "notifyCancellationConfirmation": {
-            "label": "Cancellation confirmation"
+          "notifyIssueUpdate": {
+            "label": "Issue status updates"
           },
-          "notifyCheckinReminder": {
-            "label": "Check-in reminder"
-          },
-          "notifyReviewRequest": {
-            "label": "Review request"
-          },
-          "reviewLink": {
-            "help": "Use the {{review_link}} variable in the review request email.",
-            "label": "Review collection link"
-          },
-          "reviewRequestHoursAfter": {
-            "label": "Review request after check-out"
+          "notifyNewInquiry": {
+            "label": "New public inquiry"
           }
         },
         "title": "Automated notifications"
       },
-      "payments": {
-        "description": "Deposit requirements and accepted payment methods.",
+      "rental": {
+        "title": "Rental rules",
+        "description": "Payment terms, notice period and the meter reading window.",
         "fields": {
-          "autoRefundDeposit": {
-            "label": "Refund deposit automatically"
+          "paymentDueDay": {
+            "label": "Payment due day",
+            "help": "Day of the month rent must be paid."
           },
-          "depositAmount": {
-            "help": "Depends on the selected deposit type.",
-            "label": "Deposit amount"
+          "defaultNoticeDays": {
+            "label": "Notice period"
           },
-          "depositRequired": {
-            "label": "Deposit required"
+          "readingWindowFromDay": {
+            "label": "Readings open on day",
+            "help": "Day of the month tenants can start submitting readings."
           },
-          "depositType": {
-            "label": "Deposit type"
+          "readingWindowToDay": {
+            "label": "Readings close on day"
           },
-          "paymentDueDays": {
-            "label": "Payment due"
+          "requireMeterPhoto": {
+            "label": "Require meter photo",
+            "help": "Tenants must attach a photo of the meter."
           },
           "paymentMethods": {
-            "label": "Allowed payment methods"
-          }
-        },
-        "title": "Payments"
-      },
-      "stay": {
-        "description": "Check-in and check-out times and booking limits.",
-        "fields": {
-          "autoConfirmBookings": {
-            "help": "New bookings immediately get the confirmed status.",
-            "label": "Confirm bookings automatically"
-          },
-          "checkinFrom": {
-            "label": "Check-in from"
-          },
-          "checkinUntil": {
-            "label": "Check-in until"
-          },
-          "checkoutUntil": {
-            "label": "Check-out until"
-          },
-          "maxAdvanceDays": {
-            "help": "How many days ahead guests can book.",
-            "label": "Booking window ahead"
-          },
-          "maxNights": {
-            "label": "Maximum nights"
-          },
-          "minNights": {
-            "label": "Minimum nights"
-          },
-          "requireEmail": {
-            "label": "Email required for booking"
-          },
-          "requirePhone": {
-            "label": "Phone number required for booking"
-          },
-          "stayoverCleanEveryDays": {
-            "help": "How often occupied rooms are cleaned during a stay. 0 — no stayover cleaning.",
-            "label": "Stayover cleaning every"
-          }
-        },
-        "title": "Stay rules"
-      },
-      "taxes": {
-        "description": "Taxes applied when calculating the final booking price.",
-        "fields": {
-          "cityTax": {
-            "label": "City tax"
-          },
-          "cityTaxMinAge": {
-            "help": "Younger guests are exempt from the tax.",
-            "label": "City tax age limit"
-          },
-          "extraGuestFee": {
-            "label": "Extra guest fee"
+            "label": "Payment methods"
           },
           "vatRate": {
             "label": "VAT rate"
           }
-        },
-        "title": "Taxes"
+        }
       }
     },
     "selectPlaceholder": "Select…",
