@@ -17,6 +17,7 @@ import { Route as KontaktaiRouteImport } from './routes/kontaktai'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedNuomininkasRouteImport } from './routes/_authenticated/nuomininkas'
 import { Route as ButaiIndexRouteImport } from './routes/butai.index'
 import { Route as ButaiIdRouteImport } from './routes/butai.$id'
 import { Route as EnIndexRouteImport } from './routes/en/index'
@@ -32,6 +33,7 @@ import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminTenantsRouteImport } from './routes/_authenticated/admin.tenants'
 import { Route as AuthenticatedAdminUnitsRouteImport } from './routes/_authenticated/admin.units'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
+import { Route as AuthenticatedNuomininkasIndexRouteImport } from './routes/_authenticated/nuomininkas.index'
 import { Route as ApiPublicNotificationsCronRouteImport } from './routes/api/public/notifications-cron'
 import { Route as EnButaiIndexRouteImport } from './routes/en/butai.index'
 import { Route as EnButaiIdRouteImport } from './routes/en/butai.$id'
@@ -81,6 +83,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedNuomininkasRoute =
+  AuthenticatedNuomininkasRouteImport.update({
+    id: '/nuomininkas',
+    path: '/nuomininkas',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ButaiIndexRoute = ButaiIndexRouteImport.update({
   id: '/butai/',
   path: '/butai/',
@@ -164,6 +172,12 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedNuomininkasIndexRoute =
+  AuthenticatedNuomininkasIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedNuomininkasRoute,
+  } as any)
 const ApiPublicNotificationsCronRoute =
   ApiPublicNotificationsCronRouteImport.update({
     id: '/api/public/notifications-cron',
@@ -222,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/nuomininkas': typeof AuthenticatedNuomininkasRouteWithChildren
   '/butai/$id': typeof ButaiIdRoute
   '/en/kontaktai': typeof EnKontaktaiRoute
   '/butai/': typeof ButaiIndexRoute
@@ -239,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/en/butai/$id': typeof EnButaiIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/nuomininkas/': typeof AuthenticatedNuomininkasIndexRoute
   '/en/butai/': typeof EnButaiIndexRoute
   '/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
@@ -270,6 +286,7 @@ export interface FileRoutesByTo {
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/en/butai/$id': typeof EnButaiIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/nuomininkas': typeof AuthenticatedNuomininkasIndexRoute
   '/en/butai': typeof EnButaiIndexRoute
   '/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
@@ -288,6 +305,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/nuomininkas': typeof AuthenticatedNuomininkasRouteWithChildren
   '/butai/$id': typeof ButaiIdRoute
   '/en/kontaktai': typeof EnKontaktaiRoute
   '/butai/': typeof ButaiIndexRoute
@@ -305,6 +323,7 @@ export interface FileRoutesById {
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/en/butai/$id': typeof EnButaiIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/nuomininkas/': typeof AuthenticatedNuomininkasIndexRoute
   '/en/butai/': typeof EnButaiIndexRoute
   '/_authenticated/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/_authenticated/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
@@ -323,6 +342,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/admin'
+    | '/nuomininkas'
     | '/butai/$id'
     | '/en/kontaktai'
     | '/butai/'
@@ -340,6 +360,7 @@ export interface FileRouteTypes {
     | '/api/public/notifications-cron'
     | '/en/butai/$id'
     | '/admin/'
+    | '/nuomininkas/'
     | '/en/butai/'
     | '/admin/tenants/$id'
     | '/admin/units/$id'
@@ -371,6 +392,7 @@ export interface FileRouteTypes {
     | '/api/public/notifications-cron'
     | '/en/butai/$id'
     | '/admin'
+    | '/nuomininkas'
     | '/en/butai'
     | '/admin/tenants/$id'
     | '/admin/units/$id'
@@ -388,6 +410,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/_authenticated/admin'
+    | '/_authenticated/nuomininkas'
     | '/butai/$id'
     | '/en/kontaktai'
     | '/butai/'
@@ -405,6 +428,7 @@ export interface FileRouteTypes {
     | '/api/public/notifications-cron'
     | '/en/butai/$id'
     | '/_authenticated/admin/'
+    | '/_authenticated/nuomininkas/'
     | '/en/butai/'
     | '/_authenticated/admin/tenants/$id'
     | '/_authenticated/admin/units/$id'
@@ -486,6 +510,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/nuomininkas': {
+      id: '/_authenticated/nuomininkas'
+      path: '/nuomininkas'
+      fullPath: '/nuomininkas'
+      preLoaderRoute: typeof AuthenticatedNuomininkasRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/butai/': {
@@ -592,6 +623,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/users'
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/nuomininkas/': {
+      id: '/_authenticated/nuomininkas/'
+      path: '/'
+      fullPath: '/nuomininkas/'
+      preLoaderRoute: typeof AuthenticatedNuomininkasIndexRouteImport
+      parentRoute: typeof AuthenticatedNuomininkasRoute
     }
     '/api/public/notifications-cron': {
       id: '/api/public/notifications-cron'
@@ -718,12 +756,28 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
+interface AuthenticatedNuomininkasRouteChildren {
+  AuthenticatedNuomininkasIndexRoute: typeof AuthenticatedNuomininkasIndexRoute
+}
+
+const AuthenticatedNuomininkasRouteChildren: AuthenticatedNuomininkasRouteChildren =
+  {
+    AuthenticatedNuomininkasIndexRoute: AuthenticatedNuomininkasIndexRoute,
+  }
+
+const AuthenticatedNuomininkasRouteWithChildren =
+  AuthenticatedNuomininkasRoute._addFileChildren(
+    AuthenticatedNuomininkasRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedNuomininkasRoute: typeof AuthenticatedNuomininkasRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedNuomininkasRoute: AuthenticatedNuomininkasRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
