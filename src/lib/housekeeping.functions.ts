@@ -71,7 +71,7 @@ export const getHousekeepingWeek = createServerFn({ method: "POST" })
       commentCount.set(k, (commentCount.get(k) ?? 0) + 1);
     }
 
-    const stayover = Number(settings.stayoverCleanEveryDays ?? 3);
+    const stayover = 3;
     const rooms = (properties ?? []).map((p) => {
       const list = (byProperty.get(p.id) ?? []) as Parameters<typeof computeDayWork>[0];
       const st = statusBy.get(p.id);
@@ -162,7 +162,7 @@ export const getHousekeepingDay = createServerFn({ method: "POST" })
     const statusBy = new Map((statuses ?? []).map((s) => [s.property_id as string, s]));
     const taskBy = new Map((tasks ?? []).map((t) => [t.property_id as string, t]));
 
-    const stayover = Number(settings.stayoverCleanEveryDays ?? 3);
+    const stayover = 3;
     const rooms = (properties ?? [])
       .map((p) => {
         const list = (byProperty.get(p.id) ?? []) as Parameters<typeof computeDayWork>[0];

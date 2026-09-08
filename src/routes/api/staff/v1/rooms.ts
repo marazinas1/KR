@@ -22,7 +22,7 @@ export const Route = createFileRoute("/api/staff/v1/rooms")({
             qDate && /^\d{4}-\d{2}-\d{2}$/.test(qDate) ? qDate : localToday(settings.timezone);
 
           const { data: properties } = await supabaseAdmin
-            .from("properties")
+            .from("units")
             .select("id, name, sort_order")
             .eq("is_active", true)
             .order("sort_order", { ascending: true });
@@ -79,7 +79,7 @@ export const Route = createFileRoute("/api/staff/v1/rooms")({
               const work = computeDayWork(
                 list,
                 date,
-                Number(settings.stayoverCleanEveryDays ?? 3),
+                3,
               );
               const st = statusBy.get(p.id);
               const task = taskBy.get(p.id);
