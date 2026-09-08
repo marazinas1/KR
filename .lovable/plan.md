@@ -55,7 +55,7 @@ Rent line: for every lease with `status IN ('active','ending')` overlapping the 
 CREATE UNIQUE INDEX charges_one_rent_per_lease_period
   ON public.charges (lease_id, period) WHERE kind = 'rent';
 CREATE UNIQUE INDEX charges_one_utility_per_reading
-  ON public.charges (meter_reading_id) WHERE meter_reading_id IS NOT NULL;
+  ON public.charges (meter_reading_id, lease_id) WHERE meter_reading_id IS NOT NULL;
 CREATE UNIQUE INDEX charges_one_fixed_per_lease_period_rate
   ON public.charges (lease_id, period, utility_rate_id) WHERE kind = 'fixed';
 ```
