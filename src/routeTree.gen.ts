@@ -32,6 +32,7 @@ import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authentic
 import { Route as AuthenticatedStaffIndexRouteImport } from './routes/_authenticated/staff.index'
 import { Route as AuthenticatedStaffIdRouteImport } from './routes/_authenticated/staff.$id'
 import { Route as ApiPublicNotificationsCronRouteImport } from './routes/api/public/notifications-cron'
+import { Route as AuthenticatedAdminTenantsIdRouteImport } from './routes/_authenticated/admin.tenants.$id'
 import { Route as AuthenticatedAdminUnitsIdRouteImport } from './routes/_authenticated/admin.units.$id'
 import { Route as ApiPublicV1LegalRouteImport } from './routes/api/public/v1/legal'
 import { Route as ApiPublicV1PaymentDetailsRouteImport } from './routes/api/public/v1/payment-details'
@@ -167,6 +168,12 @@ const ApiPublicNotificationsCronRoute =
     path: '/api/public/notifications-cron',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AuthenticatedAdminTenantsIdRoute =
+  AuthenticatedAdminTenantsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminTenantsRoute,
+  } as any)
 const AuthenticatedAdminUnitsIdRoute =
   AuthenticatedAdminUnitsIdRouteImport.update({
     id: '/$id',
@@ -243,13 +250,14 @@ export interface FileRoutesByFullPath {
   '/admin/housekeeping': typeof AuthenticatedAdminHousekeepingRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
-  '/admin/tenants': typeof AuthenticatedAdminTenantsRoute
+  '/admin/tenants': typeof AuthenticatedAdminTenantsRouteWithChildren
   '/admin/units': typeof AuthenticatedAdminUnitsRouteWithChildren
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/staff/$id': typeof AuthenticatedStaffIdRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/staff/': typeof AuthenticatedStaffIndexRoute
+  '/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
@@ -275,13 +283,14 @@ export interface FileRoutesByTo {
   '/admin/housekeeping': typeof AuthenticatedAdminHousekeepingRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
-  '/admin/tenants': typeof AuthenticatedAdminTenantsRoute
+  '/admin/tenants': typeof AuthenticatedAdminTenantsRouteWithChildren
   '/admin/units': typeof AuthenticatedAdminUnitsRouteWithChildren
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/staff/$id': typeof AuthenticatedStaffIdRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/staff': typeof AuthenticatedStaffIndexRoute
+  '/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
@@ -312,13 +321,14 @@ export interface FileRoutesById {
   '/_authenticated/admin/housekeeping': typeof AuthenticatedAdminHousekeepingRoute
   '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
-  '/_authenticated/admin/tenants': typeof AuthenticatedAdminTenantsRoute
+  '/_authenticated/admin/tenants': typeof AuthenticatedAdminTenantsRouteWithChildren
   '/_authenticated/admin/units': typeof AuthenticatedAdminUnitsRouteWithChildren
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/staff/$id': typeof AuthenticatedStaffIdRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/staff/': typeof AuthenticatedStaffIndexRoute
+  '/_authenticated/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/_authenticated/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
@@ -356,6 +366,7 @@ export interface FileRouteTypes {
     | '/api/public/notifications-cron'
     | '/admin/'
     | '/staff/'
+    | '/admin/tenants/$id'
     | '/admin/units/$id'
     | '/api/public/v1/legal'
     | '/api/public/v1/payment-details'
@@ -388,6 +399,7 @@ export interface FileRouteTypes {
     | '/api/public/notifications-cron'
     | '/admin'
     | '/staff'
+    | '/admin/tenants/$id'
     | '/admin/units/$id'
     | '/api/public/v1/legal'
     | '/api/public/v1/payment-details'
@@ -424,6 +436,7 @@ export interface FileRouteTypes {
     | '/api/public/notifications-cron'
     | '/_authenticated/admin/'
     | '/_authenticated/staff/'
+    | '/_authenticated/admin/tenants/$id'
     | '/_authenticated/admin/units/$id'
     | '/api/public/v1/legal'
     | '/api/public/v1/payment-details'
@@ -614,6 +627,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNotificationsCronRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/tenants/$id': {
+      id: '/_authenticated/admin/tenants/$id'
+      path: '/$id'
+      fullPath: '/admin/tenants/$id'
+      preLoaderRoute: typeof AuthenticatedAdminTenantsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminTenantsRoute
+    }
     '/_authenticated/admin/units/$id': {
       id: '/_authenticated/admin/units/$id'
       path: '/$id'
@@ -694,6 +714,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminTenantsRouteChildren {
+  AuthenticatedAdminTenantsIdRoute: typeof AuthenticatedAdminTenantsIdRoute
+}
+
+const AuthenticatedAdminTenantsRouteChildren: AuthenticatedAdminTenantsRouteChildren =
+  {
+    AuthenticatedAdminTenantsIdRoute: AuthenticatedAdminTenantsIdRoute,
+  }
+
+const AuthenticatedAdminTenantsRouteWithChildren =
+  AuthenticatedAdminTenantsRoute._addFileChildren(
+    AuthenticatedAdminTenantsRouteChildren,
+  )
+
 interface AuthenticatedAdminUnitsRouteChildren {
   AuthenticatedAdminUnitsIdRoute: typeof AuthenticatedAdminUnitsIdRoute
 }
@@ -716,7 +750,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminHousekeepingRoute: typeof AuthenticatedAdminHousekeepingRoute
   AuthenticatedAdminInvoicesRoute: typeof AuthenticatedAdminInvoicesRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
-  AuthenticatedAdminTenantsRoute: typeof AuthenticatedAdminTenantsRoute
+  AuthenticatedAdminTenantsRoute: typeof AuthenticatedAdminTenantsRouteWithChildren
   AuthenticatedAdminUnitsRoute: typeof AuthenticatedAdminUnitsRouteWithChildren
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -730,7 +764,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminHousekeepingRoute: AuthenticatedAdminHousekeepingRoute,
   AuthenticatedAdminInvoicesRoute: AuthenticatedAdminInvoicesRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
-  AuthenticatedAdminTenantsRoute: AuthenticatedAdminTenantsRoute,
+  AuthenticatedAdminTenantsRoute: AuthenticatedAdminTenantsRouteWithChildren,
   AuthenticatedAdminUnitsRoute: AuthenticatedAdminUnitsRouteWithChildren,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
