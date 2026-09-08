@@ -1,127 +1,112 @@
-# Step 7 — Admin dashboard ("morning screen")
+# Step 8 — Tariffs, charges and invoices per lease
 
-## 0. One availability calculation, not three
+Answers to the four questions first; the build scope follows.
 
-Today there are already **two** implementations of "when is this unit free", and they disagree:
+## 1. Reading + tariff → one charge row
 
-| Where | available_from for occupied unit with renewal=false | vacant-since |
-|---|---|---|
-| `public_vacancies` view (SQL) | `end_date + 1` | not computed |
-| `listUnits` in `units.functions.ts` (TS) | `end_date` | max end_date of expired/terminated leases, else `units.created_at` |
+Charging happens per **(lease, period, meter)**. Inputs:
 
-The dashboard will **not** add a third. One shared calculation, but **no view stacked on another view** — `security_invoker` is a per-view property fixed at that view's own rewrite, not inherited, so an invoker view read through a definer view would evaluate `units`/`leases` RLS as `anon` and silently return nothing to public visitors. Instead the logic lives in a **SQL function** that both views call directly against the base tables:
+- `meter_readings` row with `status = 'approved'`, `period = :period`, whose meter belongs to the lease's unit (or the unit's building, for shared meters). `consumption` is already computed by the existing database trigger — it is never recomputed in TypeScript.
+- The tariff in force for that period:
+
+```sql
+SELECT * FROM utility_rates
+WHERE type = :meter_type AND effective_from <= :period
+ORDER BY effective_from DESC
+LIMIT 1;
+```
+`:period` is the first day of the month, and `utility_rates` already has `UNIQUE (type, effective_from)`, so this resolves to exactly one row. A rate is never edited in place — a change is a new row with a later `effective_from` (AGENTS.md section 6).
+
+Amount, rounded to cents:
 
 ```text
-public.unit_availability_calc(
-  _status text, _created_at date,
-  _holding_end_date date, _holding_renewal boolean,
-  _last_finished_end date
-) RETURNS TABLE (available_from date, vacant_since date, vacant_days integer)
-LANGUAGE sql IMMUTABLE-in-spirit (STABLE, reads CURRENT_DATE), no table access,
-SET search_path = public
-
-available_from := CASE
-    WHEN _status = 'vacant' THEN CURRENT_DATE
-    WHEN _status = 'occupied' AND _holding_renewal = false AND _holding_end_date IS NOT NULL
-         THEN _holding_end_date + 1
-    ELSE NULL END
-vacant_since := CASE WHEN _status = 'vacant'
-    THEN COALESCE(_last_finished_end, _created_at) ELSE NULL END
-vacant_days  := CASE WHEN _status = 'vacant'
-    THEN CURRENT_DATE - COALESCE(_last_finished_end, _created_at) ELSE NULL END
+amount = round(consumption * rate.price_per_unit, 2)
 ```
 
-The function touches **no tables**, so it has no RLS behaviour of its own and is safe to grant to `anon` and `authenticated`. Each caller does its own row selection under its own security model:
+`fixed_monthly` on a rate is **not** folded into the same row. If the effective rate has `fixed_monthly > 0`, a second charge row of `kind = 'fixed'` is written for that (lease, period, type) with `quantity = 1`, `unit_price = fixed_monthly`. Mixing a per-unit and a flat fee into one row would make the invoice line unreadable and the amount unauditable.
 
-- `public.unit_availability` — `security_invoker = true`, selects `units` + LATERAL holding lease + LATERAL last finished lease + `has_future_lease` **from the base tables**, and passes those scalars into `unit_availability_calc(...)`. Managers see all rows, tenants only their own. Used by the dashboard and `listUnits`.
-- `public.public_vacancies` — recreated with `security_invoker = off` (unchanged), also reading `units`/`leases`/`buildings` **directly from the base tables** and calling the same function. It does **not** read `unit_availability`. Output columns stay byte-identical, so step 5 code needs no change.
+Row written:
 
-Holding lease = `status IN ('active','ending') AND start_date <= CURRENT_DATE AND (end_date IS NULL OR end_date >= CURRENT_DATE)`, ordered by `end_date NULLS LAST`, limit 1 — identical to `HOLDING_LEASE_STATUSES` in TS and to the existing LATERAL. Last finished end = `max(end_date)` over `status IN ('expired','terminated')`. `has_future_lease` = exists `status IN ('draft','active','ending') AND start_date > CURRENT_DATE`. Both views repeat this row-selection SQL (it is the part that must run under different security models); only the date arithmetic is shared — that is exactly the piece that drifted.
+| column | value |
+|---|---|
+| `lease_id` | the lease holding the unit in that period |
+| `period` | first day of the month |
+| `kind` | `utility` (or `fixed`) |
+| `meter_reading_id` | the approved reading (audit link) |
+| `utility_rate_id` | the resolved rate (audit link) |
+| `description` | `"<meter type>, <serial>, <period>"` built from i18n on display — the stored text is a neutral fallback |
+| `quantity` | `consumption` (1 for fixed) |
+| `unit_price` | `rate.price_per_unit` (`fixed_monthly` for fixed) |
+| `amount` | as above |
 
-`listUnits` drops its TS recomputation and reads `vacant_days`, `available_from`, `holding_*` from `unit_availability`.
+**Shared (building) meters:** consumption is split across the units of that building that had a holding lease in the period, equally by unit count in v1 (documented in the description, e.g. "shared, 1/6"). No area-weighted split until they ask for one.
 
-**Decision to confirm:** the canonical date becomes `end_date + 1` (the day after the last contracted day — what the public site already shows). `listUnits` currently shows `end_date`; it will change by one day. Say so if you want `end_date` instead; the function is the only place to change it.
+**No rate for the period.** Nothing is invented and nothing is skipped silently. Generation is a preview-then-commit action (see 2): a reading with no effective rate is listed in the preview as a **blocked line** with the reason "no tariff effective for <type> on <period>", the generation of the remaining lines still proceeds, and the run result reports `blocked: n`. The dashboard's missing-readings card gains no new state; instead the charges screen shows the blocked list until a rate is added, after which re-running the same period fills only the missing rows (2 makes that safe). A charge with `amount = 0` is never written as a substitute.
 
+## 2. Rent generation — manual, guarded by a unique index
 
-## 1. Cards and their exact logic
+**Manual action, not cron.** The manager opens `/admin/charges`, picks a period (defaults to the current month), sees a preview table of everything that would be created (rent per active lease, utilities per approved reading, fixed fees, blocked lines with reasons and totals), and presses "Generate". Nothing writes to `charges` until that press. This matches the way they work today (Rapolas reviews before money leaves the spreadsheet) and avoids a scheduled job silently charging a wrong tariff. A cron wrapper can be added in step 10 on top of the same server function once they trust it.
 
-All queries run inside one server function `getDashboard` (new `src/lib/dashboard.functions.ts`, `requireManager`), in parallel, as the signed-in user (RLS applies). `today = CURRENT_DATE` in SQL / `todayIso()` in TS. Each card returns a count/sum plus up to 5 preview rows.
+Rent line: for every lease with `status IN ('active','ending')` overlapping the period, `kind = 'rent'`, `quantity = 1`, `unit_price = amount = leases.monthly_rent`. Partial first/last month is **pro-rated by days** when the lease starts or ends inside the period (`monthly_rent * covered_days / days_in_month`, rounded to cents) and the description states the day range.
 
-**1. Leases expiring (30 / 60 / 90)**
+**Double-generation guard — database level, two partial unique indexes:**
+
 ```sql
-SELECT l.id, l.unit_id, l.tenant_id, l.end_date, l.renewal, (l.end_date - CURRENT_DATE) AS days_left
-FROM leases l
-WHERE l.status IN ('active','ending') AND l.end_date IS NOT NULL
-  AND l.end_date BETWEEN CURRENT_DATE AND CURRENT_DATE + 90
-ORDER BY l.end_date;
+CREATE UNIQUE INDEX charges_one_rent_per_lease_period
+  ON public.charges (lease_id, period) WHERE kind = 'rent';
+CREATE UNIQUE INDEX charges_one_utility_per_reading
+  ON public.charges (meter_reading_id) WHERE meter_reading_id IS NOT NULL;
+CREATE UNIQUE INDEX charges_one_fixed_per_lease_period_rate
+  ON public.charges (lease_id, period, utility_rate_id) WHERE kind = 'fixed';
 ```
-Bucketed in TS into ≤30 / 31–60 / 61–90. Rows with `renewal=false` get a "moving out" badge (same field the public site uses). Link: `/admin/units?filter=expiring&days=30|60|90`.
 
-**2. Vacant units with days empty**
-`SELECT unit_id, vacant_days FROM unit_availability WHERE status='vacant' AND is_active ORDER BY vacant_days DESC` — count + total; preview shows longest-empty first. Secondary line: units becoming vacant (`status='occupied' AND available_from IS NOT NULL`). Link: `/admin/units?status=vacant` (already a supported filter; sort by vacant_days desc).
+Generation inserts with `ON CONFLICT DO NOTHING` and reports `created` / `skipped (already existed)` / `blocked`. Re-running a period is therefore safe and idempotent by construction, not by a TypeScript "did I already do this" check. `one_off` and `penalty` charges are hand-added and intentionally unconstrained.
 
-**3. Missing meter readings this period**
-Period = `currentPeriod()` (first day of current month, moved from `tenant-portal.functions.ts` to `rental.ts` and reused — same definition the tenant portal submits against).
+An already-invoiced charge (`invoice_id IS NOT NULL`) can never be edited or deleted — enforced in the server function and stated in the UI.
+
+## 3. Charges → invoices
+
+**Default: one invoice per (lease, period), covering every uninvoiced charge of that lease for that period** — rent plus all utilities plus fixed fees, one line per charge row, in a fixed order (rent first, then utilities by type, then fixed, then one-offs). From the charges screen the manager selects periods/leases and presses "Issue invoices"; each invoice writes back `charges.invoice_id` for its lines, so a charge can never land on two invoices.
+
+Manual selection stays available as the escape hatch: on a lease's charges list the manager can tick specific uninvoiced rows and issue an invoice from just those (needed for a mid-month settlement or a damage charge).
+
+**Yes — the same numbering series and the same PDF engine.** No new invoice path is created:
+- number comes from the existing atomic `claim_invoice_number()` RPC,
+- the record is written by the existing `createInvoiceRecord()` in `invoices.server.ts`, with seller taken from `org_settings` (white-label) and `lease_id` set,
+- the PDF is the existing `buildInvoicePdf` / `InvoiceViewerDialog`.
+
+The only change to that engine is an input path: `createInvoiceRecord` gains an optional `chargeIds` mode that turns charge rows into its existing `lineItems` shape (`gross` = charge `amount`; the engine keeps deriving net/VAT exactly as it does today) and stamps `invoice_id` on those charges inside the same call. The buyer block is filled from the lease's tenant instead of being typed by hand. `invoices` itself is untouched.
+
+## 4. One balance arithmetic, shared
+
+Confirmed, and enforced the same way availability was in step 7 — by deleting the second implementation, not by keeping two in sync.
+
+Today the admin debtor card uses `fetchDebtors()` in `dashboard-queries.server.ts` (Σ charges with `period <= today` − Σ payments) while the tenant portal's `getMyBalance` sums whatever RLS returns with **no period filter**. Those are already two arithmetics and would drift the moment a future-dated charge exists.
+
+Step 8 adds one exported helper in `dashboard-queries.server.ts`:
+
 ```text
-expected = active meters (meters.is_active) that belong to
-           a unit with a holding lease (via unit_availability.holding_lease_id IS NOT NULL)
-           OR to a building (shared meters)
-present  = meter_readings WHERE period = :period AND status IN ('submitted','approved')
-missing  = expected − present
+computeBalances(db, todayIso, opts?) -> Map<lease_id, {charged, paid, balance}>
+  charged = Σ charges.amount WHERE period <= todayIso
+  paid    = Σ payments.amount
+  balance = charged − paid   (rounded to cents)
 ```
-Card: "X of Y units missing" (grouped by unit; building meters counted as one row "shared: <building>"), plus "N submitted awaiting review" (`status='submitted'` for any period). Link: `/admin/units?filter=missing_readings`. Review link opens the unit's meters tab.
 
-**4. Open faults by priority**
-```sql
-SELECT id, unit_id, title, priority, status, created_at
-FROM issues WHERE status IN ('new','acknowledged','in_progress','waiting')
-ORDER BY array_position(ARRAY['urgent','high','normal','low'], priority), created_at;
-```
-Count per priority; preview = top 5. Link: new route `/admin/issues` (a plain list with status/priority filters — the admin has no cross-unit issue list yet; rows link to the unit's faults tab).
+`fetchDebtors()` becomes a filter over it (`balance > 0`), `listUnits`' per-unit balance reads it, and `getMyBalance` calls the same helper with the tenant's own client — RLS narrows the rows, the arithmetic is identical, including the `period <= today` cut-off. The tenant screen then also shows "upcoming" (charges dated after today) separately instead of silently mixing them in. A comment on the helper states it is the only place a balance is computed.
 
-**5. Debtors**
-```sql
-SELECT l.id AS lease_id, l.unit_id, l.tenant_id,
-       COALESCE(SUM(c.amount),0) - COALESCE(p.paid,0) AS balance
-FROM leases l
-LEFT JOIN charges c  ON c.lease_id = l.id AND c.period <= CURRENT_DATE
-LEFT JOIN LATERAL (SELECT SUM(amount) paid FROM payments WHERE lease_id = l.id) p ON true
-WHERE l.status IN ('active','ending','expired','terminated')
-GROUP BY l.id, p.paid
-HAVING COALESCE(SUM(c.amount),0) - COALESCE(p.paid,0) > 0
-ORDER BY balance DESC;
-```
-Implemented in TS over `charges` + `payments` selects (same arithmetic as `getMyBalance` in the tenant portal: charged − paid). Card shows number of debtors and total outstanding. Until step 8 generates charges this is honestly 0 / 0 €; the card says so rather than hiding. Link: `/admin/units?filter=debtors`.
+## Build scope
 
-**6. New inquiries** — `SELECT count(*) FROM rental_inquiries WHERE status='new'` + 5 newest. Link: `/admin/inquiries?status=new`.
+- **Migration (no data):** the three partial unique indexes above; `CHECK (quantity >= 0)` and `amount = round(quantity*unit_price,2)` left alone if already implied; `COMMENT ON TABLE charges` documenting the (lease, period, kind) rule and the "invoiced charges are immutable" rule; RLS/grants review so a tenant can read only their own lease's charges (existing policies checked and extended only if a gap is found).
+- **New:** `src/lib/charges.server.ts` (preview + generate, the one place the formula lives), `src/lib/charges.functions.ts` (manager-gated `previewCharges`, `generateCharges`, `listCharges`, `addManualCharge`, `deleteCharge`, `issueInvoices`), `src/lib/rates.functions.ts` (list/add tariff — never edit), `/admin/charges` route, tariffs section in settings, nav entry.
+- **Edited:** `invoices.server.ts` / `invoices.functions.ts` (charge-based creation), `dashboard-queries.server.ts` (`computeBalances`), `tenant-portal.functions.ts` (`getMyBalance` uses it), `units.functions.ts`, locale files.
+- **Payments:** admin can record a payment against a lease (`payments` table already exists) from the lease panel and from `/admin/charges`; that is what makes the debtor card real.
 
-**7. Documents expiring** — `documents WHERE expires_at IS NOT NULL AND expires_at <= CURRENT_DATE + 30 ORDER BY expires_at` (already-expired included, shown red). Link: unit / tenant detail documents tab per row.
+## Verification (real output printed)
 
-**8. Occupancy and rent roll** (top strip) — from `unit_availability` + `units`: occupied = `holding_lease_id IS NOT NULL`; occupancy = occupied / active units; rent roll = `SUM(leases.monthly_rent)` over holding leases.
-
-## 2. UI
-
-- `admin.index.tsx` replaced: top strip of four `KpiCard`s (occupancy, rent roll, vacant, debt total), then a responsive grid of the six action cards. Each card = header with count + "view all" link, compact preview list where every row links to the unit/tenant/inquiry. Empty state per card ("Nothing to do") — no decoration.
-- `PeriodFilter` is not used: this screen is "today", not a period report.
-- `admin.units.index.tsx`: existing `useState` filters move to `validateSearch` (`q`, `building`, `status`, `listed`, `filter: expiring|missing_readings|debtors`, `days`), so dashboard links land pre-filtered and are shareable. `listUnits` gains the per-unit `balance` and `missing_readings_count` columns needed for those filters (from the same queries above, so the list and the card can never disagree).
-- `admin.inquiries.tsx`: `status` becomes a search param.
-- New `admin.issues.tsx` list route + nav entry.
-- All strings in `lt.json` / `en.json` under `dashboard.*`.
-
-## 3. Technical details
-
-- Migration: `CREATE FUNCTION public.unit_availability_calc(...)` (STABLE, no table access, `SET search_path = public`, `GRANT EXECUTE TO anon, authenticated`, `COMMENT ON FUNCTION` documenting the `end_date + 1` rule and that this is the only place the date is computed); `CREATE VIEW public.unit_availability` with `security_invoker = true` reading base tables, `GRANT SELECT TO authenticated`; `DROP VIEW public_vacancies; CREATE VIEW public_vacancies` with `security_invoker = off`, also reading base tables and calling the same function, `GRANT SELECT TO anon, authenticated`. Neither view reads the other. No table changes, no data.
-- Files: new `dashboard.functions.ts`, `admin.issues.tsx`, `DashboardCard.tsx`; edits to `admin.index.tsx`, `admin.units.index.tsx`, `admin.inquiries.tsx`, `admin.tsx` (nav), `units.functions.ts`, `rental.ts`, `tenant-portal.functions.ts` (import `currentPeriod` from `rental.ts`), locale files.
-- Roles: `getDashboard` and `listIssues` require manager; tenants hitting `/admin` are already redirected.
-
-## 4. Verification (real output will be printed)
-
-1. Printed `pg_get_viewdef` of both views and `pg_proc` definition of the function; then an **anonymous** HTTP read of `public_vacancies` printing the **actual row count and rows**, matching the fixture exactly (not just a 200 — an empty array would mean silent breakage). A second anonymous read confirms `unit_availability` is NOT reachable by anon (permission denied).
-2. Fixture: one vacant unit (created 12 days ago), one occupied with `renewal=false, end_date = today+20`, one occupied open-ended, one with a future draft lease. Print `unit_availability`, `public_vacancies`, `listUnits` output side by side — identical `available_from` / `vacant_days` in all three.
-
-3. Expiring buckets: leases at +20, +45, +80, +95 days → counts 1/1/1, the +95 excluded.
-4. Missing readings: 2 active meters, one reading submitted → card "1 of 2".
-5. Debtors: charge 100 + payment 40 → balance 60 shown; lease with 0 balance excluded.
-6. Tenant-role signed-in read of `unit_availability` returns only own unit.
-7. Browser: dashboard renders, each card link lands on the correctly filtered list.
-8. `bunx tsgo --noEmit`, production build, fixture cleanup counts = 0.
+1. Fixture: 2 tariff rows for `cold_water` (`effective_from` last year and this month) + an approved reading → printed charge row showing the **later** rate was used, with `utility_rate_id` matching.
+2. A reading whose type has **no** rate → printed preview showing it as blocked with the reason, and `SELECT count(*) FROM charges` proving nothing was written for it.
+3. Generate the same period twice → printed `created`/`skipped` counts and a `count(*)` proving one rent row per lease.
+4. Pro-rated first month printed against a hand-computed figure.
+5. Issue an invoice from those charges → printed `full_number` from the existing series, printed `charges.invoice_id` set on exactly those rows, PDF rendered in the browser.
+6. Same lease read three ways — dashboard debtor card, `listUnits` balance, tenant `getMyBalance` while signed in as that tenant — printed side by side, identical numbers.
+7. Fixture cleanup counts = 0, `bunx tsgo --noEmit`, full `bun run build` tail.
