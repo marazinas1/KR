@@ -2196,6 +2196,28 @@ export type Database = {
           series: string
         }[]
       }
+      convert_inquiry_to_lease: {
+        Args: {
+          _deposit: number
+          _email?: string
+          _end_date?: string
+          _first_name?: string
+          _inquiry_id: string
+          _last_name?: string
+          _monthly_rent: number
+          _notes?: string
+          _notice_days: number
+          _payment_day: number
+          _phone?: string
+          _start_date: string
+          _tenant_id?: string
+          _unit_id: string
+        }
+        Returns: {
+          lease_id: string
+          tenant_id: string
+        }[]
+      }
       current_tenant_id: { Args: never; Returns: string }
       has_role: {
         Args: {
