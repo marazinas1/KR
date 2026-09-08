@@ -56,6 +56,8 @@ export const ISSUE_CATEGORIES = [
   "damage",
   "other",
 ] as const;
+export type IssueCategory = (typeof ISSUE_CATEGORIES)[number];
+
 
 export const DOCUMENT_KINDS = [
   "lease_contract",
