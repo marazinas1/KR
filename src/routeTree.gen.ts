@@ -30,7 +30,10 @@ import { Route as AuthenticatedStaffIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedStaffIdRouteImport } from './routes/_authenticated/staff.$id'
 import { Route as ApiPublicNotificationsCronRouteImport } from './routes/api/public/notifications-cron'
 import { Route as ApiPublicV1LegalRouteImport } from './routes/api/public/v1/legal'
+import { Route as ApiPublicV1PaymentDetailsRouteImport } from './routes/api/public/v1/payment-details'
+import { Route as ApiPublicV1PropertiesRouteImport } from './routes/api/public/v1/properties'
 import { Route as ApiStaffV1RoomsRouteImport } from './routes/api/staff/v1/rooms'
+import { Route as ApiPublicV1PropertiesIdRouteImport } from './routes/api/public/v1/properties.$id'
 import { Route as ApiStaffV1RoomsIdAssignRouteImport } from './routes/api/staff/v1/rooms.$id.assign'
 import { Route as ApiStaffV1RoomsIdCommentsRouteImport } from './routes/api/staff/v1/rooms.$id.comments'
 import { Route as ApiStaffV1RoomsIdIssueRouteImport } from './routes/api/staff/v1/rooms.$id.issue'
@@ -148,10 +151,26 @@ const ApiPublicV1LegalRoute = ApiPublicV1LegalRouteImport.update({
   path: '/api/public/v1/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1PaymentDetailsRoute =
+  ApiPublicV1PaymentDetailsRouteImport.update({
+    id: '/api/public/v1/payment-details',
+    path: '/api/public/v1/payment-details',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicV1PropertiesRoute = ApiPublicV1PropertiesRouteImport.update({
+  id: '/api/public/v1/properties',
+  path: '/api/public/v1/properties',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiStaffV1RoomsRoute = ApiStaffV1RoomsRouteImport.update({
   id: '/api/staff/v1/rooms',
   path: '/api/staff/v1/rooms',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicV1PropertiesIdRoute = ApiPublicV1PropertiesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiPublicV1PropertiesRoute,
 } as any)
 const ApiStaffV1RoomsIdAssignRoute = ApiStaffV1RoomsIdAssignRouteImport.update({
   id: '/$id/assign',
@@ -202,7 +221,10 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/staff/': typeof AuthenticatedStaffIndexRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
+  '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
+  '/api/public/v1/properties': typeof ApiPublicV1PropertiesRouteWithChildren
   '/api/staff/v1/rooms': typeof ApiStaffV1RoomsRouteWithChildren
+  '/api/public/v1/properties/$id': typeof ApiPublicV1PropertiesIdRoute
   '/api/staff/v1/rooms/$id/assign': typeof ApiStaffV1RoomsIdAssignRoute
   '/api/staff/v1/rooms/$id/comments': typeof ApiStaffV1RoomsIdCommentsRoute
   '/api/staff/v1/rooms/$id/issue': typeof ApiStaffV1RoomsIdIssueRoute
@@ -227,7 +249,10 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/staff': typeof AuthenticatedStaffIndexRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
+  '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
+  '/api/public/v1/properties': typeof ApiPublicV1PropertiesRouteWithChildren
   '/api/staff/v1/rooms': typeof ApiStaffV1RoomsRouteWithChildren
+  '/api/public/v1/properties/$id': typeof ApiPublicV1PropertiesIdRoute
   '/api/staff/v1/rooms/$id/assign': typeof ApiStaffV1RoomsIdAssignRoute
   '/api/staff/v1/rooms/$id/comments': typeof ApiStaffV1RoomsIdCommentsRoute
   '/api/staff/v1/rooms/$id/issue': typeof ApiStaffV1RoomsIdIssueRoute
@@ -257,7 +282,10 @@ export interface FileRoutesById {
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/staff/': typeof AuthenticatedStaffIndexRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
+  '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
+  '/api/public/v1/properties': typeof ApiPublicV1PropertiesRouteWithChildren
   '/api/staff/v1/rooms': typeof ApiStaffV1RoomsRouteWithChildren
+  '/api/public/v1/properties/$id': typeof ApiPublicV1PropertiesIdRoute
   '/api/staff/v1/rooms/$id/assign': typeof ApiStaffV1RoomsIdAssignRoute
   '/api/staff/v1/rooms/$id/comments': typeof ApiStaffV1RoomsIdCommentsRoute
   '/api/staff/v1/rooms/$id/issue': typeof ApiStaffV1RoomsIdIssueRoute
@@ -287,7 +315,10 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/staff/'
     | '/api/public/v1/legal'
+    | '/api/public/v1/payment-details'
+    | '/api/public/v1/properties'
     | '/api/staff/v1/rooms'
+    | '/api/public/v1/properties/$id'
     | '/api/staff/v1/rooms/$id/assign'
     | '/api/staff/v1/rooms/$id/comments'
     | '/api/staff/v1/rooms/$id/issue'
@@ -312,7 +343,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/staff'
     | '/api/public/v1/legal'
+    | '/api/public/v1/payment-details'
+    | '/api/public/v1/properties'
     | '/api/staff/v1/rooms'
+    | '/api/public/v1/properties/$id'
     | '/api/staff/v1/rooms/$id/assign'
     | '/api/staff/v1/rooms/$id/comments'
     | '/api/staff/v1/rooms/$id/issue'
@@ -341,7 +375,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/'
     | '/_authenticated/staff/'
     | '/api/public/v1/legal'
+    | '/api/public/v1/payment-details'
+    | '/api/public/v1/properties'
     | '/api/staff/v1/rooms'
+    | '/api/public/v1/properties/$id'
     | '/api/staff/v1/rooms/$id/assign'
     | '/api/staff/v1/rooms/$id/comments'
     | '/api/staff/v1/rooms/$id/issue'
@@ -358,6 +395,8 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPublicNotificationsCronRoute: typeof ApiPublicNotificationsCronRoute
   ApiPublicV1LegalRoute: typeof ApiPublicV1LegalRoute
+  ApiPublicV1PaymentDetailsRoute: typeof ApiPublicV1PaymentDetailsRoute
+  ApiPublicV1PropertiesRoute: typeof ApiPublicV1PropertiesRouteWithChildren
   ApiStaffV1RoomsRoute: typeof ApiStaffV1RoomsRouteWithChildren
 }
 
@@ -510,12 +549,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/payment-details': {
+      id: '/api/public/v1/payment-details'
+      path: '/api/public/v1/payment-details'
+      fullPath: '/api/public/v1/payment-details'
+      preLoaderRoute: typeof ApiPublicV1PaymentDetailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/properties': {
+      id: '/api/public/v1/properties'
+      path: '/api/public/v1/properties'
+      fullPath: '/api/public/v1/properties'
+      preLoaderRoute: typeof ApiPublicV1PropertiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/staff/v1/rooms': {
       id: '/api/staff/v1/rooms'
       path: '/api/staff/v1/rooms'
       fullPath: '/api/staff/v1/rooms'
       preLoaderRoute: typeof ApiStaffV1RoomsRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/properties/$id': {
+      id: '/api/public/v1/properties/$id'
+      path: '/$id'
+      fullPath: '/api/public/v1/properties/$id'
+      preLoaderRoute: typeof ApiPublicV1PropertiesIdRouteImport
+      parentRoute: typeof ApiPublicV1PropertiesRoute
     }
     '/api/staff/v1/rooms/$id/assign': {
       id: '/api/staff/v1/rooms/$id/assign'
@@ -617,6 +677,19 @@ const EnRouteRouteChildren: EnRouteRouteChildren = {
 const EnRouteRouteWithChildren =
   EnRouteRoute._addFileChildren(EnRouteRouteChildren)
 
+interface ApiPublicV1PropertiesRouteChildren {
+  ApiPublicV1PropertiesIdRoute: typeof ApiPublicV1PropertiesIdRoute
+}
+
+const ApiPublicV1PropertiesRouteChildren: ApiPublicV1PropertiesRouteChildren = {
+  ApiPublicV1PropertiesIdRoute: ApiPublicV1PropertiesIdRoute,
+}
+
+const ApiPublicV1PropertiesRouteWithChildren =
+  ApiPublicV1PropertiesRoute._addFileChildren(
+    ApiPublicV1PropertiesRouteChildren,
+  )
+
 interface ApiStaffV1RoomsRouteChildren {
   ApiStaffV1RoomsIdAssignRoute: typeof ApiStaffV1RoomsIdAssignRoute
   ApiStaffV1RoomsIdCommentsRoute: typeof ApiStaffV1RoomsIdCommentsRoute
@@ -646,6 +719,8 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPublicNotificationsCronRoute: ApiPublicNotificationsCronRoute,
   ApiPublicV1LegalRoute: ApiPublicV1LegalRoute,
+  ApiPublicV1PaymentDetailsRoute: ApiPublicV1PaymentDetailsRoute,
+  ApiPublicV1PropertiesRoute: ApiPublicV1PropertiesRouteWithChildren,
   ApiStaffV1RoomsRoute: ApiStaffV1RoomsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
