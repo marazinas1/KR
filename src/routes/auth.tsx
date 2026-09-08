@@ -38,7 +38,7 @@ function LoginPage() {
     const goToDestination = async () => {
       try {
         const role = await fetchRole();
-        if (role.isAdmin) navigate({ to: "/admin", replace: true });
+        if (role.isManager) navigate({ to: "/admin", replace: true });
         else navigate({ to: "/admin", replace: true });
       } catch {
         navigate({ to: "/admin", replace: true });

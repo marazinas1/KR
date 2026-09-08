@@ -979,20 +979,32 @@
       "nameSaved": "Vardas išsaugotas",
       "neverSignedIn": "Neprisijungė",
       "role": "Rolė",
-      "roleAdmin": "Administratorius",
-      "roleHousekeeper": "Kambarių tvarkytoja",
-      "roleUser": "Vartotojas",
-      "role_administrator": "Administratorius",
       "role_developer": "Developer",
+      "role_manager": "Vadybininkas",
       "role_owner": "Savininkas",
+      "role_tenant": "Nuomininkas",
       "saveName": "Išsaugoti",
-      "sending": "Siunčiama…",
-      "role_tenant": "Nuomininkas"
+      "sending": "Siunčiama…"
     },
     "validation": {
       "email": "Neteisingas el. pašto formatas",
       "hexColor": "Naudokite HEX formatą, pvz. #0F172A",
       "timeFormat": "Formatas turi būti HH:MM"
+    }
+  },
+  "site": {
+    "brand": "Nuomos objektai",
+    "footer": {
+      "rights": "Visos teisės saugomos."
+    },
+    "labels": {
+      "breadcrumb": "Naršymo kelias",
+      "contacts": "Kontaktai",
+      "site": "Svetainė"
+    },
+    "nav": {
+      "admin": "Administravimas",
+      "home": "Pradžia"
     }
   },
   "staff": {
@@ -1079,21 +1091,6 @@
       "stay": "Likti puslapyje",
       "title": "Vertimai",
       "unsaved": "Yra neišsaugotų vertimų."
-    }
-  },
-  "site": {
-    "brand": "Nuomos objektai",
-    "nav": {
-      "home": "Pradžia",
-      "admin": "Administravimas"
-    },
-    "labels": {
-      "contacts": "Kontaktai",
-      "site": "Svetainė",
-      "breadcrumb": "Naršymo kelias"
-    },
-    "footer": {
-      "rights": "Visos teisės saugomos."
     }
   }
 }

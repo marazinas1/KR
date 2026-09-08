@@ -2,13 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { contentTemplateSchema, renderPreview } from "./content-templates";
-import { assertAdmin, rowToRecord } from "./content-templates.server";
+import { assertOwner, rowToRecord } from "./content-templates.server";
 import { resolveFromAddress } from "./email-from";
 
 export const listContentTemplates = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin({ supabase: context.supabase, userId: context.userId });
+    await assertOwner({ supabase: context.supabase, userId: context.userId });
     const { data: rows, error } = await context.supabase
       .from("content_templates")
       .select("*");
@@ -23,7 +23,7 @@ export const saveContentTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => contentTemplateSchema.parse(d))
   .handler(async ({ data, context }) => {
-    await assertAdmin({ supabase: context.supabase, userId: context.userId });
+    await assertOwner({ supabase: context.supabase, userId: context.userId });
 
     const { data: row, error } = await context.supabase
       .from("content_templates")
@@ -62,7 +62,7 @@ export const sendTestContentEmail = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin({ supabase: context.supabase, userId: context.userId });
+    await assertOwner({ supabase: context.supabase, userId: context.userId });
 
     const apiKey = process.env["RESEND_API_KEY"];
     const lovableKey = process.env["LOVABLE_API_KEY"];

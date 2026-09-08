@@ -26,7 +26,7 @@ export const inviteUser = createServerFn({ method: "POST" })
     z
       .object({
         email: z.string().trim().email(),
-        role: z.enum(["developer", "owner", "administrator", "tenant"]),
+        role: z.enum(["developer", "owner", "manager"]),
         fullName: z.string().trim().max(120).optional(),
         redirectTo: z.string().url().optional(),
       })
@@ -86,9 +86,7 @@ export const inviteUser = createServerFn({ method: "POST" })
           ? "developer"
           : data.role === "owner"
             ? "savininko"
-            : data.role === "administrator"
-              ? "administratoriaus"
-              : "nuomininko";
+            : "vadybininko";
       await sendEmail({
         to: data.email,
         subject: `Kvietimas prisijungti prie ${brandName} sistemos`,

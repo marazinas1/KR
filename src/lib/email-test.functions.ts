@@ -3,7 +3,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { resolveFromAddress } from "@/lib/email-from";
 
-async function assertAdmin(ctx: { supabase: any; userId: string }) {
+async function assertOwner(ctx: { supabase: any; userId: string }) {
   const { data, error } = await ctx.supabase.rpc("has_role", {
     _user_id: ctx.userId,
     _role: "owner",
@@ -15,7 +15,7 @@ async function assertAdmin(ctx: { supabase: any; userId: string }) {
 export const getEmailDiagnostics = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin({ supabase: context.supabase, userId: context.userId });
+    await assertOwner({ supabase: context.supabase, userId: context.userId });
     const from = resolveFromAddress();
     return {
       hasResendKey: Boolean(process.env["RESEND_API_KEY"]),
@@ -32,7 +32,7 @@ export const sendResendTestEmail = createServerFn({ method: "POST" })
     z.object({ to: z.string().trim().email("Neteisingas el. pašto adresas.") }).parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin({ supabase: context.supabase, userId: context.userId });
+    await assertOwner({ supabase: context.supabase, userId: context.userId });
 
     const apiKey = process.env["RESEND_API_KEY"];
     const lovableKey = process.env["LOVABLE_API_KEY"];

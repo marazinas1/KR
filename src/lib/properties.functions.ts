@@ -323,26 +323,26 @@ export const getMyRole = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
 
     const roles = (data ?? []).map((r) => String(r.role));
-    // Hierarchy: developer > owner > administrator > tenant.
+    // Hierarchy: developer > owner > manager > tenant.
     const isDeveloper = roles.includes("developer");
     const isOwner = isDeveloper || roles.includes("owner");
-    const isAdmin = isOwner || roles.includes("administrator");
-    const isTenant = !isAdmin && roles.includes("tenant");
+    const isManager = isOwner || roles.includes("manager");
+    const isTenant = !isManager && roles.includes("tenant");
 
     // Highest role in the hierarchy, used for labels and menu gating.
     const role = isDeveloper
       ? "developer"
       : roles.includes("owner")
         ? "owner"
-        : isAdmin
-          ? "administrator"
+        : isManager
+          ? "manager"
           : isTenant
             ? "tenant"
-            : "user";
+            : "none";
 
     const email = (claims as { email?: string } | null)?.email ?? "";
 
-    return { userId, email, role, roles, isDeveloper, isOwner, isAdmin, isTenant };
+    return { userId, email, role, roles, isDeveloper, isOwner, isManager, isTenant };
   });
 
 

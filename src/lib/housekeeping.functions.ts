@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { assertAdmin } from "./users.server";
+import { assertManager } from "./users.server";
 
 const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 
@@ -9,7 +9,7 @@ export const getHousekeepingWeek = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ startDate: dateSchema.optional() }).parse(d ?? {}))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await assertManager(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { loadGlobalSettings } = await import("@/lib/notifications.server");
     const { localToday, addDays, computeDayWork } = await import("@/lib/housekeeping.server");
@@ -108,7 +108,7 @@ export const getHousekeepingDay = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => z.object({ date: dateSchema.optional() }).parse(d ?? {}))
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await assertManager(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { loadGlobalSettings } = await import("@/lib/notifications.server");
     const { localToday, computeDayWork } = await import("@/lib/housekeeping.server");
@@ -213,7 +213,7 @@ export const setHousekeepingStatus = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await assertManager(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { taskStatusForRoomStatus } = await import("@/lib/housekeeping.server");
 
@@ -254,7 +254,7 @@ export const assignHousekeepingTask = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await assertManager(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("housekeeping_tasks").upsert(
       {
@@ -282,7 +282,7 @@ export const addHousekeepingComment = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await assertManager(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("housekeeping_comments").insert({
       property_id: data.propertyId,
@@ -307,7 +307,7 @@ export const setHousekeepingIssue = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await assertManager(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("room_status").upsert(
       {
@@ -325,12 +325,12 @@ export const setHousekeepingIssue = createServerFn({ method: "POST" })
 export const listHousekeepers = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context);
+    await assertManager(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: roles } = await supabaseAdmin
       .from("user_roles")
       .select("user_id, role")
-      .in("role", ["housekeeper", "admin"]);
+      .in("role", ["manager", "owner", "developer"]);
     const ids = new Set((roles ?? []).map((r) => r.user_id as string));
     const { data: authUsers } = await supabaseAdmin.auth.admin.listUsers({ perPage: 200 });
     return (authUsers?.users ?? [])

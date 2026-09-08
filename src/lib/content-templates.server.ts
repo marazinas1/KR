@@ -1,6 +1,6 @@
 import type { ContentTemplateRecord } from "./content-templates";
 
-export async function assertAdmin(ctx: { supabase: any; userId: string }) {
+export async function assertOwner(ctx: { supabase: any; userId: string }) {
   const { data, error } = await ctx.supabase.rpc("has_role", {
     _user_id: ctx.userId,
     _role: "owner",

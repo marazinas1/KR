@@ -979,20 +979,32 @@
       "nameSaved": "Name saved",
       "neverSignedIn": "Never signed in",
       "role": "Role",
-      "roleAdmin": "Administrator",
-      "roleHousekeeper": "Housekeeper",
-      "roleUser": "User",
-      "role_administrator": "Administrator",
       "role_developer": "Developer",
+      "role_manager": "Manager",
       "role_owner": "Owner",
+      "role_tenant": "Tenant",
       "saveName": "Save",
-      "sending": "Sending…",
-      "role_tenant": "Tenant"
+      "sending": "Sending…"
     },
     "validation": {
       "email": "Invalid email format",
       "hexColor": "Use HEX format, e.g. #0F172A",
       "timeFormat": "Format must be HH:MM"
+    }
+  },
+  "site": {
+    "brand": "Rental listings",
+    "footer": {
+      "rights": "All rights reserved."
+    },
+    "labels": {
+      "breadcrumb": "Breadcrumb",
+      "contacts": "Contacts",
+      "site": "Site"
+    },
+    "nav": {
+      "admin": "Admin",
+      "home": "Home"
     }
   },
   "staff": {
@@ -1079,21 +1091,6 @@
       "stay": "Stay on page",
       "title": "Translations",
       "unsaved": "There are unsaved translations."
-    }
-  },
-  "site": {
-    "brand": "Rental listings",
-    "nav": {
-      "home": "Home",
-      "admin": "Admin"
-    },
-    "labels": {
-      "contacts": "Contacts",
-      "site": "Site",
-      "breadcrumb": "Breadcrumb"
-    },
-    "footer": {
-      "rights": "All rights reserved."
     }
   }
 }
