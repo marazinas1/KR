@@ -110,14 +110,15 @@ Implemented in TS over `charges` + `payments` selects (same arithmetic as `getMy
 
 ## 3. Technical details
 
-- Migration: `CREATE VIEW public.unit_availability (security_invoker=true)`; `GRANT SELECT TO authenticated`; `DROP VIEW public_vacancies; CREATE VIEW public_vacancies ... security_invoker=off` on top of it; `GRANT SELECT TO anon, authenticated`; `COMMENT ON VIEW` documenting the `end_date + 1` rule. No table changes, no data.
+- Migration: `CREATE FUNCTION public.unit_availability_calc(...)` (STABLE, no table access, `SET search_path = public`, `GRANT EXECUTE TO anon, authenticated`, `COMMENT ON FUNCTION` documenting the `end_date + 1` rule and that this is the only place the date is computed); `CREATE VIEW public.unit_availability` with `security_invoker = true` reading base tables, `GRANT SELECT TO authenticated`; `DROP VIEW public_vacancies; CREATE VIEW public_vacancies` with `security_invoker = off`, also reading base tables and calling the same function, `GRANT SELECT TO anon, authenticated`. Neither view reads the other. No table changes, no data.
 - Files: new `dashboard.functions.ts`, `admin.issues.tsx`, `DashboardCard.tsx`; edits to `admin.index.tsx`, `admin.units.index.tsx`, `admin.inquiries.tsx`, `admin.tsx` (nav), `units.functions.ts`, `rental.ts`, `tenant-portal.functions.ts` (import `currentPeriod` from `rental.ts`), locale files.
 - Roles: `getDashboard` and `listIssues` require manager; tenants hitting `/admin` are already redirected.
 
 ## 4. Verification (real output will be printed)
 
-1. `pg_views` definition of `unit_availability` and new `public_vacancies`; `SELECT ... FROM public_vacancies` as anon returns HTTP 200 (nested definer→invoker view works for anon).
+1. Printed `pg_get_viewdef` of both views and `pg_proc` definition of the function; then an **anonymous** HTTP read of `public_vacancies` printing the **actual row count and rows**, matching the fixture exactly (not just a 200 — an empty array would mean silent breakage). A second anonymous read confirms `unit_availability` is NOT reachable by anon (permission denied).
 2. Fixture: one vacant unit (created 12 days ago), one occupied with `renewal=false, end_date = today+20`, one occupied open-ended, one with a future draft lease. Print `unit_availability`, `public_vacancies`, `listUnits` output side by side — identical `available_from` / `vacant_days` in all three.
+
 3. Expiring buckets: leases at +20, +45, +80, +95 days → counts 1/1/1, the +95 excluded.
 4. Missing readings: 2 active meters, one reading submitted → card "1 of 2".
 5. Debtors: charge 100 + payment 40 → balance 60 shown; lease with 0 balance excluded.
