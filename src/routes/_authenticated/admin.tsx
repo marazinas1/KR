@@ -2,7 +2,7 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { BarChart3, Building2, FileEdit, FileText, Globe, Home, LayoutDashboard, LogOut, Menu, Receipt, Settings2, Sparkles, UserCog, Users, Wallet } from "lucide-react";
+import { BarChart3, Building2, FileEdit, FileText, Globe, Home, Inbox, LayoutDashboard, LogOut, Menu, Receipt, Settings2, Sparkles, UserCog, Users, Wallet } from "lucide-react";
 import { getMyRole } from "@/lib/properties.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
