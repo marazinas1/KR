@@ -23,11 +23,9 @@ export const Route = createFileRoute("/api/public/v1/properties/$id")({
           );
           const supabase = publicApiClient();
           const { data, error } = await supabase
-            .from("units")
+            .from("public_vacancies")
             .select(UNIT_PUBLIC_COLUMNS)
             .eq("id", parsed.data)
-            .eq("is_active", true)
-            .eq("is_listed", true)
             .maybeSingle();
           if (error) throw new Error(error.message);
           if (!data) return apiError("not_found", "Unit not found", 404, headers);

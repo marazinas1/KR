@@ -18,12 +18,9 @@ export const Route = createFileRoute("/api/public/v1/properties")({
           );
           const supabase = publicApiClient();
           const { data, error } = await supabase
-            .from("units")
+            .from("public_vacancies")
             .select(UNIT_PUBLIC_COLUMNS)
-            .eq("is_active", true)
-            .eq("is_listed", true)
-            .order("sort_order", { ascending: true })
-            .order("created_at", { ascending: true });
+            .order("available_from", { ascending: true });
           if (error) throw new Error(error.message);
 
           const rows = (data ?? []).map((r) => publicUnit(r as never));
