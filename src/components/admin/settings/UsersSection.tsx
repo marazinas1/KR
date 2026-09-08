@@ -69,6 +69,14 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
     queryFn: () => fetchUsers(),
   });
 
+  // Only a developer may invite another developer (AGENTS.md 5.2).
+  const fetchMyRole = useServerFn(getMyRole);
+  const { data: myRole } = useQuery({
+    queryKey: ["my-role"],
+    queryFn: () => fetchMyRole(),
+  });
+  const isDeveloper = myRole?.isDeveloper === true;
+
   const m = useMutation({
     mutationFn: () =>
       invite({
