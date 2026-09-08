@@ -31,7 +31,7 @@ function StaffLayout() {
     return <div className="p-8 text-muted-foreground">{t("common.loading")}</div>;
   }
 
-  const authorized = role?.isAdmin || role?.roles.includes("housekeeper");
+  const authorized = Boolean(role?.isManager);
   if (!authorized) {
     return (
       <div className="mx-auto max-w-md space-y-4 p-8">

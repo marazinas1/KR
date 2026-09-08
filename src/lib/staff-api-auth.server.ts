@@ -15,7 +15,7 @@ function allowedOrigins(): string[] {
 
 export type StaffCtx = {
   userId: string;
-  role: "admin" | "housekeeper";
+  role: "manager";
   headers: Record<string, string>;
 };
 
@@ -59,22 +59,18 @@ export async function withStaffAuth(
   if (!verified) return apiError("unauthorized", "Invalid token", 401, headers);
 
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data: isAdmin } = await supabaseAdmin.rpc("has_role", {
+  const { data: isManager } = await supabaseAdmin.rpc("has_role", {
     _user_id: verified.userId,
-    _role: "admin",
+    _role: "manager",
   });
-  const { data: isHousekeeper } = await supabaseAdmin.rpc("has_role", {
-    _user_id: verified.userId,
-    _role: "housekeeper",
-  });
-  if (!isAdmin && !isHousekeeper) {
+  if (!isManager) {
     return apiError("forbidden", "No staff role", 403, headers);
   }
 
   try {
     return await handler({
       userId: verified.userId,
-      role: isAdmin ? "admin" : "housekeeper",
+      role: "manager",
       headers,
     });
   } catch (e) {

@@ -21,7 +21,7 @@ export const getTranslations = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<TranslationMap> => {
     const { data: isAdmin, error: roleError } = await context.supabase.rpc("has_role", {
       _user_id: context.userId,
-      _role: "admin",
+      _role: "owner",
     });
     if (roleError) throw new Error(roleError.message);
     if (!isAdmin) throw new Error("Forbidden");
@@ -57,7 +57,7 @@ export const saveTranslations = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { data: isAdmin, error: roleError } = await context.supabase.rpc("has_role", {
       _user_id: context.userId,
-      _role: "admin",
+      _role: "owner",
     });
     if (roleError) throw new Error(roleError.message);
     if (!isAdmin) throw new Error("Forbidden");

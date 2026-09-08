@@ -59,7 +59,7 @@ function PropertySettingsPage() {
 
   const { data: role } = useQuery({ queryKey: ["my-role"], queryFn: () => fetchRole() });
   const canEdit = Boolean(role?.isOwner);
-  // Administrators and housekeepers have no access to settings.
+  // Managers and tenants have no access to settings.
   const forbidden = Boolean(role) && !role?.isOwner;
 
   const { data: properties } = useQuery({

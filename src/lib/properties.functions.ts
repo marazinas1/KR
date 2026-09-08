@@ -9,7 +9,7 @@ import type { Database } from "@/integrations/supabase/types";
 const assertAdmin = async (ctx: { supabase: any; userId: string }) => {
   const { data, error } = await ctx.supabase.rpc("has_role", {
     _user_id: ctx.userId,
-    _role: "admin",
+    _role: "manager",
   });
   if (error) throw new Error(error.message);
   if (!data) throw new Error("Neturite administratoriaus teisių.");
@@ -323,26 +323,26 @@ export const getMyRole = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
 
     const roles = (data ?? []).map((r) => String(r.role));
-    // Hierarchy: developer > owner > administrator > tenant.
+    // Hierarchy: developer > owner > manager > tenant.
     const isDeveloper = roles.includes("developer");
     const isOwner = isDeveloper || roles.includes("owner");
-    const isAdmin = isOwner || roles.includes("administrator");
-    const isTenant = !isAdmin && roles.includes("tenant");
+    const isManager = isOwner || roles.includes("manager");
+    const isTenant = !isManager && roles.includes("tenant");
 
     // Highest role in the hierarchy, used for labels and menu gating.
     const role = isDeveloper
       ? "developer"
       : roles.includes("owner")
         ? "owner"
-        : isAdmin
-          ? "administrator"
+        : isManager
+          ? "manager"
           : isTenant
             ? "tenant"
-            : "user";
+            : "none";
 
     const email = (claims as { email?: string } | null)?.email ?? "";
 
-    return { userId, email, role, roles, isDeveloper, isOwner, isAdmin, isTenant };
+    return { userId, email, role, roles, isDeveloper, isOwner, isManager, isTenant };
   });
 
 

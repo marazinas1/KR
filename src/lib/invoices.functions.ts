@@ -8,7 +8,7 @@ export const getInvoiceForBooking = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { data: isAdmin, error: rErr } = await context.supabase.rpc("has_role", {
       _user_id: context.userId,
-      _role: "admin",
+      _role: "manager",
     });
     if (rErr) throw new Error(rErr.message);
     if (!isAdmin) throw new Error("Forbidden");
@@ -28,7 +28,7 @@ export const ensureInvoiceForBooking = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { data: isAdmin, error: rErr } = await context.supabase.rpc("has_role", {
       _user_id: context.userId,
-      _role: "admin",
+      _role: "manager",
     });
     if (rErr) throw new Error(rErr.message);
     if (!isAdmin) throw new Error("Forbidden");

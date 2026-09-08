@@ -33,14 +33,13 @@ import {
   updateUserName,
 } from "@/lib/users.functions";
 
-type InvitableRole = "owner" | "administrator" | "tenant";
+type InvitableRole = "owner" | "manager";
 
 const ROLE_LABEL_KEYS: Record<string, string> = {
   developer: "settings.users.role_developer",
   owner: "settings.users.role_owner",
-  administrator: "settings.users.role_administrator",
+  manager: "settings.users.role_manager",
   tenant: "settings.users.role_tenant",
-  user: "settings.users.roleUser",
 };
 
 function fmt(value: string | null | undefined, withTime = false) {
@@ -61,7 +60,7 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
 
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState<InvitableRole>("administrator");
+  const [role, setRole] = useState<InvitableRole>("manager");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
 
@@ -158,12 +157,7 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="owner">{t("settings.users.role_owner")}</SelectItem>
-                  <SelectItem value="administrator">
-                    {t("settings.users.role_administrator")}
-                  </SelectItem>
-                  <SelectItem value="tenant">
-                    {t("settings.users.role_tenant")}
-                  </SelectItem>
+                  <SelectItem value="manager">{t("settings.users.role_manager")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>

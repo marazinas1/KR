@@ -64,7 +64,7 @@ function ContentPage() {
   const [dirtyMap, setDirtyMap] = useState<Record<string, boolean>>({});
 
   const { data: role } = useQuery({ queryKey: ["my-role"], queryFn: () => fetchRole() });
-  const canEdit = Boolean(role?.isAdmin);
+  const canEdit = Boolean(role?.isOwner);
 
   const { data: templates, isLoading: loading } = useQuery({
     queryKey: ["content-templates"],

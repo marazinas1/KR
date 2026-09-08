@@ -36,7 +36,9 @@ Verify every policy individually with a live SQL query. Do not assume the old `i
 
 ## 3. Core data model
 
-Create `buildings`, `tenants`, `leases`, `lease_occupants`, `meters`, `meter_readings`, `utility_rates`, `charges`, `payments`, `issues`, `issue_comments`, `rental_inquiries`. Convert `properties` to `units` (add `is_listed`), `property_events` to `unit_events`, `property_documents` to `documents`, `property_settings` to `org_settings` (dropping every short-term column). Drop `bookings` and the rest listed in step 1.
+Create `buildings`, `tenants`, `leases`, `lease_occupants`, `meters`, `meter_readings`, `utility_rates`, `charges`, `payments`, `issues`, `issue_comments`, `rental_inquiries`. Convert `properties` to `units` (add `is_listed`), `property_events` to `unit_events`, `property_documents` to `documents`, `property_settings` to `org_settings` (dropping every short-term column, keeping `display_name` and the rest of the branding fields). Drop `bookings` and the rest listed in step 1.
+
+Note for step 5: the admin shell already reads its wordmark from `display_name` on the settings row (`admin.tsx`, falling back to "Deerva"). When the public site is built, it must read its wordmark from the same `org_settings.display_name` value — not a separate i18n string — so admin and public always show one name, set in one place.
 
 Add the availability computation from AGENTS.md 5.7 as a view or a server function — not a stored column — so the public site in step 5 has one source of truth to read from.
 
