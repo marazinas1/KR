@@ -1377,7 +1377,8 @@
         "paid": "Paid",
         "balance": "Balance",
         "upcoming": "Upcoming"
-      }
+      },
+      "allLeases": "All leases"
     },
     "tariffs": {
       "title": "Tariffs",

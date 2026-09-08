@@ -1377,7 +1377,8 @@
         "paid": "Sumokėta",
         "balance": "Likutis",
         "upcoming": "Būsimi"
-      }
+      },
+      "allLeases": "Visos sutartys"
     },
     "tariffs": {
       "title": "Tarifai",

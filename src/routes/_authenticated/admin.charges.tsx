@@ -48,6 +48,13 @@ export const Route = createFileRoute("/_authenticated/admin/charges")({
   }),
 });
 
+function usePrettify() {
+  const { t } = useTranslation();
+  return (d: string) =>
+    d.replace(/^(electricity_day|electricity_night|cold_water|hot_water|gas|heating)/, (m) => t(`rental.meterType.${m}`))
+     .replace(/^rent\b/, t("rental.charges.kind.rent"));
+}
+
 function shiftMonth(ym: string, delta: number) {
   const [y, m] = ym.split("-").map(Number);
   const d = new Date(Date.UTC(y, m - 1 + delta, 1));
@@ -61,6 +68,7 @@ function ChargesPage() {
   const period = search.period ?? currentPeriod().slice(0, 7);
   const tab: Tab = search.tab ?? "charges";
   const qc = useQueryClient();
+  const prettify = usePrettify();
 
   const setSearch = (patch: Partial<Search>) =>
     navigate({ search: (prev) => ({ ...prev, ...patch }), replace: true });
@@ -203,7 +211,7 @@ function ChargesPage() {
           <Select value={search.lease ?? "all"} onValueChange={(v) => setSearch({ lease: v === "all" ? undefined : v })}>
             <SelectTrigger className="w-64"><SelectValue placeholder={t("rental.charges.lease")} /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">{t("common.all")}</SelectItem>
+              <SelectItem value="all">{t("rental.charges.allLeases")}</SelectItem>
               {leases.map((l) => (
                 <SelectItem key={l.id} value={l.id}>{leaseLabel.get(l.id)}</SelectItem>
               ))}
@@ -251,7 +259,7 @@ function ChargesPage() {
                   {preview.data.lines.map((l, i) => (
                     <li key={i} className="flex justify-between gap-3">
                       <span className="truncate">
-                        {leaseLabel.get(l.lease_id) ?? l.lease_id.slice(0, 8)} · {t(`rental.charges.kind.${l.kind}`)} · {l.description}
+                        {leaseLabel.get(l.lease_id) ?? l.lease_id.slice(0, 8)} · {t(`rental.charges.kind.${l.kind}`)} · {prettify(l.description)}
                       </span>
                       <span className="tabular-nums">{formatMoney(l.amount)}</span>
                     </li>
@@ -306,7 +314,7 @@ function ChargesPage() {
                     </td>
                     <td className="p-2">{c.tenant_name}</td>
                     <td className="p-2">{t(`rental.charges.kind.${c.kind}`)}</td>
-                    <td className="p-2 text-muted-foreground">{c.description}</td>
+                    <td className="p-2 text-muted-foreground">{prettify(c.description)}</td>
                     <td className="p-2 text-right tabular-nums">{c.quantity}</td>
                     <td className="p-2 text-right tabular-nums">{c.unit_price.toFixed(4)}</td>
                     <td className="p-2 text-right font-medium tabular-nums">{formatMoney(c.amount)}</td>
