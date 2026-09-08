@@ -60,6 +60,8 @@ CREATE UNIQUE INDEX charges_one_fixed_per_lease_period_rate
   ON public.charges (lease_id, period, utility_rate_id) WHERE kind = 'fixed';
 ```
 
+The reading index is keyed on **(meter_reading_id, lease_id)**, not on the reading alone: one shared building meter legitimately produces one charge per lease in that building (section 1's split). Keying it on the reading alone would let the first lease's insert succeed and silently swallow every other lease in the building as "skipped" — those tenants would never be billed for their share. With `lease_id` included, the split works and a repeat run still cannot double-charge the same lease for the same reading. Same principle as `charges_one_fixed_per_lease_period_rate`.
+
 Generation inserts with `ON CONFLICT DO NOTHING` and reports `created` / `skipped (already existed)` / `blocked`. Re-running a period is therefore safe and idempotent by construction, not by a TypeScript "did I already do this" check. `one_off` and `penalty` charges are hand-added and intentionally unconstrained.
 
 An already-invoiced charge (`invoice_id IS NOT NULL`) can never be edited or deleted — enforced in the server function and stated in the UI.
