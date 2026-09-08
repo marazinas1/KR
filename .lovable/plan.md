@@ -9,30 +9,39 @@ Today there are already **two** implementations of "when is this unit free", and
 | `public_vacancies` view (SQL) | `end_date + 1` | not computed |
 | `listUnits` in `units.functions.ts` (TS) | `end_date` | max end_date of expired/terminated leases, else `units.created_at` |
 
-The dashboard will **not** add a third. Instead this step introduces one canonical SQL view and points everything at it:
+The dashboard will **not** add a third. One shared calculation, but **no view stacked on another view** — `security_invoker` is a per-view property fixed at that view's own rewrite, not inherited, so an invoker view read through a definer view would evaluate `units`/`leases` RLS as `anon` and silently return nothing to public visitors. Instead the logic lives in a **SQL function** that both views call directly against the base tables:
 
 ```text
-public.unit_availability   (security_invoker = true → RLS of units/leases applies:
-                            managers see all units, tenants only their own)
-  unit_id, status, is_active, is_listed,
-  holding_lease_id, holding_tenant_id, holding_start_date, holding_end_date, holding_renewal,
-  has_future_lease            -- draft/active/ending lease with start_date > CURRENT_DATE
-  available_from              -- CASE status='vacant' → CURRENT_DATE
-                              --      status='occupied' AND holding_renewal=false AND holding_end_date IS NOT NULL
-                              --                       → holding_end_date + 1
-                              --      ELSE NULL
-  vacant_since                -- status='vacant' → COALESCE(max(end_date) of expired/terminated leases, created_at::date)
-  vacant_days                 -- CURRENT_DATE - vacant_since (NULL when not vacant)
+public.unit_availability_calc(
+  _status text, _created_at date,
+  _holding_end_date date, _holding_renewal boolean,
+  _last_finished_end date
+) RETURNS TABLE (available_from date, vacant_since date, vacant_days integer)
+LANGUAGE sql IMMUTABLE-in-spirit (STABLE, reads CURRENT_DATE), no table access,
+SET search_path = public
+
+available_from := CASE
+    WHEN _status = 'vacant' THEN CURRENT_DATE
+    WHEN _status = 'occupied' AND _holding_renewal = false AND _holding_end_date IS NOT NULL
+         THEN _holding_end_date + 1
+    ELSE NULL END
+vacant_since := CASE WHEN _status = 'vacant'
+    THEN COALESCE(_last_finished_end, _created_at) ELSE NULL END
+vacant_days  := CASE WHEN _status = 'vacant'
+    THEN CURRENT_DATE - COALESCE(_last_finished_end, _created_at) ELSE NULL END
 ```
 
-Holding lease = `status IN ('active','ending') AND start_date <= CURRENT_DATE AND (end_date IS NULL OR end_date >= CURRENT_DATE)`, ordered by `end_date NULLS LAST`, limit 1 — identical to `HOLDING_LEASE_STATUSES` logic in TS and to the LATERAL in the current view.
+The function touches **no tables**, so it has no RLS behaviour of its own and is safe to grant to `anon` and `authenticated`. Each caller does its own row selection under its own security model:
 
-Then:
-- `public_vacancies` is re-created as `SELECT ... FROM units u JOIN unit_availability a USING (unit_id) LEFT JOIN buildings ... WHERE u.is_active AND u.is_listed AND a.available_from IS NOT NULL AND NOT a.has_future_lease` (still `security_invoker = off`, still granted to anon). Its output columns stay byte-identical so step 5 code needs no change.
-- `listUnits` drops its TS recomputation and reads `vacant_days`, `available_from`, `holding_*` from `unit_availability` (one extra query, join in TS by `unit_id`).
-- The dashboard reads the same view.
+- `public.unit_availability` — `security_invoker = true`, selects `units` + LATERAL holding lease + LATERAL last finished lease + `has_future_lease` **from the base tables**, and passes those scalars into `unit_availability_calc(...)`. Managers see all rows, tenants only their own. Used by the dashboard and `listUnits`.
+- `public.public_vacancies` — recreated with `security_invoker = off` (unchanged), also reading `units`/`leases`/`buildings` **directly from the base tables** and calling the same function. It does **not** read `unit_availability`. Output columns stay byte-identical, so step 5 code needs no change.
 
-**Decision to confirm:** the canonical date becomes `end_date + 1` (the day after the last contracted day — what the public site already shows). `listUnits` currently shows `end_date`; it will change by one day. Say so if you want `end_date` instead; the view is the only place to change it.
+Holding lease = `status IN ('active','ending') AND start_date <= CURRENT_DATE AND (end_date IS NULL OR end_date >= CURRENT_DATE)`, ordered by `end_date NULLS LAST`, limit 1 — identical to `HOLDING_LEASE_STATUSES` in TS and to the existing LATERAL. Last finished end = `max(end_date)` over `status IN ('expired','terminated')`. `has_future_lease` = exists `status IN ('draft','active','ending') AND start_date > CURRENT_DATE`. Both views repeat this row-selection SQL (it is the part that must run under different security models); only the date arithmetic is shared — that is exactly the piece that drifted.
+
+`listUnits` drops its TS recomputation and reads `vacant_days`, `available_from`, `holding_*` from `unit_availability`.
+
+**Decision to confirm:** the canonical date becomes `end_date + 1` (the day after the last contracted day — what the public site already shows). `listUnits` currently shows `end_date`; it will change by one day. Say so if you want `end_date` instead; the function is the only place to change it.
+
 
 ## 1. Cards and their exact logic
 
@@ -101,14 +110,15 @@ Implemented in TS over `charges` + `payments` selects (same arithmetic as `getMy
 
 ## 3. Technical details
 
-- Migration: `CREATE VIEW public.unit_availability (security_invoker=true)`; `GRANT SELECT TO authenticated`; `DROP VIEW public_vacancies; CREATE VIEW public_vacancies ... security_invoker=off` on top of it; `GRANT SELECT TO anon, authenticated`; `COMMENT ON VIEW` documenting the `end_date + 1` rule. No table changes, no data.
+- Migration: `CREATE FUNCTION public.unit_availability_calc(...)` (STABLE, no table access, `SET search_path = public`, `GRANT EXECUTE TO anon, authenticated`, `COMMENT ON FUNCTION` documenting the `end_date + 1` rule and that this is the only place the date is computed); `CREATE VIEW public.unit_availability` with `security_invoker = true` reading base tables, `GRANT SELECT TO authenticated`; `DROP VIEW public_vacancies; CREATE VIEW public_vacancies` with `security_invoker = off`, also reading base tables and calling the same function, `GRANT SELECT TO anon, authenticated`. Neither view reads the other. No table changes, no data.
 - Files: new `dashboard.functions.ts`, `admin.issues.tsx`, `DashboardCard.tsx`; edits to `admin.index.tsx`, `admin.units.index.tsx`, `admin.inquiries.tsx`, `admin.tsx` (nav), `units.functions.ts`, `rental.ts`, `tenant-portal.functions.ts` (import `currentPeriod` from `rental.ts`), locale files.
 - Roles: `getDashboard` and `listIssues` require manager; tenants hitting `/admin` are already redirected.
 
 ## 4. Verification (real output will be printed)
 
-1. `pg_views` definition of `unit_availability` and new `public_vacancies`; `SELECT ... FROM public_vacancies` as anon returns HTTP 200 (nested definer→invoker view works for anon).
+1. Printed `pg_get_viewdef` of both views and `pg_proc` definition of the function; then an **anonymous** HTTP read of `public_vacancies` printing the **actual row count and rows**, matching the fixture exactly (not just a 200 — an empty array would mean silent breakage). A second anonymous read confirms `unit_availability` is NOT reachable by anon (permission denied).
 2. Fixture: one vacant unit (created 12 days ago), one occupied with `renewal=false, end_date = today+20`, one occupied open-ended, one with a future draft lease. Print `unit_availability`, `public_vacancies`, `listUnits` output side by side — identical `available_from` / `vacant_days` in all three.
+
 3. Expiring buckets: leases at +20, +45, +80, +95 days → counts 1/1/1, the +95 excluded.
 4. Missing readings: 2 active meters, one reading submitted → card "1 of 2".
 5. Debtors: charge 100 + payment 40 → balance 60 shown; lease with 0 balance excluded.
