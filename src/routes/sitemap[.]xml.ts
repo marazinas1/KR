@@ -3,8 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SITE_URL } from "@/data/nav";
 import { localizePath } from "@/lib/locale";
 
-/** Public surface paths that currently exist. Extended in step 5. */
-const STATIC_PATHS = ["/"];
+/** Public surface paths. Unit pages are added from the live vacancy view. */
+const STATIC_PATHS = ["/", "/butai", "/kontaktai"];
 
 function urlEntry(path: string) {
   const lt = `${SITE_URL}${localizePath(path, "lt")}`;
@@ -22,11 +22,19 @@ function urlEntry(path: string) {
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: () => {
+      GET: async () => {
+        let unitPaths: string[] = [];
+        try {
+          const { listVacancies } = await import("@/lib/public-vacancies.functions");
+          const units = await listVacancies();
+          unitPaths = units.map((u) => `/butai/${u.id}`);
+        } catch {
+          unitPaths = [];
+        }
         const body = [
           '<?xml version="1.0" encoding="UTF-8"?>',
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
-          ...STATIC_PATHS.map(urlEntry),
+          ...[...STATIC_PATHS, ...unitPaths].map(urlEntry),
           "</urlset>",
         ].join("\n");
         return new Response(body, {

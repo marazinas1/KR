@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
 import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
 import { LocaleLink } from "@/components/site/LocaleLink";
 import { mainNav } from "@/data/nav";
+import { publicOrgQuery } from "@/lib/public-queries";
 import { localeFromPath } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
 /**
- * Site chrome for the public surface. The wordmark is a neutral placeholder —
- * the real display name comes from org settings once that module exists.
+ * Site chrome for the public surface. The wordmark is the display name from
+ * org settings — never hardcoded, so a clone only changes one setting.
  */
 export function SiteHeader() {
   const { i18n } = useTranslation();
@@ -19,7 +21,13 @@ export function SiteHeader() {
   // Fixed to the URL locale so SSR and client render identical text.
   const t = i18n.getFixedT(locale);
   const [scrolled, setScrolled] = useState(false);
-  const links = mainNav(t("site.nav.home"));
+  const { data: org } = useQuery(publicOrgQuery);
+  const brand = org?.displayName || t("site.brand");
+  const links = mainNav({
+    home: t("site.nav.home"),
+    units: t("site.nav.units"),
+    contacts: t("site.nav.contacts"),
+  });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -41,10 +49,10 @@ export function SiteHeader() {
           to="/"
           className="font-mono text-sm font-semibold uppercase tracking-[0.18em] text-foreground"
         >
-          {t("site.brand")}
+          {brand}
         </LocaleLink>
 
-        <nav aria-label="Main" className="flex items-center gap-6 text-sm">
+        <nav aria-label="Main" className="flex items-center gap-4 text-sm sm:gap-6">
           {links.map((item) =>
             "to" in item ? (
               <LocaleLink

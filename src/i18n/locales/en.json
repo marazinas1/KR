@@ -922,7 +922,9 @@
     },
     "nav": {
       "admin": "Admin",
-      "home": "Home"
+      "home": "Home",
+      "units": "Listings",
+      "contacts": "Contacts"
     }
   },
   "staff": {
@@ -1014,7 +1016,8 @@
   "rental": {
     "nav": {
       "units": "Units",
-      "tenants": "Tenants"
+      "tenants": "Tenants",
+      "inquiries": "Inquiries"
     },
     "tabs": {
       "overview": "Overview",
@@ -1252,6 +1255,127 @@
     },
     "timeline": {
       "empty": "No events."
+    },
+    "inquiries": {
+      "title": "Rental inquiries",
+      "lead": "Inquiries submitted from the public site.",
+      "filterOpen": "Open",
+      "filterAll": "All",
+      "empty": "No inquiries yet.",
+      "received": "Received",
+      "person": "Contact",
+      "unit": "Unit",
+      "moveIn": "Move-in",
+      "status": "Status",
+      "convert": "Convert",
+      "convertTitle": "Create draft lease",
+      "createDraft": "Create draft",
+      "pickUnit": "Choose a unit",
+      "tenant": "Tenant",
+      "newTenant": "New tenant from this inquiry",
+      "transactionNote": "Tenant and lease are created in one step: if the dates overlap, nothing is created.",
+      "statusSaved": "Status updated",
+      "converted": "Draft lease created",
+      "overlap": "Dates overlap another lease for this unit.",
+      "alreadyConverted": "Converted",
+      "state": {
+        "new": "New",
+        "contacted": "Contacted",
+        "viewing_scheduled": "Viewing scheduled",
+        "converted": "Converted",
+        "dismissed": "Dismissed"
+      }
+    }
+  },
+  "public": {
+    "rooms": "{{count}} rooms",
+    "rooms_one": "{{count}} room",
+    "rooms_other": "{{count}} rooms",
+    "floorShort": "floor {{floor}}",
+    "availableNow": "Available now",
+    "availableFrom": "From {{date}}",
+    "status": {
+      "available": "Available",
+      "soon": "From {{date}}",
+      "occupied": "Occupied"
+    },
+    "board": {
+      "title": "Current vacancies",
+      "live": "Updated live",
+      "code": "No.",
+      "location": "Unit",
+      "type": "Type",
+      "rent": "Rent",
+      "state": "State",
+      "empty": "No vacancies at the moment.",
+      "footer": "Units listed: {{count}}"
+    },
+    "home": {
+      "kicker": "Long-term rental",
+      "title": "Flats and rooms available for long-term rent",
+      "lead": "The list is generated from the current lease data, so every move-in date shown is real, not an estimate.",
+      "ctaList": "See listings",
+      "ctaContact": "Get in touch",
+      "statFree": "Free now",
+      "statSoon": "Coming free",
+      "points": {
+        "clear": {
+          "title": "Clear terms",
+          "text": "Monthly rent, deposit and lease length are stated up front — no hidden fees."
+        },
+        "direct": {
+          "title": "Straight from the owner",
+          "text": "You deal with the owner directly, with no agency fee in between."
+        },
+        "care": {
+          "title": "Maintained units",
+          "text": "Faults are logged and tracked in the tenant portal, not remembered from a phone call."
+        }
+      }
+    },
+    "list": {
+      "title": "Rental listings",
+      "lead": "Flats and rooms available now or shortly.",
+      "search": "Search by name, address or number",
+      "filter": {
+        "all": "All",
+        "available": "Available now",
+        "soon": "Coming free"
+      }
+    },
+    "detail": {
+      "rent": "Monthly rent",
+      "deposit": "Deposit",
+      "rooms": "Rooms",
+      "area": "Area",
+      "floor": "Floor",
+      "available": "Available",
+      "backToList": "Back to listings",
+      "goneTitle": "This unit is no longer listed",
+      "goneText": "It has been rented out or removed from the public listing."
+    },
+    "inquiry": {
+      "title": "Rental inquiry",
+      "lead": "Leave your details and we will arrange a viewing.",
+      "name": "Full name",
+      "phone": "Phone",
+      "email": "Email",
+      "moveIn": "Preferred move-in date",
+      "message": "Message",
+      "submit": "Send inquiry",
+      "sending": "Sending…",
+      "contactHint": "Give at least a phone number or an email.",
+      "contactRequired": "Please give a phone number or an email.",
+      "failed": "Could not send. Please try again.",
+      "thanksTitle": "Inquiry received",
+      "thanksText": "Your inquiry has been recorded and is visible to the owners."
+    },
+    "contacts": {
+      "title": "Contacts",
+      "lead": "Questions about renting, viewings or the lease.",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address"
     }
   }
 }

@@ -922,7 +922,9 @@
     },
     "nav": {
       "admin": "Administravimas",
-      "home": "Pradžia"
+      "home": "Pradžia",
+      "units": "Butai",
+      "contacts": "Kontaktai"
     }
   },
   "staff": {
@@ -1014,7 +1016,8 @@
   "rental": {
     "nav": {
       "units": "Butai",
-      "tenants": "Nuomininkai"
+      "tenants": "Nuomininkai",
+      "inquiries": "Užklausos"
     },
     "tabs": {
       "overview": "Apžvalga",
@@ -1252,6 +1255,128 @@
     },
     "timeline": {
       "empty": "Įvykių nėra."
+    },
+    "inquiries": {
+      "title": "Nuomos užklausos",
+      "lead": "Užklausos iš viešo puslapio.",
+      "filterOpen": "Neuždarytos",
+      "filterAll": "Visos",
+      "empty": "Užklausų nėra.",
+      "received": "Gauta",
+      "person": "Kontaktas",
+      "unit": "Objektas",
+      "moveIn": "Įsikraustymas",
+      "status": "Būsena",
+      "convert": "Konvertuoti",
+      "convertTitle": "Sukurti sutarties juodraštį",
+      "createDraft": "Sukurti juodraštį",
+      "pickUnit": "Pasirinkite objektą",
+      "tenant": "Nuomininkas",
+      "newTenant": "Naujas nuomininkas iš užklausos",
+      "transactionNote": "Nuomininkas ir sutartis kuriami vienu veiksmu: jei datos persidengia, nesukuriama nieko.",
+      "statusSaved": "Būsena atnaujinta",
+      "converted": "Sukurtas sutarties juodraštis",
+      "overlap": "Datos persidengia su kita to objekto sutartimi.",
+      "alreadyConverted": "Konvertuota",
+      "state": {
+        "new": "Nauja",
+        "contacted": "Susisiekta",
+        "viewing_scheduled": "Apžiūra suplanuota",
+        "converted": "Konvertuota",
+        "dismissed": "Atmesta"
+      }
+    }
+  },
+  "public": {
+    "rooms": "{{count}} kamb.",
+    "rooms_one": "{{count}} kamb.",
+    "rooms_few": "{{count}} kamb.",
+    "rooms_other": "{{count}} kamb.",
+    "floorShort": "{{floor}} aukštas",
+    "availableNow": "Laisvas dabar",
+    "availableFrom": "Nuo {{date}}",
+    "status": {
+      "available": "Laisvas",
+      "soon": "Nuo {{date}}",
+      "occupied": "Išnuomotas"
+    },
+    "board": {
+      "title": "Laisvi objektai",
+      "live": "Atnaujinama realiu laiku",
+      "code": "Nr.",
+      "location": "Objektas",
+      "type": "Tipas",
+      "rent": "Nuoma",
+      "state": "Būsena",
+      "empty": "Šiuo metu laisvų objektų nėra.",
+      "footer": "Iš viso objektų: {{count}}"
+    },
+    "home": {
+      "kicker": "Ilgalaikė nuoma",
+      "title": "Laisvi butai ir kambariai ilgalaikei nuomai",
+      "lead": "Sąrašas atnaujinamas automatiškai pagal galiojančias sutartis, todėl kiekvieno objekto atsilaisvinimo data yra tikra, o ne apytikslė.",
+      "ctaList": "Žiūrėti objektus",
+      "ctaContact": "Susisiekti",
+      "statFree": "Laisva dabar",
+      "statSoon": "Atsilaisvina netrukus",
+      "points": {
+        "clear": {
+          "title": "Aiškios sąlygos",
+          "text": "Mėnesio nuoma, depozitas ir sutarties trukmė nurodomi iš karto — be paslėptų mokesčių."
+        },
+        "direct": {
+          "title": "Tiesiogiai iš savininko",
+          "text": "Bendraujate su savininku, be tarpininkų ir be tarpininkavimo mokesčio."
+        },
+        "care": {
+          "title": "Prižiūrimi objektai",
+          "text": "Gedimai registruojami ir sprendžiami per nuomininko paskyrą, ne telefonu iš atminties."
+        }
+      }
+    },
+    "list": {
+      "title": "Nuomojami objektai",
+      "lead": "Laisvi ir netrukus atsilaisvinantys butai bei kambariai.",
+      "search": "Ieškoti pagal pavadinimą, adresą ar numerį",
+      "filter": {
+        "all": "Visi",
+        "available": "Laisvi dabar",
+        "soon": "Atsilaisvina"
+      }
+    },
+    "detail": {
+      "rent": "Mėnesio nuoma",
+      "deposit": "Depozitas",
+      "rooms": "Kambariai",
+      "area": "Plotas",
+      "floor": "Aukštas",
+      "available": "Atsilaisvina",
+      "backToList": "Grįžti į sąrašą",
+      "goneTitle": "Objektas nebepasiekiamas",
+      "goneText": "Šis objektas jau išnuomotas arba pašalintas iš viešo sąrašo."
+    },
+    "inquiry": {
+      "title": "Nuomos užklausa",
+      "lead": "Palikite kontaktus — susisieksime dėl apžiūros.",
+      "name": "Vardas, pavardė",
+      "phone": "Telefonas",
+      "email": "El. paštas",
+      "moveIn": "Pageidaujama įsikraustymo data",
+      "message": "Žinutė",
+      "submit": "Siųsti užklausą",
+      "sending": "Siunčiama…",
+      "contactHint": "Nurodykite bent telefoną arba el. paštą.",
+      "contactRequired": "Nurodykite telefoną arba el. paštą.",
+      "failed": "Nepavyko išsiųsti. Bandykite dar kartą.",
+      "thanksTitle": "Užklausa gauta",
+      "thanksText": "Užklausa užregistruota ir matoma savininkams."
+    },
+    "contacts": {
+      "title": "Kontaktai",
+      "lead": "Klausimai dėl nuomos, apžiūros ar sutarties.",
+      "phone": "Telefonas",
+      "email": "El. paštas",
+      "address": "Adresas"
     }
   }
 }
