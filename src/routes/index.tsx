@@ -1,26 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { HomePage } from "@/pages/public/HomePage";
+import { publicOrgQuery, vacanciesQuery } from "@/lib/public-queries";
 import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   head: () =>
     pageHead({
       path: "/",
-      title: "Nuomos objektai — laisvi butai ir kambariai",
+      title: "Ilgalaikė butų ir kambarių nuoma — laisvi objektai",
       description:
-        "Vieša laisvų ilgalaikės nuomos butų ir kambarių pasiūla. Objektų sąrašas ruošiamas.",
+        "Laisvi ir netrukus atsilaisvinantys ilgalaikės nuomos butai bei kambariai su tikslia atsilaisvinimo data ir mėnesio nuomos kaina.",
       locale: "lt",
     }),
-  component: HomePlaceholder,
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(vacanciesQuery),
+      context.queryClient.ensureQueryData(publicOrgQuery),
+    ]);
+  },
+  component: () => <HomePage locale="lt" />,
 });
-
-function HomePlaceholder() {
-  return (
-    <section className="mx-auto flex min-h-[60vh] max-w-[84rem] flex-col justify-center px-6 py-24 lg:px-12">
-      <h1 className="text-3xl font-semibold text-foreground">Nuomos objektai</h1>
-      <p className="mt-4 max-w-xl text-muted-foreground">
-        Vieša laisvų butų ir kambarių pasiūla bus paskelbta netrukus.
-      </p>
-    </section>
-  );
-}
