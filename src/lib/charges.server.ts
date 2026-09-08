@@ -63,8 +63,24 @@ export type ChargePreview = {
   total: number;
 };
 
-const r2 = (n: number) => Math.round(n * 100) / 100;
+/** Display-only 3dp for quantities — never used for money. */
 const r3 = (n: number) => Math.round(n * 1000) / 1000;
+
+/** One money product to be rounded by Postgres: round(a*b/div, 2) in numeric. */
+export type MoneyProduct = { a: string | number; b: string | number; div?: number };
+
+/** Sums cents that are already 2dp; exact because inputs are 2dp multiples. */
+const sumCents = (xs: number[]) => xs.reduce((s, x) => s + Math.round(x * 100), 0) / 100;
+
+/** Batch rounding authority — see header comment. */
+export async function roundMoneyProducts(db: Db, items: MoneyProduct[]): Promise<number[]> {
+  if (items.length === 0) return [];
+  const { data, error } = await db.rpc("round_money_products", { _items: items });
+  if (error) throw new Error(error.message);
+  const out = (data as unknown as (string | number)[]).map(Number);
+  if (out.length !== items.length) throw new Error("RoundingCountMismatch");
+  return out;
+}
 
 export function normalizePeriod(period: string): string {
   if (!/^\d{4}-\d{2}(-\d{2})?$/.test(period)) throw new Error("InvalidPeriod");
@@ -82,19 +98,17 @@ function dayDiffInclusive(a: string, b: string) {
   return Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86_400_000) + 1;
 }
 
-/** Exported for the pro-rating verification. */
-export function rentForPeriod(
-  monthlyRent: number,
+/** Covered-day window of a lease inside a period; the money itself is rounded in SQL. */
+export function rentCoverage(
   leaseStart: string,
   leaseEnd: string | null,
   period: string,
-): { amount: number; coveredFrom: string; coveredTo: string; days: number; daysInMonth: number } {
+): { coveredFrom: string; coveredTo: string; days: number; daysInMonth: number } {
   const { start, end, daysInMonth } = monthBounds(period);
   const coveredFrom = leaseStart > start ? leaseStart : start;
   const coveredTo = leaseEnd && leaseEnd < end ? leaseEnd : end;
   const days = Math.max(0, dayDiffInclusive(coveredFrom, coveredTo));
-  const amount = days >= daysInMonth ? r2(monthlyRent) : r2((monthlyRent * days) / daysInMonth);
-  return { amount, coveredFrom, coveredTo, days, daysInMonth };
+  return { coveredFrom, coveredTo, days, daysInMonth };
 }
 
 /** Largest-remainder split of `total` (2dp) into n parts that sum exactly. */
@@ -114,7 +128,8 @@ type Lease = {
   unit_id: string;
   start_date: string;
   end_date: string | null;
-  monthly_rent: number;
+  /** raw numeric string from the DB — passed to SQL untouched */
+  monthly_rent: string;
 };
 
 export async function previewPeriodCharges(db: Db, rawPeriod: string): Promise<ChargePreview> {
