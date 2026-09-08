@@ -6,9 +6,19 @@
  *   fixed:   one row per (lease, period, rate) when rate.fixed_monthly > 0
  *   rent:    monthly_rent, pro-rated by days when the lease starts/ends inside the month
  *
+ * ROUNDING: every money product is rounded by Postgres `round_money_products()`
+ * in `numeric` (half away from zero). Raw DB strings ("0.2345", "150.000") are
+ * sent as-is, so 0.2345 × 150 = 35.175 → 35.18, not the float artefact 35.17.
+ * JS never multiplies money; it only splits already-rounded cents (integers).
+ *
  * Shared (building) meters: the reading's cost is split equally across the
  * leases holding units in that building during the period (largest-remainder,
  * so the per-lease cents always sum to the full cost).
+ *
+ * The rate's fixed_monthly fee for a shared meter is split the SAME way — it is
+ * one subscription fee per meter, not per tenant, so three leases on one
+ * building water meter pay 0.50 + 0.50 + 0.50 of a 1.50 fee, not 1.50 each.
+ * A lease whose OWN unit meter uses the same rate pays the full fee.
  *
  * A reading with no effective tariff is reported as a BLOCKED line — nothing is
  * written for it, never a zero-amount substitute.
