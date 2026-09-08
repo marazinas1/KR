@@ -1,0 +1,23 @@
+REVOKE ALL ON public.tenants FROM anon;
+REVOKE ALL ON public.tenant_identity FROM anon;
+REVOKE ALL ON public.leases FROM anon;
+REVOKE ALL ON public.lease_occupants FROM anon;
+REVOKE ALL ON public.meters FROM anon;
+REVOKE ALL ON public.meter_readings FROM anon;
+REVOKE ALL ON public.utility_rates FROM anon;
+REVOKE ALL ON public.charges FROM anon;
+REVOKE ALL ON public.payments FROM anon;
+REVOKE ALL ON public.invoices FROM anon;
+REVOKE ALL ON public.issues FROM anon;
+REVOKE ALL ON public.issue_comments FROM anon;
+REVOKE ALL ON public.documents FROM anon;
+REVOKE ALL ON public.buildings FROM anon;
+REVOKE ALL ON public.unit_events FROM anon;
+REVOKE ALL ON public.org_settings FROM anon;
+REVOKE ALL ON public.expenses FROM anon;
+REVOKE ALL ON public.property_investments FROM anon;
+REVOKE ALL ON public.property_maintenance FROM anon;
+REVOKE ALL ON public.rental_inquiries FROM anon;
+
+GRANT INSERT ON public.rental_inquiries TO anon;
+GRANT SELECT ON public.public_vacancies TO anon;
