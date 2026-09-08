@@ -26,10 +26,13 @@ import { Route as AuthenticatedAdminExpensesRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminHousekeepingRouteImport } from './routes/_authenticated/admin.housekeeping'
 import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin.invoices'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
+import { Route as AuthenticatedAdminTenantsRouteImport } from './routes/_authenticated/admin.tenants'
+import { Route as AuthenticatedAdminUnitsRouteImport } from './routes/_authenticated/admin.units'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedStaffIndexRouteImport } from './routes/_authenticated/staff.index'
 import { Route as AuthenticatedStaffIdRouteImport } from './routes/_authenticated/staff.$id'
 import { Route as ApiPublicNotificationsCronRouteImport } from './routes/api/public/notifications-cron'
+import { Route as AuthenticatedAdminUnitsIdRouteImport } from './routes/_authenticated/admin.units.$id'
 import { Route as ApiPublicV1LegalRouteImport } from './routes/api/public/v1/legal'
 import { Route as ApiPublicV1PaymentDetailsRouteImport } from './routes/api/public/v1/payment-details'
 import { Route as ApiPublicV1PropertiesRouteImport } from './routes/api/public/v1/properties'
@@ -132,6 +135,17 @@ const AuthenticatedAdminSettingsRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminTenantsRoute =
+  AuthenticatedAdminTenantsRouteImport.update({
+    id: '/tenants',
+    path: '/tenants',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminUnitsRoute = AuthenticatedAdminUnitsRouteImport.update({
+  id: '/units',
+  path: '/units',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -152,6 +166,12 @@ const ApiPublicNotificationsCronRoute =
     id: '/api/public/notifications-cron',
     path: '/api/public/notifications-cron',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedAdminUnitsIdRoute =
+  AuthenticatedAdminUnitsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminUnitsRoute,
   } as any)
 const ApiPublicV1LegalRoute = ApiPublicV1LegalRouteImport.update({
   id: '/api/public/v1/legal',
@@ -223,11 +243,14 @@ export interface FileRoutesByFullPath {
   '/admin/housekeeping': typeof AuthenticatedAdminHousekeepingRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/tenants': typeof AuthenticatedAdminTenantsRoute
+  '/admin/units': typeof AuthenticatedAdminUnitsRouteWithChildren
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/staff/$id': typeof AuthenticatedStaffIdRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/staff/': typeof AuthenticatedStaffIndexRoute
+  '/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
   '/api/public/v1/properties': typeof ApiPublicV1PropertiesRouteWithChildren
@@ -252,11 +275,14 @@ export interface FileRoutesByTo {
   '/admin/housekeeping': typeof AuthenticatedAdminHousekeepingRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/tenants': typeof AuthenticatedAdminTenantsRoute
+  '/admin/units': typeof AuthenticatedAdminUnitsRouteWithChildren
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/staff/$id': typeof AuthenticatedStaffIdRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/staff': typeof AuthenticatedStaffIndexRoute
+  '/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
   '/api/public/v1/properties': typeof ApiPublicV1PropertiesRouteWithChildren
@@ -286,11 +312,14 @@ export interface FileRoutesById {
   '/_authenticated/admin/housekeeping': typeof AuthenticatedAdminHousekeepingRoute
   '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/_authenticated/admin/tenants': typeof AuthenticatedAdminTenantsRoute
+  '/_authenticated/admin/units': typeof AuthenticatedAdminUnitsRouteWithChildren
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/staff/$id': typeof AuthenticatedStaffIdRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/staff/': typeof AuthenticatedStaffIndexRoute
+  '/_authenticated/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
   '/api/public/v1/properties': typeof ApiPublicV1PropertiesRouteWithChildren
@@ -320,11 +349,14 @@ export interface FileRouteTypes {
     | '/admin/housekeeping'
     | '/admin/invoices'
     | '/admin/settings'
+    | '/admin/tenants'
+    | '/admin/units'
     | '/admin/users'
     | '/staff/$id'
     | '/api/public/notifications-cron'
     | '/admin/'
     | '/staff/'
+    | '/admin/units/$id'
     | '/api/public/v1/legal'
     | '/api/public/v1/payment-details'
     | '/api/public/v1/properties'
@@ -349,11 +381,14 @@ export interface FileRouteTypes {
     | '/admin/housekeeping'
     | '/admin/invoices'
     | '/admin/settings'
+    | '/admin/tenants'
+    | '/admin/units'
     | '/admin/users'
     | '/staff/$id'
     | '/api/public/notifications-cron'
     | '/admin'
     | '/staff'
+    | '/admin/units/$id'
     | '/api/public/v1/legal'
     | '/api/public/v1/payment-details'
     | '/api/public/v1/properties'
@@ -382,11 +417,14 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/housekeeping'
     | '/_authenticated/admin/invoices'
     | '/_authenticated/admin/settings'
+    | '/_authenticated/admin/tenants'
+    | '/_authenticated/admin/units'
     | '/_authenticated/admin/users'
     | '/_authenticated/staff/$id'
     | '/api/public/notifications-cron'
     | '/_authenticated/admin/'
     | '/_authenticated/staff/'
+    | '/_authenticated/admin/units/$id'
     | '/api/public/v1/legal'
     | '/api/public/v1/payment-details'
     | '/api/public/v1/properties'
@@ -534,6 +572,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/tenants': {
+      id: '/_authenticated/admin/tenants'
+      path: '/tenants'
+      fullPath: '/admin/tenants'
+      preLoaderRoute: typeof AuthenticatedAdminTenantsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/units': {
+      id: '/_authenticated/admin/units'
+      path: '/units'
+      fullPath: '/admin/units'
+      preLoaderRoute: typeof AuthenticatedAdminUnitsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/users': {
       id: '/_authenticated/admin/users'
       path: '/users'
@@ -561,6 +613,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/notifications-cron'
       preLoaderRoute: typeof ApiPublicNotificationsCronRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin/units/$id': {
+      id: '/_authenticated/admin/units/$id'
+      path: '/$id'
+      fullPath: '/admin/units/$id'
+      preLoaderRoute: typeof AuthenticatedAdminUnitsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminUnitsRoute
     }
     '/api/public/v1/legal': {
       id: '/api/public/v1/legal'
@@ -635,6 +694,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminUnitsRouteChildren {
+  AuthenticatedAdminUnitsIdRoute: typeof AuthenticatedAdminUnitsIdRoute
+}
+
+const AuthenticatedAdminUnitsRouteChildren: AuthenticatedAdminUnitsRouteChildren =
+  {
+    AuthenticatedAdminUnitsIdRoute: AuthenticatedAdminUnitsIdRoute,
+  }
+
+const AuthenticatedAdminUnitsRouteWithChildren =
+  AuthenticatedAdminUnitsRoute._addFileChildren(
+    AuthenticatedAdminUnitsRouteChildren,
+  )
+
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
   AuthenticatedAdminContentRoute: typeof AuthenticatedAdminContentRoute
@@ -643,6 +716,8 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminHousekeepingRoute: typeof AuthenticatedAdminHousekeepingRoute
   AuthenticatedAdminInvoicesRoute: typeof AuthenticatedAdminInvoicesRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
+  AuthenticatedAdminTenantsRoute: typeof AuthenticatedAdminTenantsRoute
+  AuthenticatedAdminUnitsRoute: typeof AuthenticatedAdminUnitsRouteWithChildren
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -655,6 +730,8 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminHousekeepingRoute: AuthenticatedAdminHousekeepingRoute,
   AuthenticatedAdminInvoicesRoute: AuthenticatedAdminInvoicesRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
+  AuthenticatedAdminTenantsRoute: AuthenticatedAdminTenantsRoute,
+  AuthenticatedAdminUnitsRoute: AuthenticatedAdminUnitsRouteWithChildren,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
