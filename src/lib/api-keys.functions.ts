@@ -3,9 +3,9 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 async function assertAdmin(supabase: {
-  rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" }) => Promise<{ data: unknown }>;
+  rpc: (fn: "has_role", args: { _user_id: string; _role: "owner" }) => Promise<{ data: unknown }>;
 }, userId: string) {
-  const { data } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+  const { data } = await supabase.rpc("has_role", { _user_id: userId, _role: "owner" });
   if (data !== true) throw new Error("Neturite administratoriaus teisių.");
 }
 

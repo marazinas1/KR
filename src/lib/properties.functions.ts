@@ -9,7 +9,7 @@ import type { Database } from "@/integrations/supabase/types";
 const assertAdmin = async (ctx: { supabase: any; userId: string }) => {
   const { data, error } = await ctx.supabase.rpc("has_role", {
     _user_id: ctx.userId,
-    _role: "admin",
+    _role: "manager",
   });
   if (error) throw new Error(error.message);
   if (!data) throw new Error("Neturite administratoriaus teisių.");

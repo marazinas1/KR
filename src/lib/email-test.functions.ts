@@ -6,7 +6,7 @@ import { resolveFromAddress } from "@/lib/email-from";
 async function assertAdmin(ctx: { supabase: any; userId: string }) {
   const { data, error } = await ctx.supabase.rpc("has_role", {
     _user_id: ctx.userId,
-    _role: "admin",
+    _role: "owner",
   });
   if (error) throw new Error("Nepavyko patikrinti teisių.");
   if (!data) throw new Error("Neturite teisių atlikti šį veiksmą.");

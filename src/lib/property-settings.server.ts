@@ -14,7 +14,7 @@ export function sectionToColumns(values: Record<string, unknown>) {
 export async function assertSettingsAdmin(ctx: { supabase: any; userId: string }) {
   const { data, error } = await ctx.supabase.rpc("has_role", {
     _user_id: ctx.userId,
-    _role: "admin",
+    _role: "owner",
   });
   if (error) {
     console.error("[property-settings:has_role]", error.message);
