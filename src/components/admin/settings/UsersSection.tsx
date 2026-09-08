@@ -32,8 +32,9 @@ import {
   listUsersWithRoles,
   updateUserName,
 } from "@/lib/users.functions";
+import { getMyRole } from "@/lib/properties.functions";
 
-type InvitableRole = "owner" | "manager";
+type InvitableRole = "developer" | "owner" | "manager";
 
 const ROLE_LABEL_KEYS: Record<string, string> = {
   developer: "settings.users.role_developer",
@@ -68,6 +69,14 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
     queryKey: ["users-with-roles"],
     queryFn: () => fetchUsers(),
   });
+
+  // Only a developer may invite another developer (AGENTS.md 5.2).
+  const fetchMyRole = useServerFn(getMyRole);
+  const { data: myRole } = useQuery({
+    queryKey: ["my-role"],
+    queryFn: () => fetchMyRole(),
+  });
+  const isDeveloper = myRole?.isDeveloper === true;
 
   const m = useMutation({
     mutationFn: () =>
@@ -156,6 +165,11 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
+                  {isDeveloper && (
+                    <SelectItem value="developer">
+                      {t("settings.users.role_developer")}
+                    </SelectItem>
+                  )}
                   <SelectItem value="owner">{t("settings.users.role_owner")}</SelectItem>
                   <SelectItem value="manager">{t("settings.users.role_manager")}</SelectItem>
                 </SelectContent>
