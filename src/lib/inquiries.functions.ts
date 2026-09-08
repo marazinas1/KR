@@ -101,12 +101,12 @@ export const convertInquiry = createServerFn({ method: "POST" })
       _deposit: data.deposit,
       _payment_day: data.payment_day,
       _notice_days: data.notice_days,
-      _tenant_id: data.tenant_id ?? null,
+      _tenant_id: data.tenant_id ?? undefined,
       _first_name: data.first_name,
       _last_name: data.last_name,
       _phone: data.phone,
       _email: data.email,
-      _end_date: data.end_date ? data.end_date : null,
+      _end_date: data.end_date ? data.end_date : undefined,
       _notes: data.notes,
     });
     if (error) {
