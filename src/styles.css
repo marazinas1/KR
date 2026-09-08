@@ -219,19 +219,37 @@
 }
 
 /* ===================== Klientinės (viešosios) dalies dizainas ===================== */
-/* Paletė ir šriftai kaip Tailwind tokenai (bg-linen, text-ink, font-display ir kt.). */
+/* Paletė ir šriftai kaip Tailwind tokenai. Vertės — iš patvirtinto maketo
+   (kr-home-concept-v2): popierius, viena tamsi „lentos" plokštuma ir statuso
+   spalvos, naudojamos TIK laisvumui žymėti (niekada dekoracijai). */
 @theme {
-  --font-sans: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --color-linen: oklch(0.968 0.007 80.7);
-  --color-warm-white: oklch(0.986 0.006 84.6);
-  --color-ink: oklch(0.285 0.007 95.3);
-  --color-stone: oklch(0.512 0.015 82.4);
-  --color-sage: oklch(0.509 0.03 150.3);
-  --color-sage-deep: oklch(0.395 0.023 150);
-  --color-clay: oklch(0.753 0.057 64.1);
-  --shadow-soft: 0 1px 2px oklch(0.285 0.007 95.3 / 0.04), 0 12px 32px -16px oklch(0.285 0.007 95.3 / 0.16);
-  --shadow-lift: 0 2px 4px oklch(0.285 0.007 95.3 / 0.05), 0 24px 48px -24px oklch(0.285 0.007 95.3 / 0.22);
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --color-paper: oklch(0.951 0.006 92);
+  --color-linen: oklch(0.951 0.006 92);
+  --color-warm-white: oklch(1 0 0);
+  --color-ink: oklch(0.212 0.006 285);
+  --color-graphite: oklch(0.487 0.006 120);
+  --color-stone: oklch(0.487 0.006 120);
+  --color-hairline: oklch(0.886 0.011 95);
+  --color-board: oklch(0.196 0.008 255);
+  --color-board-foreground: oklch(0.929 0.002 95);
+  --color-sage: oklch(0.503 0.084 160);
+  --color-sage-deep: oklch(0.43 0.075 160);
+  --color-clay: oklch(0.606 0.111 68);
+
+  /* Statuso spalvos — tik laisvumo būsenai. */
+  --color-available: oklch(0.503 0.084 160);
+  --color-available-bg: oklch(0.937 0.017 160);
+  --color-soon: oklch(0.606 0.111 68);
+  --color-soon-bg: oklch(0.936 0.021 80);
+  --color-occupied: oklch(0.61 0.006 120);
+  --color-occupied-bg: oklch(0.925 0.006 95);
+
+  --shadow-soft: 0 1px 2px oklch(0.212 0.006 285 / 0.04), 0 12px 32px -16px oklch(0.212 0.006 285 / 0.14);
+  --shadow-lift: 0 2px 4px oklch(0.212 0.006 285 / 0.05), 0 24px 48px -24px oklch(0.212 0.006 285 / 0.2);
 }
 
 /*
@@ -239,26 +257,26 @@
  * kad administravimo panelės išvaizda nepasikeistų.
  */
 .site-theme {
-  --background: var(--color-linen);
+  --background: var(--color-paper);
   --foreground: var(--color-ink);
   --card: var(--color-warm-white);
   --card-foreground: var(--color-ink);
   --popover: var(--color-warm-white);
   --popover-foreground: var(--color-ink);
-  --primary: var(--color-sage);
-  --primary-foreground: var(--color-warm-white);
+  --primary: var(--color-ink);
+  --primary-foreground: var(--color-paper);
   --secondary: var(--color-warm-white);
   --secondary-foreground: var(--color-ink);
-  --muted: oklch(0.94 0.008 82);
-  --muted-foreground: var(--color-stone);
-  --accent: oklch(0.94 0.01 150);
-  --accent-foreground: var(--color-sage-deep);
+  --muted: oklch(0.932 0.007 92);
+  --muted-foreground: var(--color-graphite);
+  --accent: oklch(0.932 0.007 92);
+  --accent-foreground: var(--color-ink);
   --destructive-foreground: var(--color-warm-white);
-  --border: oklch(0.911 0.013 82.4);
-  --input: oklch(0.911 0.013 82.4);
-  --ring: var(--color-sage);
-  /* Svetainės apvalinimų skalė (sm 4px / md 6px / lg 8px); admin lieka 0.875rem. */
-  --radius: 8px;
+  --border: var(--color-hairline);
+  --input: var(--color-hairline);
+  --ring: var(--color-ink);
+  /* Sąmoningai santūrūs apvalinimai; admin lieka 0.875rem. */
+  --radius: 5px;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
@@ -267,11 +285,12 @@
 .site-theme h2,
 .site-theme h3 {
   font-family: var(--font-display);
+  letter-spacing: -0.01em;
 }
 
 .site-theme :focus-visible {
-  outline: 2px solid var(--color-sage);
-  outline-offset: 3px;
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
 }
 
 @utility label-caps {
