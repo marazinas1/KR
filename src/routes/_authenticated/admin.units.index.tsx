@@ -12,7 +12,7 @@ import { listBuildings, listUnits, setUnitListed } from "@/lib/units.functions";
 import { UNIT_STATUSES } from "@/lib/rental";
 import { UnitFormDialog, emptyUnit } from "@/components/admin/units/UnitFormDialog";
 
-export const Route = createFileRoute("/_authenticated/admin/units")({
+export const Route = createFileRoute("/_authenticated/admin/units/")({
   component: UnitsPage,
   head: () => ({
     meta: [
