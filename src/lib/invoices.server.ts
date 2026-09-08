@@ -56,9 +56,10 @@ function buildInvoiceBody(settings: Settings, buyerIn: InvoiceBuyerInput, lineIn
     };
   });
 
-  const subtotalNet = lineItems.reduce((s, l) => s + l.lineNet, 0);
-  const vatAmount = lineItems.reduce((s, l) => s + l.lineVat, 0);
-  const total = subtotalNet + vatAmount;
+  const r2 = (n: number) => Math.round(n * 100) / 100;
+  const total = r2(lineItems.reduce((s, l) => s + l.lineTotal, 0));
+  const subtotalNet = r2(lineItems.reduce((s, l) => s + l.lineNet, 0));
+  const vatAmount = r2(total - subtotalNet);
 
   const seller = {
     name: settings.companyName?.trim() || settings.displayName?.trim() || "",
