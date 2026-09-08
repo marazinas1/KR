@@ -2404,6 +2404,7 @@ export type Database = {
           invoice_id: string
         }[]
       }
+      round_money_products: { Args: { _items: Json }; Returns: number[] }
       tenant_owns_building: { Args: { _building_id: string }; Returns: boolean }
       tenant_owns_lease: { Args: { _lease_id: string }; Returns: boolean }
       tenant_owns_unit: { Args: { _unit_id: string }; Returns: boolean }
