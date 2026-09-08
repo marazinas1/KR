@@ -679,7 +679,8 @@
     "nav": {
       "api": "API prieiga",
       "integrations": "Integracijos",
-      "users": "Vartotojai"
+      "users": "Vartotojai",
+      "tariffs": "Tarifai"
     },
     "saveFailed": "Nepavyko išsaugoti nustatymų.",
     "saved": "Nustatymai išsaugoti.",
@@ -955,7 +956,8 @@
       "units": "Butai",
       "tenants": "Nuomininkai",
       "inquiries": "Užklausos",
-      "issues": "Gedimai"
+      "issues": "Gedimai",
+      "charges": "Mokesčiai"
     },
     "tabs": {
       "overview": "Apžvalga",
@@ -1300,6 +1302,96 @@
         "title": "Besibaigiantys dokumentai",
         "footer": "Baigiasi per 30 d. arba jau pasibaigę"
       }
+    },
+    "charges": {
+      "title": "Mokesčiai ir mokėjimai",
+      "subtitle": "Mėnesio priskaitymai iš patvirtintų rodmenų ir tarifų, sąskaitos, gauti mokėjimai.",
+      "period": "Laikotarpis",
+      "tabs": {
+        "charges": "Priskaitymai",
+        "payments": "Mokėjimai",
+        "balances": "Likučiai"
+      },
+      "preview": "Peržiūrėti",
+      "generate": "Generuoti",
+      "previewTitle": "Kas bus sugeneruota",
+      "previewEmpty": "Šiam laikotarpiui nėra ko generuoti.",
+      "blockedTitle": "Užblokuotos eilutės (nebus įrašytos)",
+      "blocked": {
+        "no_rate": "nėra tarifo {{type}} laikotarpiui {{period}}",
+        "no_lease": "butas neturi galiojančios sutarties",
+        "no_building_leases": "pastate nėra galiojančių sutarčių"
+      },
+      "generated": "Sugeneruota: {{created}}, praleista (jau buvo): {{skipped}}, užblokuota: {{blocked}}",
+      "generateFailed": "Nepavyko sugeneruoti",
+      "issueAll": "Išrašyti sąskaitas už laikotarpį",
+      "issueSelected": "Išrašyti sąskaitą iš pažymėtų",
+      "issued": "Išrašyta sąskaitų: {{issued}}, nepavyko: {{failed}}",
+      "issuedOne": "Išrašyta sąskaita {{number}}",
+      "errSpanLeases": "Pažymėtos eilutės priklauso skirtingoms sutartims.",
+      "errAlreadyInvoiced": "Bent viena eilutė jau įtraukta į sąskaitą.",
+      "errInvoiced": "Eilutė jau sąskaitoje — jos keisti negalima.",
+      "onlyUninvoiced": "Tik be sąskaitos",
+      "cols": {
+        "unit": "Butas",
+        "tenant": "Nuomininkas",
+        "kind": "Rūšis",
+        "description": "Aprašymas",
+        "qty": "Kiekis",
+        "price": "Kaina",
+        "amount": "Suma",
+        "invoice": "Sąskaita",
+        "date": "Data",
+        "method": "Būdas",
+        "reference": "Nuoroda"
+      },
+      "kind": {
+        "rent": "Nuoma",
+        "utility": "Komunalinis",
+        "fixed": "Fiksuotas mokestis",
+        "one_off": "Vienkartinis",
+        "penalty": "Delspinigiai"
+      },
+      "addManual": "Pridėti mokestį",
+      "manualTitle": "Vienkartinis mokestis",
+      "add": "Pridėti",
+      "delete": "Šalinti",
+      "deleted": "Eilutė pašalinta",
+      "empty": "Priskaitymų nėra.",
+      "total": "Iš viso",
+      "noInvoice": "—",
+      "recordPayment": "Įrašyti mokėjimą",
+      "paymentTitle": "Gautas mokėjimas",
+      "paymentSaved": "Mokėjimas įrašytas",
+      "paymentsEmpty": "Mokėjimų nėra.",
+      "method": {
+        "bank": "Pavedimas",
+        "cash": "Grynais",
+        "other": "Kita"
+      },
+      "amount": "Suma",
+      "note": "Pastaba",
+      "lease": "Sutartis",
+      "balance": {
+        "charged": "Priskaičiuota",
+        "paid": "Sumokėta",
+        "balance": "Likutis",
+        "upcoming": "Būsimi"
+      }
+    },
+    "tariffs": {
+      "title": "Tarifai",
+      "subtitle": "Tarifas niekada neredaguojamas — pasikeitus kainai, pridedamas naujas įrašas su nauja įsigaliojimo data.",
+      "add": "Pridėti tarifą",
+      "type": "Rūšis",
+      "effectiveFrom": "Galioja nuo",
+      "price": "Kaina už vnt.",
+      "fixed": "Fiksuotas mėn. mokestis",
+      "note": "Pastaba",
+      "empty": "Tarifų dar nėra — be jų komunaliniai mokesčiai nebus skaičiuojami.",
+      "current": "galioja",
+      "saved": "Tarifas pridėtas",
+      "errExists": "Toks tarifas su ta pačia data jau yra."
     }
   },
   "public": {
@@ -1466,6 +1558,7 @@
     "open": "Atidaryti",
     "expires": "Galioja iki {{date}}",
     "uploadFailed": "Nepavyko įkelti nuotraukos",
-    "back": "Atgal"
+    "back": "Atgal",
+    "upcoming": "Būsimi priskaitymai"
   }
 }

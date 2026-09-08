@@ -679,7 +679,8 @@
     "nav": {
       "api": "API access",
       "integrations": "Integrations",
-      "users": "Users"
+      "users": "Users",
+      "tariffs": "Tariffs"
     },
     "saveFailed": "Could not save settings.",
     "saved": "Settings saved.",
@@ -955,7 +956,8 @@
       "units": "Units",
       "tenants": "Tenants",
       "inquiries": "Inquiries",
-      "issues": "Faults"
+      "issues": "Faults",
+      "charges": "Charges"
     },
     "tabs": {
       "overview": "Overview",
@@ -1300,6 +1302,96 @@
         "title": "Expiring documents",
         "footer": "Expiring within 30 days or already expired"
       }
+    },
+    "charges": {
+      "title": "Charges and payments",
+      "subtitle": "Monthly charges from approved readings and tariffs, invoices, payments received.",
+      "period": "Period",
+      "tabs": {
+        "charges": "Charges",
+        "payments": "Payments",
+        "balances": "Balances"
+      },
+      "preview": "Preview",
+      "generate": "Generate",
+      "previewTitle": "What will be generated",
+      "previewEmpty": "Nothing to generate for this period.",
+      "blockedTitle": "Blocked lines (will not be written)",
+      "blocked": {
+        "no_rate": "no tariff for {{type}} effective on {{period}}",
+        "no_lease": "unit has no holding lease",
+        "no_building_leases": "no holding leases in the building"
+      },
+      "generated": "Created: {{created}}, skipped (already existed): {{skipped}}, blocked: {{blocked}}",
+      "generateFailed": "Generation failed",
+      "issueAll": "Issue invoices for period",
+      "issueSelected": "Issue invoice from selected",
+      "issued": "Invoices issued: {{issued}}, failed: {{failed}}",
+      "issuedOne": "Invoice {{number}} issued",
+      "errSpanLeases": "Selected rows belong to different leases.",
+      "errAlreadyInvoiced": "At least one row is already on an invoice.",
+      "errInvoiced": "Row is already invoiced — it cannot be changed.",
+      "onlyUninvoiced": "Uninvoiced only",
+      "cols": {
+        "unit": "Unit",
+        "tenant": "Tenant",
+        "kind": "Kind",
+        "description": "Description",
+        "qty": "Qty",
+        "price": "Price",
+        "amount": "Amount",
+        "invoice": "Invoice",
+        "date": "Date",
+        "method": "Method",
+        "reference": "Reference"
+      },
+      "kind": {
+        "rent": "Rent",
+        "utility": "Utility",
+        "fixed": "Fixed fee",
+        "one_off": "One-off",
+        "penalty": "Penalty"
+      },
+      "addManual": "Add charge",
+      "manualTitle": "One-off charge",
+      "add": "Add",
+      "delete": "Delete",
+      "deleted": "Row deleted",
+      "empty": "No charges.",
+      "total": "Total",
+      "noInvoice": "—",
+      "recordPayment": "Record payment",
+      "paymentTitle": "Payment received",
+      "paymentSaved": "Payment recorded",
+      "paymentsEmpty": "No payments.",
+      "method": {
+        "bank": "Bank transfer",
+        "cash": "Cash",
+        "other": "Other"
+      },
+      "amount": "Amount",
+      "note": "Note",
+      "lease": "Lease",
+      "balance": {
+        "charged": "Charged",
+        "paid": "Paid",
+        "balance": "Balance",
+        "upcoming": "Upcoming"
+      }
+    },
+    "tariffs": {
+      "title": "Tariffs",
+      "subtitle": "A tariff is never edited — when the price changes, add a new row with a new effective date.",
+      "add": "Add tariff",
+      "type": "Type",
+      "effectiveFrom": "Effective from",
+      "price": "Price per unit",
+      "fixed": "Fixed monthly fee",
+      "note": "Note",
+      "empty": "No tariffs yet — utility charges cannot be computed without them.",
+      "current": "current",
+      "saved": "Tariff added",
+      "errExists": "A tariff of this type with the same date already exists."
     }
   },
   "public": {
@@ -1465,6 +1557,7 @@
     "open": "Open",
     "expires": "Valid until {{date}}",
     "uploadFailed": "Photo upload failed",
-    "back": "Back"
+    "back": "Back",
+    "upcoming": "Upcoming charges"
   }
 }
