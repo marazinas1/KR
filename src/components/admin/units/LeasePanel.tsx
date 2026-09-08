@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -112,6 +113,11 @@ export function LeasePanel({
           <div className="flex flex-wrap gap-2 border-t pt-3">
             <Button variant="outline" onClick={() => setRenewOpen(true)}>
               {t("rental.lease.renew")}
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/admin/charges" search={{ lease: active.id }}>
+                {t("rental.nav.charges")}
+              </Link>
             </Button>
             <Button variant="destructive" onClick={() => setTerminateOpen(true)}>
               {t("rental.lease.terminate")}

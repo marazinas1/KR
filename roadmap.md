@@ -41,5 +41,5 @@
 - [x] Verification with printed results: anon rows from public_vacancies (real content), anon permission denied on unit_availability, fixture parity, tsgo, build, cleanup = 0
 
 ## Later
-- Step 8 charges/invoices rebuilt against leases (invoice engine is currently unused)
+- [x] Step 8 — tariffs, charges, invoices per lease, payments, one shared balance calc (done, verified with live fixtures)
 - Step 10 lease/reading/payment notification jobs (runScheduledNotifications is a stub)

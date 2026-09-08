@@ -24,6 +24,7 @@ import { Route as EnIndexRouteImport } from './routes/en/index'
 import { Route as EnKontaktaiRouteImport } from './routes/en/kontaktai'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin.analytics'
+import { Route as AuthenticatedAdminChargesRouteImport } from './routes/_authenticated/admin.charges'
 import { Route as AuthenticatedAdminContentRouteImport } from './routes/_authenticated/admin.content'
 import { Route as AuthenticatedAdminContractsRouteImport } from './routes/_authenticated/admin.contracts'
 import { Route as AuthenticatedAdminExpensesRouteImport } from './routes/_authenticated/admin.expenses'
@@ -123,6 +124,12 @@ const AuthenticatedAdminAnalyticsRoute =
   AuthenticatedAdminAnalyticsRouteImport.update({
     id: '/analytics',
     path: '/analytics',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminChargesRoute =
+  AuthenticatedAdminChargesRouteImport.update({
+    id: '/charges',
+    path: '/charges',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminContentRoute =
@@ -278,6 +285,7 @@ export interface FileRoutesByFullPath {
   '/butai/': typeof ButaiIndexRoute
   '/en/': typeof EnIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/charges': typeof AuthenticatedAdminChargesRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/contracts': typeof AuthenticatedAdminContractsRoute
   '/admin/expenses': typeof AuthenticatedAdminExpensesRoute
@@ -315,6 +323,7 @@ export interface FileRoutesByTo {
   '/butai': typeof ButaiIndexRoute
   '/en': typeof EnIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/admin/charges': typeof AuthenticatedAdminChargesRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/contracts': typeof AuthenticatedAdminContractsRoute
   '/admin/expenses': typeof AuthenticatedAdminExpensesRoute
@@ -357,6 +366,7 @@ export interface FileRoutesById {
   '/butai/': typeof ButaiIndexRoute
   '/en/': typeof EnIndexRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
+  '/_authenticated/admin/charges': typeof AuthenticatedAdminChargesRoute
   '/_authenticated/admin/content': typeof AuthenticatedAdminContentRoute
   '/_authenticated/admin/contracts': typeof AuthenticatedAdminContractsRoute
   '/_authenticated/admin/expenses': typeof AuthenticatedAdminExpensesRoute
@@ -399,6 +409,7 @@ export interface FileRouteTypes {
     | '/butai/'
     | '/en/'
     | '/admin/analytics'
+    | '/admin/charges'
     | '/admin/content'
     | '/admin/contracts'
     | '/admin/expenses'
@@ -436,6 +447,7 @@ export interface FileRouteTypes {
     | '/butai'
     | '/en'
     | '/admin/analytics'
+    | '/admin/charges'
     | '/admin/content'
     | '/admin/contracts'
     | '/admin/expenses'
@@ -477,6 +489,7 @@ export interface FileRouteTypes {
     | '/butai/'
     | '/en/'
     | '/_authenticated/admin/analytics'
+    | '/_authenticated/admin/charges'
     | '/_authenticated/admin/content'
     | '/_authenticated/admin/contracts'
     | '/_authenticated/admin/expenses'
@@ -625,6 +638,13 @@ declare module '@tanstack/react-router' {
       path: '/analytics'
       fullPath: '/admin/analytics'
       preLoaderRoute: typeof AuthenticatedAdminAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/charges': {
+      id: '/_authenticated/admin/charges'
+      path: '/charges'
+      fullPath: '/admin/charges'
+      preLoaderRoute: typeof AuthenticatedAdminChargesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/content': {
@@ -800,6 +820,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAnalyticsRoute: typeof AuthenticatedAdminAnalyticsRoute
+  AuthenticatedAdminChargesRoute: typeof AuthenticatedAdminChargesRoute
   AuthenticatedAdminContentRoute: typeof AuthenticatedAdminContentRoute
   AuthenticatedAdminContractsRoute: typeof AuthenticatedAdminContractsRoute
   AuthenticatedAdminExpensesRoute: typeof AuthenticatedAdminExpensesRoute
@@ -817,6 +838,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAnalyticsRoute: AuthenticatedAdminAnalyticsRoute,
+  AuthenticatedAdminChargesRoute: AuthenticatedAdminChargesRoute,
   AuthenticatedAdminContentRoute: AuthenticatedAdminContentRoute,
   AuthenticatedAdminContractsRoute: AuthenticatedAdminContractsRoute,
   AuthenticatedAdminExpensesRoute: AuthenticatedAdminExpensesRoute,

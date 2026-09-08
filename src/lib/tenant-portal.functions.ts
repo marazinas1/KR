@@ -344,25 +344,35 @@ export const getMyBalance = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await requireTenant(context);
-    const [{ data: charges }, { data: payments }] = await Promise.all([
+    const { computeBalances } = await import("./dashboard-queries.server");
+    const { todayIso } = await import("./rental");
+    const today = todayIso();
+    // RLS narrows charges/payments to this tenant's own lease(s); the arithmetic
+    // is the shared computeBalances() — identical to the admin debtor card.
+    const [balances, { data: charges }, { data: payments }] = await Promise.all([
+      computeBalances(context.supabase, today),
       context.supabase
         .from("charges")
-        .select("id, period, kind, description, amount")
+        .select("id, period, kind, description, amount, invoice_id")
         .order("period", { ascending: false }),
       context.supabase
         .from("payments")
         .select("id, paid_at, amount, method")
         .order("paid_at", { ascending: false }),
     ]);
-    const c = (charges ?? []) as Array<{ id: string; period: string; kind: string; description: string; amount: number }>;
+    const c = (charges ?? []) as Array<{ id: string; period: string; kind: string; description: string; amount: number; invoice_id: string | null }>;
     const p = (payments ?? []) as Array<{ id: string; paid_at: string; amount: number; method: string }>;
-    const charged = c.reduce((s, r) => s + Number(r.amount), 0);
-    const paid = p.reduce((s, r) => s + Number(r.amount), 0);
+    let charged = 0, paid = 0, balance = 0, upcoming = 0;
+    for (const b of balances.values()) {
+      charged += b.charged; paid += b.paid; balance += b.balance; upcoming += b.upcoming;
+    }
+    const r2 = (n: number) => Math.round(n * 100) / 100;
     return {
-      charged,
-      paid,
-      balance: charged - paid,
-      charges: c.slice(0, 12).map((r) => ({ ...r, amount: Number(r.amount) })),
+      charged: r2(charged),
+      paid: r2(paid),
+      balance: r2(balance),
+      upcoming: r2(upcoming),
+      charges: c.slice(0, 24).map((r) => ({ ...r, amount: Number(r.amount), upcoming: r.period.slice(0, 10) > today })),
       payments: p.slice(0, 12).map((r) => ({ ...r, amount: Number(r.amount) })),
     };
   });

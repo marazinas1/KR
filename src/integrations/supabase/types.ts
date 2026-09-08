@@ -2383,6 +2383,27 @@ export type Database = {
       is_manager: { Args: { _user_id?: string }; Returns: boolean }
       is_owner: { Args: { _user_id?: string }; Returns: boolean }
       is_tenant: { Args: { _user_id?: string }; Returns: boolean }
+      issue_invoice_for_charges: {
+        Args: {
+          _buyer: Json
+          _charge_ids: string[]
+          _currency: string
+          _is_vat_invoice: boolean
+          _issue_date: string
+          _issued_by: string
+          _line_items: Json
+          _notes: string
+          _seller: Json
+          _subtotal_net: number
+          _total: number
+          _vat_amount: number
+          _vat_rate: number
+        }
+        Returns: {
+          full_number: string
+          invoice_id: string
+        }[]
+      }
       tenant_owns_building: { Args: { _building_id: string }; Returns: boolean }
       tenant_owns_lease: { Args: { _lease_id: string }; Returns: boolean }
       tenant_owns_unit: { Args: { _unit_id: string }; Returns: boolean }

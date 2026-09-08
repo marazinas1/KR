@@ -98,35 +98,78 @@ export async function fetchMissingReadings(
 
 export type BalanceRow = { lease_id: string; unit_id: string; tenant_id: string; balance: number };
 
+export type LeaseBalance = { charged: number; paid: number; balance: number; upcoming: number };
+
+const cents = (n: number) => Math.round(n * 100) / 100;
+
 /**
- * Balance per lease = Σ charges (period ≤ today) − Σ payments.
- * Same arithmetic as the tenant portal's `getMyBalance` (charged − paid).
- * Only leases with a positive balance are returned (debtors).
+ * THE ONLY PLACE A BALANCE IS COMPUTED.
+ *
+ *   charged  = Σ charges.amount WHERE period <= today
+ *   paid     = Σ payments.amount
+ *   balance  = charged − paid          (rounded to cents)
+ *   upcoming = Σ charges.amount WHERE period > today   (shown separately, never mixed in)
+ *
+ * Called with a manager client (all leases) by the dashboard/units list and with
+ * a tenant's own client by the portal — RLS narrows the rows, the arithmetic is
+ * identical. Do not re-implement this anywhere else.
  */
-export async function fetchDebtors(db: Db, todayIso: string): Promise<BalanceRow[]> {
-  const [{ data: leases, error: lErr }, { data: charges, error: cErr }, { data: payments, error: pErr }] =
-    await Promise.all([
-      db
-        .from("leases")
-        .select("id, unit_id, tenant_id")
-        .in("status", ["active", "ending", "expired", "terminated"]),
-      db.from("charges").select("lease_id, amount").lte("period", todayIso),
-      db.from("payments").select("lease_id, amount"),
-    ]);
-  if (lErr) throw new Error(lErr.message);
+export async function computeBalances(
+  db: Db,
+  todayIso: string,
+  opts: { leaseIds?: string[] } = {},
+): Promise<Map<string, LeaseBalance>> {
+  let cq = db.from("charges").select("lease_id, period, amount");
+  let pq = db.from("payments").select("lease_id, amount");
+  if (opts.leaseIds) {
+    cq = cq.in("lease_id", opts.leaseIds);
+    pq = pq.in("lease_id", opts.leaseIds);
+  }
+  const [{ data: charges, error: cErr }, { data: payments, error: pErr }] = await Promise.all([cq, pq]);
   if (cErr) throw new Error(cErr.message);
   if (pErr) throw new Error(pErr.message);
 
-  const bal = new Map<string, number>();
-  for (const c of charges ?? []) bal.set(c.lease_id, (bal.get(c.lease_id) ?? 0) + Number(c.amount));
-  for (const p of payments ?? []) bal.set(p.lease_id, (bal.get(p.lease_id) ?? 0) - Number(p.amount));
+  const out = new Map<string, LeaseBalance>();
+  const get = (id: string) => {
+    let b = out.get(id);
+    if (!b) {
+      b = { charged: 0, paid: 0, balance: 0, upcoming: 0 };
+      out.set(id, b);
+    }
+    return b;
+  };
+  for (const c of charges ?? []) {
+    const b = get(c.lease_id);
+    if (String(c.period).slice(0, 10) <= todayIso) b.charged += Number(c.amount);
+    else b.upcoming += Number(c.amount);
+  }
+  for (const p of payments ?? []) get(p.lease_id).paid += Number(p.amount);
+  for (const b of out.values()) {
+    b.charged = cents(b.charged);
+    b.paid = cents(b.paid);
+    b.upcoming = cents(b.upcoming);
+    b.balance = cents(b.charged - b.paid);
+  }
+  return out;
+}
+
+/** Debtors = leases whose `computeBalances` balance is > 0, largest first. */
+export async function fetchDebtors(db: Db, todayIso: string): Promise<BalanceRow[]> {
+  const [{ data: leases, error: lErr }, balances] = await Promise.all([
+    db
+      .from("leases")
+      .select("id, unit_id, tenant_id")
+      .in("status", ["active", "ending", "expired", "terminated"]),
+    computeBalances(db, todayIso),
+  ]);
+  if (lErr) throw new Error(lErr.message);
 
   return (leases ?? [])
     .map((l: any) => ({
       lease_id: l.id as string,
       unit_id: l.unit_id as string,
       tenant_id: l.tenant_id as string,
-      balance: Math.round((bal.get(l.id) ?? 0) * 100) / 100,
+      balance: balances.get(l.id)?.balance ?? 0,
     }))
     .filter((r) => r.balance > 0)
     .sort((a, b) => b.balance - a.balance);
