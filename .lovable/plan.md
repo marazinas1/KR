@@ -55,10 +55,12 @@ Rent line: for every lease with `status IN ('active','ending')` overlapping the 
 CREATE UNIQUE INDEX charges_one_rent_per_lease_period
   ON public.charges (lease_id, period) WHERE kind = 'rent';
 CREATE UNIQUE INDEX charges_one_utility_per_reading
-  ON public.charges (meter_reading_id) WHERE meter_reading_id IS NOT NULL;
+  ON public.charges (meter_reading_id, lease_id) WHERE meter_reading_id IS NOT NULL;
 CREATE UNIQUE INDEX charges_one_fixed_per_lease_period_rate
   ON public.charges (lease_id, period, utility_rate_id) WHERE kind = 'fixed';
 ```
+
+The reading index is keyed on **(meter_reading_id, lease_id)**, not on the reading alone: one shared building meter legitimately produces one charge per lease in that building (section 1's split). Keying it on the reading alone would let the first lease's insert succeed and silently swallow every other lease in the building as "skipped" — those tenants would never be billed for their share. With `lease_id` included, the split works and a repeat run still cannot double-charge the same lease for the same reading. Same principle as `charges_one_fixed_per_lease_period_rate`.
 
 Generation inserts with `ON CONFLICT DO NOTHING` and reports `created` / `skipped (already existed)` / `blocked`. Re-running a period is therefore safe and idempotent by construction, not by a TypeScript "did I already do this" check. `one_off` and `penalty` charges are hand-added and intentionally unconstrained.
 
@@ -75,7 +77,23 @@ Manual selection stays available as the escape hatch: on a lease's charges list 
 - the record is written by the existing `createInvoiceRecord()` in `invoices.server.ts`, with seller taken from `org_settings` (white-label) and `lease_id` set,
 - the PDF is the existing `buildInvoicePdf` / `InvoiceViewerDialog`.
 
-The only change to that engine is an input path: `createInvoiceRecord` gains an optional `chargeIds` mode that turns charge rows into its existing `lineItems` shape (`gross` = charge `amount`; the engine keeps deriving net/VAT exactly as it does today) and stamps `invoice_id` on those charges inside the same call. The buyer block is filled from the lease's tenant instead of being typed by hand. `invoices` itself is untouched.
+The only change to that engine is an input path: `createInvoiceRecord` gains an optional `chargeIds` mode that turns charge rows into its existing `lineItems` shape (`gross` = charge `amount`; the engine keeps deriving net/VAT exactly as it does today). The buyer block is filled from the lease's tenant instead of being typed by hand. The `invoices` table itself is untouched.
+
+**Atomicity — one database function, not two application steps.** To your point: issuing an invoice and linking its charges must be all-or-nothing, so it follows the `convert_inquiry_to_lease` precedent from step 5/6. A new `SECURITY DEFINER` function does the whole money-moving part inside a single transaction:
+
+```text
+public.issue_invoice_for_charges(_charge_ids uuid[], _issue_date date, _notes text, ...)
+  RETURNS TABLE (invoice_id uuid, full_number text)
+  1. lock the charge rows: SELECT ... WHERE id = ANY(_charge_ids) FOR UPDATE
+  2. reject unless every row belongs to ONE lease and every invoice_id IS NULL
+     (raises — a charge already on an invoice can never be re-invoiced)
+  3. claim_invoice_number()            -- existing atomic series
+  4. INSERT INTO invoices (...)        -- lines/seller/buyer computed and passed in
+  5. UPDATE charges SET invoice_id = <new id> WHERE id = ANY(_charge_ids)
+  6. assert the UPDATE touched exactly array_length(_charge_ids, 1) rows, else RAISE
+```
+
+Any failure at any step rolls the whole thing back: no orphan invoice with unlinked charges, and no charge pointing at an invoice that was not created. The number claimed by a rolled-back attempt is the one acceptable gap (a sequence gap is normal in invoice numbering and preferable to a reused number). The application side only computes the line items and totals — it never performs step 4 and step 5 as separate round trips.
 
 ## 4. One balance arithmetic, shared
 
@@ -107,6 +125,7 @@ computeBalances(db, todayIso, opts?) -> Map<lease_id, {charged, paid, balance}>
 2. A reading whose type has **no** rate → printed preview showing it as blocked with the reason, and `SELECT count(*) FROM charges` proving nothing was written for it.
 3. Generate the same period twice → printed `created`/`skipped` counts and a `count(*)` proving one rent row per lease.
 4. Pro-rated first month printed against a hand-computed figure.
-5. Issue an invoice from those charges → printed `full_number` from the existing series, printed `charges.invoice_id` set on exactly those rows, PDF rendered in the browser.
+5. Issue an invoice from those charges → printed `full_number` from the existing series, printed `charges.invoice_id` set on exactly those rows, PDF rendered in the browser. Plus a negative case: calling the function with one already-invoiced charge in the array → printed error and a printed check that **no** new invoice row and no changed `invoice_id` remain (rollback proven, not assumed).
 6. Same lease read three ways — dashboard debtor card, `listUnits` balance, tenant `getMyBalance` while signed in as that tenant — printed side by side, identical numbers.
 7. Fixture cleanup counts = 0, `bunx tsgo --noEmit`, full `bun run build` tail.
+8. **Shared meter across three leases:** fixture with one building meter and three leases in that building, one approved reading. Printed all `charges` rows for that `meter_reading_id` — three rows, one per `lease_id`, split amounts summing to the full consumption cost. Then a second generate run for the same period, printed again: still exactly three rows, `skipped = 3`.
