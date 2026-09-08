@@ -6,21 +6,48 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export type AppRole = "developer" | "owner" | "manager" | "tenant";
 
+export type MyRole = {
+  role: AppRole | null;
+  isDeveloper: boolean;
+  isOwner: boolean;
+  isManager: boolean;
+  isTenant: boolean;
+  email: string;
+};
+
 export const getMyRole = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<{ role: AppRole | null }> => {
+  .handler(async ({ context }): Promise<MyRole> => {
+    const email = String((context.claims as Record<string, unknown> | undefined)?.["email"] ?? "");
+    const empty: MyRole = {
+      role: null,
+      isDeveloper: false,
+      isOwner: false,
+      isManager: false,
+      isTenant: false,
+      email,
+    };
     const { data, error } = await context.supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", context.userId);
     if (error) {
       console.error("[getMyRole]", error.message);
-      return { role: null };
+      return empty;
     }
     const roles = (data ?? []).map((r) => (r as { role: AppRole }).role);
     const order: AppRole[] = ["developer", "owner", "manager", "tenant"];
-    const best = order.find((r) => roles.includes(r)) ?? null;
-    return { role: best };
+    const isDeveloper = roles.includes("developer");
+    const isOwner = isDeveloper || roles.includes("owner");
+    const isManager = isOwner || roles.includes("manager");
+    return {
+      role: order.find((r) => roles.includes(r)) ?? null,
+      isDeveloper,
+      isOwner,
+      isManager,
+      isTenant: roles.includes("tenant"),
+      email,
+    };
   });
 
 /** Minimal unit list for pickers (expenses, settings, filters). */

@@ -29,11 +29,8 @@ import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authentic
 import { Route as AuthenticatedStaffIndexRouteImport } from './routes/_authenticated/staff.index'
 import { Route as AuthenticatedStaffIdRouteImport } from './routes/_authenticated/staff.$id'
 import { Route as ApiPublicNotificationsCronRouteImport } from './routes/api/public/notifications-cron'
-import { Route as AuthenticatedAdminPropertiesIndexRouteImport } from './routes/_authenticated/admin.properties.index'
-import { Route as AuthenticatedAdminPropertiesNewRouteImport } from './routes/_authenticated/admin.properties.new'
 import { Route as ApiPublicV1LegalRouteImport } from './routes/api/public/v1/legal'
 import { Route as ApiStaffV1RoomsRouteImport } from './routes/api/staff/v1/rooms'
-import { Route as AuthenticatedAdminPropertiesIdEditRouteImport } from './routes/_authenticated/admin.properties.$id.edit'
 import { Route as ApiStaffV1RoomsIdAssignRouteImport } from './routes/api/staff/v1/rooms.$id.assign'
 import { Route as ApiStaffV1RoomsIdCommentsRouteImport } from './routes/api/staff/v1/rooms.$id.comments'
 import { Route as ApiStaffV1RoomsIdIssueRouteImport } from './routes/api/staff/v1/rooms.$id.issue'
@@ -146,18 +143,6 @@ const ApiPublicNotificationsCronRoute =
     path: '/api/public/notifications-cron',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AuthenticatedAdminPropertiesIndexRoute =
-  AuthenticatedAdminPropertiesIndexRouteImport.update({
-    id: '/properties/',
-    path: '/properties/',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
-const AuthenticatedAdminPropertiesNewRoute =
-  AuthenticatedAdminPropertiesNewRouteImport.update({
-    id: '/properties/new',
-    path: '/properties/new',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
 const ApiPublicV1LegalRoute = ApiPublicV1LegalRouteImport.update({
   id: '/api/public/v1/legal',
   path: '/api/public/v1/legal',
@@ -168,12 +153,6 @@ const ApiStaffV1RoomsRoute = ApiStaffV1RoomsRouteImport.update({
   path: '/api/staff/v1/rooms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAdminPropertiesIdEditRoute =
-  AuthenticatedAdminPropertiesIdEditRouteImport.update({
-    id: '/properties/$id/edit',
-    path: '/properties/$id/edit',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
 const ApiStaffV1RoomsIdAssignRoute = ApiStaffV1RoomsIdAssignRouteImport.update({
   id: '/$id/assign',
   path: '/$id/assign',
@@ -222,11 +201,8 @@ export interface FileRoutesByFullPath {
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/staff/': typeof AuthenticatedStaffIndexRoute
-  '/admin/properties/new': typeof AuthenticatedAdminPropertiesNewRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/staff/v1/rooms': typeof ApiStaffV1RoomsRouteWithChildren
-  '/admin/properties/': typeof AuthenticatedAdminPropertiesIndexRoute
-  '/admin/properties/$id/edit': typeof AuthenticatedAdminPropertiesIdEditRoute
   '/api/staff/v1/rooms/$id/assign': typeof ApiStaffV1RoomsIdAssignRoute
   '/api/staff/v1/rooms/$id/comments': typeof ApiStaffV1RoomsIdCommentsRoute
   '/api/staff/v1/rooms/$id/issue': typeof ApiStaffV1RoomsIdIssueRoute
@@ -250,11 +226,8 @@ export interface FileRoutesByTo {
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/staff': typeof AuthenticatedStaffIndexRoute
-  '/admin/properties/new': typeof AuthenticatedAdminPropertiesNewRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/staff/v1/rooms': typeof ApiStaffV1RoomsRouteWithChildren
-  '/admin/properties': typeof AuthenticatedAdminPropertiesIndexRoute
-  '/admin/properties/$id/edit': typeof AuthenticatedAdminPropertiesIdEditRoute
   '/api/staff/v1/rooms/$id/assign': typeof ApiStaffV1RoomsIdAssignRoute
   '/api/staff/v1/rooms/$id/comments': typeof ApiStaffV1RoomsIdCommentsRoute
   '/api/staff/v1/rooms/$id/issue': typeof ApiStaffV1RoomsIdIssueRoute
@@ -283,11 +256,8 @@ export interface FileRoutesById {
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/staff/': typeof AuthenticatedStaffIndexRoute
-  '/_authenticated/admin/properties/new': typeof AuthenticatedAdminPropertiesNewRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/staff/v1/rooms': typeof ApiStaffV1RoomsRouteWithChildren
-  '/_authenticated/admin/properties/': typeof AuthenticatedAdminPropertiesIndexRoute
-  '/_authenticated/admin/properties/$id/edit': typeof AuthenticatedAdminPropertiesIdEditRoute
   '/api/staff/v1/rooms/$id/assign': typeof ApiStaffV1RoomsIdAssignRoute
   '/api/staff/v1/rooms/$id/comments': typeof ApiStaffV1RoomsIdCommentsRoute
   '/api/staff/v1/rooms/$id/issue': typeof ApiStaffV1RoomsIdIssueRoute
@@ -316,11 +286,8 @@ export interface FileRouteTypes {
     | '/api/public/notifications-cron'
     | '/admin/'
     | '/staff/'
-    | '/admin/properties/new'
     | '/api/public/v1/legal'
     | '/api/staff/v1/rooms'
-    | '/admin/properties/'
-    | '/admin/properties/$id/edit'
     | '/api/staff/v1/rooms/$id/assign'
     | '/api/staff/v1/rooms/$id/comments'
     | '/api/staff/v1/rooms/$id/issue'
@@ -344,11 +311,8 @@ export interface FileRouteTypes {
     | '/api/public/notifications-cron'
     | '/admin'
     | '/staff'
-    | '/admin/properties/new'
     | '/api/public/v1/legal'
     | '/api/staff/v1/rooms'
-    | '/admin/properties'
-    | '/admin/properties/$id/edit'
     | '/api/staff/v1/rooms/$id/assign'
     | '/api/staff/v1/rooms/$id/comments'
     | '/api/staff/v1/rooms/$id/issue'
@@ -376,11 +340,8 @@ export interface FileRouteTypes {
     | '/api/public/notifications-cron'
     | '/_authenticated/admin/'
     | '/_authenticated/staff/'
-    | '/_authenticated/admin/properties/new'
     | '/api/public/v1/legal'
     | '/api/staff/v1/rooms'
-    | '/_authenticated/admin/properties/'
-    | '/_authenticated/admin/properties/$id/edit'
     | '/api/staff/v1/rooms/$id/assign'
     | '/api/staff/v1/rooms/$id/comments'
     | '/api/staff/v1/rooms/$id/issue'
@@ -542,20 +503,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicNotificationsCronRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/admin/properties/': {
-      id: '/_authenticated/admin/properties/'
-      path: '/properties'
-      fullPath: '/admin/properties/'
-      preLoaderRoute: typeof AuthenticatedAdminPropertiesIndexRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/admin/properties/new': {
-      id: '/_authenticated/admin/properties/new'
-      path: '/properties/new'
-      fullPath: '/admin/properties/new'
-      preLoaderRoute: typeof AuthenticatedAdminPropertiesNewRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
     '/api/public/v1/legal': {
       id: '/api/public/v1/legal'
       path: '/api/public/v1/legal'
@@ -569,13 +516,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/staff/v1/rooms'
       preLoaderRoute: typeof ApiStaffV1RoomsRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/admin/properties/$id/edit': {
-      id: '/_authenticated/admin/properties/$id/edit'
-      path: '/properties/$id/edit'
-      fullPath: '/admin/properties/$id/edit'
-      preLoaderRoute: typeof AuthenticatedAdminPropertiesIdEditRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/api/staff/v1/rooms/$id/assign': {
       id: '/api/staff/v1/rooms/$id/assign'
@@ -624,9 +564,6 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
-  AuthenticatedAdminPropertiesNewRoute: typeof AuthenticatedAdminPropertiesNewRoute
-  AuthenticatedAdminPropertiesIndexRoute: typeof AuthenticatedAdminPropertiesIndexRoute
-  AuthenticatedAdminPropertiesIdEditRoute: typeof AuthenticatedAdminPropertiesIdEditRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
@@ -638,11 +575,6 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
-  AuthenticatedAdminPropertiesNewRoute: AuthenticatedAdminPropertiesNewRoute,
-  AuthenticatedAdminPropertiesIndexRoute:
-    AuthenticatedAdminPropertiesIndexRoute,
-  AuthenticatedAdminPropertiesIdEditRoute:
-    AuthenticatedAdminPropertiesIdEditRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =
