@@ -913,7 +913,6 @@ export type Database = {
       }
       invoices: {
         Row: {
-          booking_id: string
           buyer: Json
           created_at: string
           currency: string
@@ -924,6 +923,7 @@ export type Database = {
           is_vat_invoice: boolean
           issue_date: string
           issued_by: string
+          lease_id: string | null
           line_items: Json
           notes: string
           seller: Json
@@ -933,7 +933,6 @@ export type Database = {
           vat_rate: number
         }
         Insert: {
-          booking_id: string
           buyer: Json
           created_at?: string
           currency?: string
@@ -944,6 +943,7 @@ export type Database = {
           is_vat_invoice?: boolean
           issue_date?: string
           issued_by?: string
+          lease_id?: string | null
           line_items: Json
           notes?: string
           seller: Json
@@ -953,7 +953,6 @@ export type Database = {
           vat_rate?: number
         }
         Update: {
-          booking_id?: string
           buyer?: Json
           created_at?: string
           currency?: string
@@ -964,6 +963,7 @@ export type Database = {
           is_vat_invoice?: boolean
           issue_date?: string
           issued_by?: string
+          lease_id?: string | null
           line_items?: Json
           notes?: string
           seller?: Json
@@ -974,10 +974,10 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "invoices_booking_id_fkey"
-            columns: ["booking_id"]
-            isOneToOne: true
-            referencedRelation: "bookings"
+            foreignKeyName: "invoices_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "leases"
             referencedColumns: ["id"]
           },
         ]
