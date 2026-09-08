@@ -20,7 +20,7 @@ export const getHousekeepingWeek = createServerFn({ method: "POST" })
     const last = days[days.length - 1]!;
 
     const { data: properties } = await supabaseAdmin
-      .from("properties")
+      .from("units")
       .select("id, name, sort_order")
       .eq("is_active", true)
       .order("sort_order", { ascending: true });
@@ -117,7 +117,7 @@ export const getHousekeepingDay = createServerFn({ method: "POST" })
     const date = data.date ?? localToday(settings.timezone);
 
     const { data: properties } = await supabaseAdmin
-      .from("properties")
+      .from("units")
       .select("id, name, sort_order")
       .eq("is_active", true)
       .order("sort_order", { ascending: true });

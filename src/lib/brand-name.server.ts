@@ -5,9 +5,9 @@ export async function getPublicBrandName(): Promise<string> {
   try {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
-      .from("property_settings")
+      .from("org_settings")
       .select("display_name")
-      .eq("scope", "global")
+      .eq("singleton", true)
       .maybeSingle();
     const name = String((data as Record<string, unknown> | null)?.["display_name"] ?? "").trim();
     return name || PLATFORM_NAME;

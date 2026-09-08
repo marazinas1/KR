@@ -324,10 +324,65 @@ export type Database = {
             foreignKeyName: "bookings_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
-            referencedRelation: "properties"
+            referencedRelation: "public_vacancies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "units"
             referencedColumns: ["id"]
           },
         ]
+      }
+      buildings: {
+        Row: {
+          address: string
+          city: string
+          country: string
+          created_at: string
+          id: string
+          is_active: boolean
+          kind: string
+          lat: number | null
+          lng: number | null
+          name: string
+          notes: string
+          postal_code: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string
+          city?: string
+          country?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kind?: string
+          lat?: number | null
+          lng?: number | null
+          name: string
+          notes?: string
+          postal_code?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          city?: string
+          country?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kind?: string
+          lat?: number | null
+          lng?: number | null
+          name?: string
+          notes?: string
+          postal_code?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       car_investments: {
         Row: {
@@ -480,6 +535,83 @@ export type Database = {
         }
         Relationships: []
       }
+      charges: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string
+          id: string
+          invoice_id: string | null
+          kind: string
+          lease_id: string
+          meter_reading_id: string | null
+          period: string
+          quantity: number
+          unit_price: number
+          updated_at: string
+          utility_rate_id: string | null
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          description?: string
+          id?: string
+          invoice_id?: string | null
+          kind: string
+          lease_id: string
+          meter_reading_id?: string | null
+          period: string
+          quantity?: number
+          unit_price?: number
+          updated_at?: string
+          utility_rate_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string
+          id?: string
+          invoice_id?: string | null
+          kind?: string
+          lease_id?: string
+          meter_reading_id?: string | null
+          period?: string
+          quantity?: number
+          unit_price?: number
+          updated_at?: string
+          utility_rate_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "charges_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charges_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "leases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charges_meter_reading_id_fkey"
+            columns: ["meter_reading_id"]
+            isOneToOne: false
+            referencedRelation: "meter_readings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charges_utility_rate_id_fkey"
+            columns: ["utility_rate_id"]
+            isOneToOne: false
+            referencedRelation: "utility_rates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       content_templates: {
         Row: {
           category: string
@@ -585,6 +717,86 @@ export type Database = {
         }
         Relationships: []
       }
+      documents: {
+        Row: {
+          bucket: string
+          created_at: string
+          expires_at: string | null
+          file_path: string
+          id: string
+          kind: string
+          lease_id: string | null
+          mime_type: string
+          size_bytes: number
+          tenant_id: string | null
+          title: string
+          unit_id: string | null
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          bucket?: string
+          created_at?: string
+          expires_at?: string | null
+          file_path: string
+          id?: string
+          kind?: string
+          lease_id?: string | null
+          mime_type?: string
+          size_bytes?: number
+          tenant_id?: string | null
+          title?: string
+          unit_id?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          bucket?: string
+          created_at?: string
+          expires_at?: string | null
+          file_path?: string
+          id?: string
+          kind?: string
+          lease_id?: string | null
+          mime_type?: string
+          size_bytes?: number
+          tenant_id?: string | null
+          title?: string
+          unit_id?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_lease_fk"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "leases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "documents_tenant_fk"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_documents_property_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "public_vacancies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_documents_property_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expenses: {
         Row: {
           amount: number
@@ -592,9 +804,8 @@ export type Database = {
           created_at: string
           expense_date: string
           id: string
-          mileage_km: number | null
           note: string
-          property_id: string | null
+          unit_id: string | null
           updated_at: string
         }
         Insert: {
@@ -603,9 +814,8 @@ export type Database = {
           created_at?: string
           expense_date?: string
           id?: string
-          mileage_km?: number | null
           note?: string
-          property_id?: string | null
+          unit_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -614,17 +824,23 @@ export type Database = {
           created_at?: string
           expense_date?: string
           id?: string
-          mileage_km?: number | null
           note?: string
-          property_id?: string | null
+          unit_id?: string | null
           updated_at?: string
         }
         Relationships: [
           {
             foreignKeyName: "expenses_property_id_fkey"
-            columns: ["property_id"]
+            columns: ["unit_id"]
             isOneToOne: false
-            referencedRelation: "properties"
+            referencedRelation: "public_vacancies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_property_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
             referencedColumns: ["id"]
           },
         ]
@@ -766,6 +982,545 @@ export type Database = {
           },
         ]
       }
+      issue_comments: {
+        Row: {
+          author_id: string | null
+          author_role: string
+          body: string
+          created_at: string
+          id: string
+          is_internal: boolean
+          issue_id: string
+          photo_paths: Json
+        }
+        Insert: {
+          author_id?: string | null
+          author_role?: string
+          body: string
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          issue_id: string
+          photo_paths?: Json
+        }
+        Update: {
+          author_id?: string | null
+          author_role?: string
+          body?: string
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          issue_id?: string
+          photo_paths?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issue_comments_issue_id_fkey"
+            columns: ["issue_id"]
+            isOneToOne: false
+            referencedRelation: "issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      issues: {
+        Row: {
+          assigned_to: string | null
+          category: string
+          cost: number | null
+          created_at: string
+          description: string
+          id: string
+          lease_id: string | null
+          photo_paths: Json
+          priority: string
+          reported_by: string | null
+          reporter_name: string
+          resolved_at: string | null
+          status: string
+          title: string
+          unit_id: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          category?: string
+          cost?: number | null
+          created_at?: string
+          description?: string
+          id?: string
+          lease_id?: string | null
+          photo_paths?: Json
+          priority?: string
+          reported_by?: string | null
+          reporter_name?: string
+          resolved_at?: string | null
+          status?: string
+          title: string
+          unit_id: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          category?: string
+          cost?: number | null
+          created_at?: string
+          description?: string
+          id?: string
+          lease_id?: string | null
+          photo_paths?: Json
+          priority?: string
+          reported_by?: string | null
+          reporter_name?: string
+          resolved_at?: string | null
+          status?: string
+          title?: string
+          unit_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issues_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "leases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "issues_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "public_vacancies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "issues_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lease_occupants: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          lease_id: string
+          phone: string
+          relation: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          lease_id: string
+          phone?: string
+          relation?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          lease_id?: string
+          phone?: string
+          relation?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lease_occupants_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "leases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lease_occupants_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leases: {
+        Row: {
+          created_at: string
+          deposit: number
+          deposit_paid: number
+          end_date: string | null
+          id: string
+          monthly_rent: number
+          notes: string
+          notice_days: number
+          payment_day: number
+          renewal: boolean
+          start_date: string
+          status: string
+          tenant_id: string
+          terminated_at: string | null
+          termination_reason: string
+          unit_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deposit?: number
+          deposit_paid?: number
+          end_date?: string | null
+          id?: string
+          monthly_rent?: number
+          notes?: string
+          notice_days?: number
+          payment_day?: number
+          renewal?: boolean
+          start_date: string
+          status?: string
+          tenant_id: string
+          terminated_at?: string | null
+          termination_reason?: string
+          unit_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deposit?: number
+          deposit_paid?: number
+          end_date?: string | null
+          id?: string
+          monthly_rent?: number
+          notes?: string
+          notice_days?: number
+          payment_day?: number
+          renewal?: boolean
+          start_date?: string
+          status?: string
+          tenant_id?: string
+          terminated_at?: string | null
+          termination_reason?: string
+          unit_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leases_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leases_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "public_vacancies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leases_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meter_readings: {
+        Row: {
+          consumption: number
+          created_at: string
+          id: string
+          meter_id: string
+          needs_review: boolean
+          note: string
+          period: string
+          photo_path: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          submitted_at: string
+          submitted_by: string | null
+          superseded_by: string | null
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          consumption?: number
+          created_at?: string
+          id?: string
+          meter_id: string
+          needs_review?: boolean
+          note?: string
+          period: string
+          photo_path?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_at?: string
+          submitted_by?: string | null
+          superseded_by?: string | null
+          updated_at?: string
+          value: number
+        }
+        Update: {
+          consumption?: number
+          created_at?: string
+          id?: string
+          meter_id?: string
+          needs_review?: boolean
+          note?: string
+          period?: string
+          photo_path?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          submitted_at?: string
+          submitted_by?: string | null
+          superseded_by?: string | null
+          updated_at?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meter_readings_meter_id_fkey"
+            columns: ["meter_id"]
+            isOneToOne: false
+            referencedRelation: "meters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meter_readings_superseded_by_fkey"
+            columns: ["superseded_by"]
+            isOneToOne: false
+            referencedRelation: "meter_readings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meters: {
+        Row: {
+          building_id: string | null
+          created_at: string
+          digits: number | null
+          id: string
+          initial_reading: number
+          is_active: boolean
+          notes: string
+          serial_number: string
+          type: string
+          unit_id: string | null
+          uom: string
+          updated_at: string
+        }
+        Insert: {
+          building_id?: string | null
+          created_at?: string
+          digits?: number | null
+          id?: string
+          initial_reading?: number
+          is_active?: boolean
+          notes?: string
+          serial_number?: string
+          type: string
+          unit_id?: string | null
+          uom?: string
+          updated_at?: string
+        }
+        Update: {
+          building_id?: string | null
+          created_at?: string
+          digits?: number | null
+          id?: string
+          initial_reading?: number
+          is_active?: boolean
+          notes?: string
+          serial_number?: string
+          type?: string
+          unit_id?: string | null
+          uom?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meters_building_id_fkey"
+            columns: ["building_id"]
+            isOneToOne: false
+            referencedRelation: "buildings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meters_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "public_vacancies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meters_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      org_settings: {
+        Row: {
+          address: string | null
+          bank_name: string | null
+          brand_email_logo_url: string | null
+          brand_logo_url: string | null
+          brand_pdf_logo_url: string | null
+          brand_primary_color: string
+          brand_secondary_color: string
+          city: string | null
+          company_address: string | null
+          company_code: string | null
+          company_name: string | null
+          company_vat_code: string | null
+          country: string
+          created_at: string
+          currency: string
+          default_language: string
+          default_notice_days: number
+          display_name: string | null
+          email: string | null
+          iban: string | null
+          id: string
+          integrations: Json
+          invoice_issuer_name: string
+          invoice_logo_url: string | null
+          invoice_next_number: number
+          invoice_notes: string | null
+          invoice_series: string | null
+          lat: number | null
+          lng: number | null
+          notify_issue_update: boolean
+          notify_lease_expiring: boolean
+          notify_new_inquiry: boolean
+          notify_payment_overdue: boolean
+          notify_reading_reminder: boolean
+          payment_due_day: number
+          payment_methods: Json
+          phone: string | null
+          postal_code: string | null
+          reading_window_from_day: number
+          reading_window_to_day: number
+          require_meter_photo: boolean
+          singleton: boolean
+          timezone: string
+          updated_at: string
+          updated_by: string | null
+          vat_rate: number
+        }
+        Insert: {
+          address?: string | null
+          bank_name?: string | null
+          brand_email_logo_url?: string | null
+          brand_logo_url?: string | null
+          brand_pdf_logo_url?: string | null
+          brand_primary_color?: string
+          brand_secondary_color?: string
+          city?: string | null
+          company_address?: string | null
+          company_code?: string | null
+          company_name?: string | null
+          company_vat_code?: string | null
+          country?: string
+          created_at?: string
+          currency?: string
+          default_language?: string
+          default_notice_days?: number
+          display_name?: string | null
+          email?: string | null
+          iban?: string | null
+          id?: string
+          integrations?: Json
+          invoice_issuer_name?: string
+          invoice_logo_url?: string | null
+          invoice_next_number?: number
+          invoice_notes?: string | null
+          invoice_series?: string | null
+          lat?: number | null
+          lng?: number | null
+          notify_issue_update?: boolean
+          notify_lease_expiring?: boolean
+          notify_new_inquiry?: boolean
+          notify_payment_overdue?: boolean
+          notify_reading_reminder?: boolean
+          payment_due_day?: number
+          payment_methods?: Json
+          phone?: string | null
+          postal_code?: string | null
+          reading_window_from_day?: number
+          reading_window_to_day?: number
+          require_meter_photo?: boolean
+          singleton?: boolean
+          timezone?: string
+          updated_at?: string
+          updated_by?: string | null
+          vat_rate?: number
+        }
+        Update: {
+          address?: string | null
+          bank_name?: string | null
+          brand_email_logo_url?: string | null
+          brand_logo_url?: string | null
+          brand_pdf_logo_url?: string | null
+          brand_primary_color?: string
+          brand_secondary_color?: string
+          city?: string | null
+          company_address?: string | null
+          company_code?: string | null
+          company_name?: string | null
+          company_vat_code?: string | null
+          country?: string
+          created_at?: string
+          currency?: string
+          default_language?: string
+          default_notice_days?: number
+          display_name?: string | null
+          email?: string | null
+          iban?: string | null
+          id?: string
+          integrations?: Json
+          invoice_issuer_name?: string
+          invoice_logo_url?: string | null
+          invoice_next_number?: number
+          invoice_notes?: string | null
+          invoice_series?: string | null
+          lat?: number | null
+          lng?: number | null
+          notify_issue_update?: boolean
+          notify_lease_expiring?: boolean
+          notify_new_inquiry?: boolean
+          notify_payment_overdue?: boolean
+          notify_reading_reminder?: boolean
+          payment_due_day?: number
+          payment_methods?: Json
+          phone?: string | null
+          postal_code?: string | null
+          reading_window_from_day?: number
+          reading_window_to_day?: number
+          require_meter_photo?: boolean
+          singleton?: boolean
+          timezone?: string
+          updated_at?: string
+          updated_by?: string | null
+          vat_rate?: number
+        }
+        Relationships: []
+      }
       page_views: {
         Row: {
           country: string
@@ -796,266 +1551,49 @@ export type Database = {
         }
         Relationships: []
       }
-      payment_transactions: {
+      payments: {
         Row: {
           amount: number
-          bic: string | null
-          booking_id: string
           created_at: string
-          currency: string
           id: string
-          mac_valid: boolean | null
-          provider: string
-          provider_transaction_id: string | null
-          raw_request: Json | null
-          raw_response: Json | null
-          service_code: string | null
-          stamp: string
-          status: string
+          lease_id: string
+          method: string
+          note: string
+          paid_at: string
+          recorded_by: string | null
+          reference: string
           updated_at: string
         }
         Insert: {
           amount: number
-          bic?: string | null
-          booking_id: string
           created_at?: string
-          currency?: string
           id?: string
-          mac_valid?: boolean | null
-          provider?: string
-          provider_transaction_id?: string | null
-          raw_request?: Json | null
-          raw_response?: Json | null
-          service_code?: string | null
-          stamp: string
-          status?: string
+          lease_id: string
+          method?: string
+          note?: string
+          paid_at?: string
+          recorded_by?: string | null
+          reference?: string
           updated_at?: string
         }
         Update: {
           amount?: number
-          bic?: string | null
-          booking_id?: string
           created_at?: string
-          currency?: string
           id?: string
-          mac_valid?: boolean | null
-          provider?: string
-          provider_transaction_id?: string | null
-          raw_request?: Json | null
-          raw_response?: Json | null
-          service_code?: string | null
-          stamp?: string
-          status?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "payment_transactions_booking_id_fkey"
-            columns: ["booking_id"]
-            isOneToOne: false
-            referencedRelation: "bookings"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      properties: {
-        Row: {
-          address: string
-          amenities: Json
-          area_m2: number | null
-          beds: number
-          category: string
-          city: string
-          country: string
-          cover_image_url: string
-          created_at: string
-          description: string
-          door_code: string | null
-          extra_services: Json
-          features: Json
-          ical_import_url: string | null
-          ical_last_status: string | null
-          ical_last_sync_at: string | null
-          id: string
-          image_urls: Json
-          is_active: boolean
-          lat: number | null
-          lng: number | null
-          location_note: string
-          max_guests: number
-          name: string
-          price_per_night: number
-          price_tiers: Json
-          property_type: string
-          rooms: Json
-          sort_order: number
-          status: string
-          updated_at: string
-          year: number
-        }
-        Insert: {
-          address?: string
-          amenities?: Json
-          area_m2?: number | null
-          beds?: number
-          category: string
-          city?: string
-          country?: string
-          cover_image_url?: string
-          created_at?: string
-          description?: string
-          door_code?: string | null
-          extra_services?: Json
-          features?: Json
-          ical_import_url?: string | null
-          ical_last_status?: string | null
-          ical_last_sync_at?: string | null
-          id?: string
-          image_urls?: Json
-          is_active?: boolean
-          lat?: number | null
-          lng?: number | null
-          location_note?: string
-          max_guests?: number
-          name: string
-          price_per_night: number
-          price_tiers?: Json
-          property_type?: string
-          rooms?: Json
-          sort_order?: number
-          status?: string
-          updated_at?: string
-          year: number
-        }
-        Update: {
-          address?: string
-          amenities?: Json
-          area_m2?: number | null
-          beds?: number
-          category?: string
-          city?: string
-          country?: string
-          cover_image_url?: string
-          created_at?: string
-          description?: string
-          door_code?: string | null
-          extra_services?: Json
-          features?: Json
-          ical_import_url?: string | null
-          ical_last_status?: string | null
-          ical_last_sync_at?: string | null
-          id?: string
-          image_urls?: Json
-          is_active?: boolean
-          lat?: number | null
-          lng?: number | null
-          location_note?: string
-          max_guests?: number
-          name?: string
-          price_per_night?: number
-          price_tiers?: Json
-          property_type?: string
-          rooms?: Json
-          sort_order?: number
-          status?: string
-          updated_at?: string
-          year?: number
-        }
-        Relationships: []
-      }
-      property_documents: {
-        Row: {
-          created_at: string
-          expires_at: string | null
-          file_path: string
-          id: string
-          kind: string
-          mime_type: string
-          property_id: string
-          size_bytes: number
-          title: string
-          updated_at: string
-          uploaded_by: string | null
-        }
-        Insert: {
-          created_at?: string
-          expires_at?: string | null
-          file_path: string
-          id?: string
-          kind: string
-          mime_type?: string
-          property_id: string
-          size_bytes?: number
-          title?: string
-          updated_at?: string
-          uploaded_by?: string | null
-        }
-        Update: {
-          created_at?: string
-          expires_at?: string | null
-          file_path?: string
-          id?: string
-          kind?: string
-          mime_type?: string
-          property_id?: string
-          size_bytes?: number
-          title?: string
-          updated_at?: string
-          uploaded_by?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "property_documents_property_id_fkey"
-            columns: ["property_id"]
-            isOneToOne: false
-            referencedRelation: "properties"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      property_events: {
-        Row: {
-          cost: number | null
-          created_at: string
-          ended_at: string | null
-          id: string
-          mileage_km: number | null
-          note: string
-          property_id: string
-          reason: string
-          started_at: string
-          updated_at: string
-        }
-        Insert: {
-          cost?: number | null
-          created_at?: string
-          ended_at?: string | null
-          id?: string
-          mileage_km?: number | null
+          lease_id?: string
+          method?: string
           note?: string
-          property_id: string
-          reason?: string
-          started_at?: string
-          updated_at?: string
-        }
-        Update: {
-          cost?: number | null
-          created_at?: string
-          ended_at?: string | null
-          id?: string
-          mileage_km?: number | null
-          note?: string
-          property_id?: string
-          reason?: string
-          started_at?: string
+          paid_at?: string
+          recorded_by?: string | null
+          reference?: string
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: "property_events_property_id_fkey"
-            columns: ["property_id"]
+            foreignKeyName: "payments_lease_id_fkey"
+            columns: ["lease_id"]
             isOneToOne: false
-            referencedRelation: "properties"
+            referencedRelation: "leases"
             referencedColumns: ["id"]
           },
         ]
@@ -1066,10 +1604,9 @@ export type Database = {
           category: string
           created_at: string
           id: string
-          mileage_km: number | null
           note: string
-          property_id: string
           purchase_date: string
+          unit_id: string
           updated_at: string
         }
         Insert: {
@@ -1077,10 +1614,9 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
-          mileage_km?: number | null
           note?: string
-          property_id: string
           purchase_date?: string
+          unit_id: string
           updated_at?: string
         }
         Update: {
@@ -1088,18 +1624,24 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
-          mileage_km?: number | null
           note?: string
-          property_id?: string
           purchase_date?: string
+          unit_id?: string
           updated_at?: string
         }
         Relationships: [
           {
             foreignKeyName: "property_investments_property_id_fkey"
-            columns: ["property_id"]
+            columns: ["unit_id"]
             isOneToOne: false
-            referencedRelation: "properties"
+            referencedRelation: "public_vacancies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_investments_property_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
             referencedColumns: ["id"]
           },
         ]
@@ -1108,278 +1650,116 @@ export type Database = {
         Row: {
           created_at: string
           due_date: string | null
-          due_mileage_km: number | null
           id: string
           last_done_at: string | null
           note: string
-          property_id: string
           type: string
+          unit_id: string
           updated_at: string
         }
         Insert: {
           created_at?: string
           due_date?: string | null
-          due_mileage_km?: number | null
           id?: string
           last_done_at?: string | null
           note?: string
-          property_id: string
           type: string
+          unit_id: string
           updated_at?: string
         }
         Update: {
           created_at?: string
           due_date?: string | null
-          due_mileage_km?: number | null
           id?: string
           last_done_at?: string | null
           note?: string
-          property_id?: string
           type?: string
+          unit_id?: string
           updated_at?: string
         }
         Relationships: [
           {
             foreignKeyName: "property_maintenance_property_id_fkey"
-            columns: ["property_id"]
+            columns: ["unit_id"]
             isOneToOne: false
-            referencedRelation: "properties"
+            referencedRelation: "public_vacancies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_maintenance_property_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
             referencedColumns: ["id"]
           },
         ]
       }
-      property_settings: {
+      rental_inquiries: {
         Row: {
-          address: string | null
-          auto_confirm_bookings: boolean
-          auto_refund_deposit: boolean
-          bank_name: string | null
-          brand_email_logo_url: string | null
-          brand_logo_url: string | null
-          brand_pdf_logo_url: string | null
-          brand_primary_color: string
-          brand_secondary_color: string
-          cancellation_fee: number
-          cancellation_fee_type: string
-          cancellation_policy_text: string | null
-          checkin_from: string
-          checkin_reminder_hours_before: number
-          checkin_until: string
-          checkout_until: string
-          children_free_until_age: number
-          city: string | null
-          city_tax: number
-          city_tax_min_age: number
-          company_address: string | null
-          company_code: string | null
-          company_name: string | null
-          company_vat_code: string | null
-          country: string
+          converted_lease_id: string | null
           created_at: string
-          currency: string
-          default_language: string
-          deposit_amount: number
-          deposit_required: boolean
-          deposit_type: string
-          display_name: string | null
-          email: string | null
-          extra_guest_fee: number
-          free_cancellation_days: number
-          iban: string | null
+          email: string
+          handled_by: string | null
           id: string
-          integrations: Json
-          invoice_issuer_name: string
-          invoice_logo_url: string | null
-          invoice_next_number: number
-          invoice_notes: string | null
-          invoice_series: string | null
-          lat: number | null
-          lng: number | null
-          max_advance_days: number
-          max_nights: number
-          min_guest_age: number
-          min_nights: number
-          no_show_fee: number
-          notify_booking_change: boolean
-          notify_booking_confirmation: boolean
-          notify_cancellation_confirmation: boolean
-          notify_checkin_reminder: boolean
-          notify_review_request: boolean
-          parties_allowed: boolean
-          payment_due_days: number
-          payment_methods: Json
-          pets_allowed: boolean
-          phone: string | null
-          postal_code: string | null
-          property_id: string | null
-          quiet_hours_from: string
-          quiet_hours_to: string
-          require_email: boolean
-          require_phone: boolean
-          review_link: string | null
-          review_request_hours_after: number
-          scope: string
-          timezone: string
+          message: string
+          move_in_date: string | null
+          name: string
+          phone: string
+          source: string
+          status: string
+          unit_id: string | null
           updated_at: string
-          updated_by: string | null
-          vat_rate: number
         }
         Insert: {
-          address?: string | null
-          auto_confirm_bookings?: boolean
-          auto_refund_deposit?: boolean
-          bank_name?: string | null
-          brand_email_logo_url?: string | null
-          brand_logo_url?: string | null
-          brand_pdf_logo_url?: string | null
-          brand_primary_color?: string
-          brand_secondary_color?: string
-          cancellation_fee?: number
-          cancellation_fee_type?: string
-          cancellation_policy_text?: string | null
-          checkin_from?: string
-          checkin_reminder_hours_before?: number
-          checkin_until?: string
-          checkout_until?: string
-          children_free_until_age?: number
-          city?: string | null
-          city_tax?: number
-          city_tax_min_age?: number
-          company_address?: string | null
-          company_code?: string | null
-          company_name?: string | null
-          company_vat_code?: string | null
-          country?: string
+          converted_lease_id?: string | null
           created_at?: string
-          currency?: string
-          default_language?: string
-          deposit_amount?: number
-          deposit_required?: boolean
-          deposit_type?: string
-          display_name?: string | null
-          email?: string | null
-          extra_guest_fee?: number
-          free_cancellation_days?: number
-          iban?: string | null
+          email?: string
+          handled_by?: string | null
           id?: string
-          integrations?: Json
-          invoice_issuer_name?: string
-          invoice_logo_url?: string | null
-          invoice_next_number?: number
-          invoice_notes?: string | null
-          invoice_series?: string | null
-          lat?: number | null
-          lng?: number | null
-          max_advance_days?: number
-          max_nights?: number
-          min_guest_age?: number
-          min_nights?: number
-          no_show_fee?: number
-          notify_booking_change?: boolean
-          notify_booking_confirmation?: boolean
-          notify_cancellation_confirmation?: boolean
-          notify_checkin_reminder?: boolean
-          notify_review_request?: boolean
-          parties_allowed?: boolean
-          payment_due_days?: number
-          payment_methods?: Json
-          pets_allowed?: boolean
-          phone?: string | null
-          postal_code?: string | null
-          property_id?: string | null
-          quiet_hours_from?: string
-          quiet_hours_to?: string
-          require_email?: boolean
-          require_phone?: boolean
-          review_link?: string | null
-          review_request_hours_after?: number
-          scope?: string
-          timezone?: string
+          message?: string
+          move_in_date?: string | null
+          name: string
+          phone?: string
+          source?: string
+          status?: string
+          unit_id?: string | null
           updated_at?: string
-          updated_by?: string | null
-          vat_rate?: number
         }
         Update: {
-          address?: string | null
-          auto_confirm_bookings?: boolean
-          auto_refund_deposit?: boolean
-          bank_name?: string | null
-          brand_email_logo_url?: string | null
-          brand_logo_url?: string | null
-          brand_pdf_logo_url?: string | null
-          brand_primary_color?: string
-          brand_secondary_color?: string
-          cancellation_fee?: number
-          cancellation_fee_type?: string
-          cancellation_policy_text?: string | null
-          checkin_from?: string
-          checkin_reminder_hours_before?: number
-          checkin_until?: string
-          checkout_until?: string
-          children_free_until_age?: number
-          city?: string | null
-          city_tax?: number
-          city_tax_min_age?: number
-          company_address?: string | null
-          company_code?: string | null
-          company_name?: string | null
-          company_vat_code?: string | null
-          country?: string
+          converted_lease_id?: string | null
           created_at?: string
-          currency?: string
-          default_language?: string
-          deposit_amount?: number
-          deposit_required?: boolean
-          deposit_type?: string
-          display_name?: string | null
-          email?: string | null
-          extra_guest_fee?: number
-          free_cancellation_days?: number
-          iban?: string | null
+          email?: string
+          handled_by?: string | null
           id?: string
-          integrations?: Json
-          invoice_issuer_name?: string
-          invoice_logo_url?: string | null
-          invoice_next_number?: number
-          invoice_notes?: string | null
-          invoice_series?: string | null
-          lat?: number | null
-          lng?: number | null
-          max_advance_days?: number
-          max_nights?: number
-          min_guest_age?: number
-          min_nights?: number
-          no_show_fee?: number
-          notify_booking_change?: boolean
-          notify_booking_confirmation?: boolean
-          notify_cancellation_confirmation?: boolean
-          notify_checkin_reminder?: boolean
-          notify_review_request?: boolean
-          parties_allowed?: boolean
-          payment_due_days?: number
-          payment_methods?: Json
-          pets_allowed?: boolean
-          phone?: string | null
-          postal_code?: string | null
-          property_id?: string | null
-          quiet_hours_from?: string
-          quiet_hours_to?: string
-          require_email?: boolean
-          require_phone?: boolean
-          review_link?: string | null
-          review_request_hours_after?: number
-          scope?: string
-          timezone?: string
+          message?: string
+          move_in_date?: string | null
+          name?: string
+          phone?: string
+          source?: string
+          status?: string
+          unit_id?: string | null
           updated_at?: string
-          updated_by?: string | null
-          vat_rate?: number
         }
         Relationships: [
           {
-            foreignKeyName: "property_settings_property_id_fkey"
-            columns: ["property_id"]
+            foreignKeyName: "rental_inquiries_converted_lease_id_fkey"
+            columns: ["converted_lease_id"]
             isOneToOne: false
-            referencedRelation: "properties"
+            referencedRelation: "leases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_inquiries_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "public_vacancies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_inquiries_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
             referencedColumns: ["id"]
           },
         ]
@@ -1429,7 +1809,14 @@ export type Database = {
             foreignKeyName: "room_status_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: true
-            referencedRelation: "properties"
+            referencedRelation: "public_vacancies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "room_status_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "units"
             referencedColumns: ["id"]
           },
         ]
@@ -1488,6 +1875,238 @@ export type Database = {
           },
         ]
       }
+      tenant_identity: {
+        Row: {
+          created_at: string
+          id: string
+          id_doc_number: string
+          id_doc_type: string
+          issued_by: string
+          personal_code: string
+          tenant_id: string
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          id_doc_number?: string
+          id_doc_type?: string
+          issued_by?: string
+          personal_code?: string
+          tenant_id: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          id_doc_number?: string
+          id_doc_type?: string
+          issued_by?: string
+          personal_code?: string
+          tenant_id?: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_identity_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          is_active: boolean
+          last_name: string
+          notes: string
+          phone: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          is_active?: boolean
+          last_name?: string
+          notes?: string
+          phone?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          is_active?: boolean
+          last_name?: string
+          notes?: string
+          phone?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      unit_events: {
+        Row: {
+          cost: number | null
+          created_at: string
+          ended_at: string | null
+          id: string
+          kind: string
+          note: string
+          started_at: string
+          unit_id: string
+          updated_at: string
+        }
+        Insert: {
+          cost?: number | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          kind?: string
+          note?: string
+          started_at?: string
+          unit_id: string
+          updated_at?: string
+        }
+        Update: {
+          cost?: number | null
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          kind?: string
+          note?: string
+          started_at?: string
+          unit_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_events_property_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "public_vacancies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_events_property_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      units: {
+        Row: {
+          address: string
+          amenities: Json
+          area_m2: number | null
+          building_id: string | null
+          city: string
+          country: string
+          cover_image_url: string
+          created_at: string
+          deposit: number
+          description: string
+          features: Json
+          floor: number | null
+          id: string
+          image_urls: Json
+          is_active: boolean
+          is_listed: boolean
+          lat: number | null
+          lng: number | null
+          location_note: string
+          monthly_rent: number
+          name: string
+          notes: string
+          room_count: number
+          sort_order: number
+          status: string
+          unit_number: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string
+          amenities?: Json
+          area_m2?: number | null
+          building_id?: string | null
+          city?: string
+          country?: string
+          cover_image_url?: string
+          created_at?: string
+          deposit?: number
+          description?: string
+          features?: Json
+          floor?: number | null
+          id?: string
+          image_urls?: Json
+          is_active?: boolean
+          is_listed?: boolean
+          lat?: number | null
+          lng?: number | null
+          location_note?: string
+          monthly_rent?: number
+          name: string
+          notes?: string
+          room_count?: number
+          sort_order?: number
+          status?: string
+          unit_number?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          amenities?: Json
+          area_m2?: number | null
+          building_id?: string | null
+          city?: string
+          country?: string
+          cover_image_url?: string
+          created_at?: string
+          deposit?: number
+          description?: string
+          features?: Json
+          floor?: number | null
+          id?: string
+          image_urls?: Json
+          is_active?: boolean
+          is_listed?: boolean
+          lat?: number | null
+          lng?: number | null
+          location_note?: string
+          monthly_rent?: number
+          name?: string
+          notes?: string
+          room_count?: number
+          sort_order?: number
+          status?: string
+          unit_number?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "units_building_id_fkey"
+            columns: ["building_id"]
+            isOneToOne: false
+            referencedRelation: "buildings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1509,12 +2128,65 @@ export type Database = {
         }
         Relationships: []
       }
+      utility_rates: {
+        Row: {
+          created_at: string
+          effective_from: string
+          fixed_monthly: number
+          id: string
+          note: string
+          price_per_unit: number
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          effective_from: string
+          fixed_monthly?: number
+          id?: string
+          note?: string
+          price_per_unit?: number
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          effective_from?: string
+          fixed_monthly?: number
+          id?: string
+          note?: string
+          price_per_unit?: number
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      public_vacancies: {
+        Row: {
+          address: string | null
+          amenities: Json | null
+          area_m2: number | null
+          available_from: string | null
+          building_name: string | null
+          city: string | null
+          cover_image_url: string | null
+          deposit: number | null
+          description: string | null
+          floor: number | null
+          id: string | null
+          image_urls: Json | null
+          monthly_rent: number | null
+          name: string | null
+          room_count: number | null
+          unit_number: string | null
+          vacant_now: boolean | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      admin_get_door_code: { Args: { _property_id: string }; Returns: string }
       analytics_summary: { Args: { _from: string; _to: string }; Returns: Json }
       cancel_expired_pending_bookings: { Args: never; Returns: number }
       claim_invoice_number: {
@@ -1524,22 +2196,7 @@ export type Database = {
           series: string
         }[]
       }
-      get_active_booked_dates: {
-        Args: never
-        Returns: {
-          date_from: string
-          date_to: string
-          property_id: string
-        }[]
-      }
-      get_property_booked_dates: {
-        Args: { _property_id: string }
-        Returns: {
-          date_from: string
-          date_to: string
-          status: string
-        }[]
-      }
+      current_tenant_id: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1551,6 +2208,8 @@ export type Database = {
       is_manager: { Args: { _user_id?: string }; Returns: boolean }
       is_owner: { Args: { _user_id?: string }; Returns: boolean }
       is_tenant: { Args: { _user_id?: string }; Returns: boolean }
+      tenant_owns_lease: { Args: { _lease_id: string }; Returns: boolean }
+      tenant_owns_unit: { Args: { _unit_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "developer" | "owner" | "manager" | "tenant"

@@ -1,25 +1,17 @@
-// Bendras DB eilutės -> PropertySettings mapinimas (naudoja ir serverFn, ir sąskaitų logika).
+// Shared DB row -> PropertySettings mapping (used by server fns and invoicing).
 import {
   DEFAULT_PROPERTY_SETTINGS,
   SETTINGS_COLUMN_MAP,
-  hhmm,
   type PropertySettings,
 } from "./property-settings";
 
-const TIME_KEYS: (keyof PropertySettings)[] = [
-  "checkinFrom",
-  "checkinUntil",
-  "checkoutUntil",
-  "quietHoursFrom",
-  "quietHoursTo",
-];
 const NUMBER_KEYS: (keyof PropertySettings)[] = [
   "vatRate",
-  "cityTax",
-  "extraGuestFee",
-  "depositAmount",
-  "cancellationFee",
-  "noShowFee",
+  "paymentDueDay",
+  "defaultNoticeDays",
+  "readingWindowFromDay",
+  "readingWindowToDay",
+  "invoiceNextNumber",
   "lat",
   "lng",
 ];
@@ -31,9 +23,7 @@ export function rowToSettings(row: Record<string, unknown> | null): PropertySett
     const raw = row[column];
     if (raw === undefined) continue;
     const k = key as keyof PropertySettings;
-    if (TIME_KEYS.includes(k)) {
-      out[key] = hhmm(raw, String(DEFAULT_PROPERTY_SETTINGS[k]));
-    } else if (NUMBER_KEYS.includes(k)) {
+    if (NUMBER_KEYS.includes(k)) {
       out[key] = raw === null ? (k === "lat" || k === "lng" ? null : 0) : Number(raw);
     } else if (key === "paymentMethods") {
       out[key] = Array.isArray(raw) ? (raw as string[]) : [];
