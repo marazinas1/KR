@@ -1,4 +1,6 @@
-/** Bendra viešo API duomenų logika (ilgalaikės nuomos objektai). */
+/** Bendra viešo API duomenų logika (ilgalaikės nuomos laisvi objektai).
+ *  Vieši skaitymai eina TIK per public_vacancies vaizdą — units lentelė
+ *  anonimams neprieinama (joje yra vidinių pastabų). */
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -10,28 +12,28 @@ export function publicApiClient() {
   );
 }
 
-type UnitRow = Database["public"]["Tables"]["units"]["Row"];
+type VacancyRow = Record<string, unknown>;
 
-/** Tik viešai saugūs laukai — be vidinių pastabų ir be nuomininkų duomenų. */
-export function publicUnit(row: UnitRow) {
+export function publicUnit(row: VacancyRow) {
   return {
-    id: row.id,
-    name: row.name,
-    description: row.description ?? "",
-    city: row.city ?? "",
-    country: row.country ?? "LT",
-    address: row.address ?? "",
-    area_m2: row.area_m2 ?? null,
-    floor: row.floor ?? null,
-    room_count: row.room_count ?? 1,
-    amenities: (row.amenities as unknown as string[]) ?? [],
-    monthly_rent: Number(row.monthly_rent ?? 0),
-    deposit: Number(row.deposit ?? 0),
-    status: row.status,
-    cover_image_url: row.cover_image_url,
-    image_urls: (row.image_urls as unknown as string[]) ?? [],
+    id: String(row['id']),
+    name: (row['name'] as string) ?? "",
+    unit_number: (row['unit_number'] as string) ?? "",
+    description: (row['description'] as string) ?? "",
+    city: (row['city'] as string) ?? "",
+    address: (row['address'] as string) ?? "",
+    building_name: (row['building_name'] as string) ?? null,
+    area_m2: (row['area_m2'] as number) ?? null,
+    room_count: (row['room_count'] as number) ?? 1,
+    floor: (row['floor'] as number) ?? null,
+    monthly_rent: Number(row['monthly_rent'] ?? 0),
+    deposit: Number(row['deposit'] ?? 0),
+    amenities: (row['amenities'] as string[]) ?? [],
+    cover_image_url: (row['cover_image_url'] as string) ?? "",
+    image_urls: (row['image_urls'] as string[]) ?? [],
+    available_from: (row['available_from'] as string) ?? null,
+    vacant_now: Boolean(row['vacant_now']),
   };
 }
 
-export const UNIT_PUBLIC_COLUMNS =
-  "id, name, description, city, country, address, area_m2, floor, room_count, amenities, monthly_rent, deposit, status, cover_image_url, image_urls, is_listed, is_active, sort_order, created_at";
+export const UNIT_PUBLIC_COLUMNS = "*";
