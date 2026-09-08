@@ -20,6 +20,7 @@ import {
   IntegrationsSection,
   type IntegrationCard,
 } from "@/components/admin/settings/IntegrationsSection";
+import { TariffsSection } from "@/components/admin/settings/TariffsSection";
 import { ApiAccessSection } from "@/components/admin/settings/ApiAccessSection";
 import { EmailTestSection } from "@/components/admin/settings/EmailTestSection";
 import { PLATFORM_NAME } from "@/lib/brand";
@@ -44,7 +45,7 @@ export const Route = createFileRoute("/_authenticated/admin/settings")({
   }),
 });
 
-type NavId = SettingsSectionId | "integrations" | "api" | "users";
+type NavId = SettingsSectionId | "integrations" | "api" | "users" | "tariffs";
 
 function PropertySettingsPage() {
   const { t } = useTranslation();
@@ -142,6 +143,7 @@ function PropertySettingsPage() {
 
   const navItems: { id: NavId; icon: string; title: string }[] = [
     ...SETTINGS_SECTIONS.map((s) => ({ id: s.id as NavId, icon: s.icon, title: t(s.titleKey) })),
+    { id: "tariffs", icon: "💧", title: t("settings.nav.tariffs") },
     { id: "integrations", icon: "🔌", title: t("settings.nav.integrations") },
     { id: "api", icon: "🔑", title: t("settings.nav.api") },
   ];
@@ -195,6 +197,8 @@ function PropertySettingsPage() {
                 <Loader2 className="h-4 w-4 animate-spin" />
                 {t("common.loading")}
               </div>
+            ) : active === "tariffs" ? (
+              <TariffsSection canEdit={canEdit} />
             ) : active === "api" ? (
               <ApiAccessSection canEdit={canEdit} />
             ) : active === "integrations" ? (
