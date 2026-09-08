@@ -13,7 +13,13 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DatePicker } from "@/components/DatePicker";
 import { DocumentsTab } from "@/components/admin/units/DocumentsTab";
-import { getTenant, saveTenant, saveTenantIdentity } from "@/lib/tenants.functions";
+import {
+  getTenant,
+  inviteTenantToPortal,
+  revokeTenantPortal,
+  saveTenant,
+  saveTenantIdentity,
+} from "@/lib/tenants.functions";
 import { listLeases } from "@/lib/leases.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/tenants/$id")({
@@ -98,6 +104,31 @@ function TenantDetail() {
     onSuccess: () => toast.success(t("rental.tenants.identitySaved")),
     onError: (e: Error) => toast.error(e.message),
   });
+  const inviteFn = useServerFn(inviteTenantToPortal);
+  const revokeFn = useServerFn(revokeTenantPortal);
+  const invite = useMutation({
+    mutationFn: () => inviteFn({ data: { tenant_id: id, redirectTo: window.location.origin } }),
+    onSuccess: () => {
+      toast.success(t("rental.tenants.inviteSent"));
+      refetch();
+    },
+    onError: (e: Error) =>
+      toast.error(
+        e.message === "NoEmail"
+          ? t("rental.tenants.inviteNoEmail")
+          : e.message === "EmailUsedByOtherTenant"
+            ? t("rental.tenants.inviteEmailClash")
+            : e.message,
+      ),
+  });
+  const revoke = useMutation({
+    mutationFn: () => revokeFn({ data: { tenant_id: id } }),
+    onSuccess: () => {
+      toast.success(t("rental.tenants.revoked"));
+      refetch();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   if (isLoading || !data) {
     return <p className="text-sm text-muted-foreground">{t("common.loading")}</p>;
@@ -112,9 +143,36 @@ function TenantDetail() {
       <h1 className="mt-2 text-2xl font-semibold">
         {data.tenant.first_name} {data.tenant.last_name}
       </h1>
-      <p className="text-sm text-muted-foreground">
-        {data.tenant.user_id ? t("rental.tenants.hasLogin") : t("rental.tenants.noLogin")}
-      </p>
+      <div className="mt-1 flex flex-wrap items-center gap-3">
+        <p className="text-sm text-muted-foreground">
+          {data.tenant.user_id ? t("rental.tenants.hasLogin") : t("rental.tenants.noLogin")}
+        </p>
+        {data.canInvite && !data.tenant.user_id && (
+          <Button size="sm" variant="outline" disabled={invite.isPending} onClick={() => invite.mutate()}>
+            {t("rental.tenants.invitePortal")}
+          </Button>
+        )}
+        {data.canInvite && data.tenant.user_id && (
+          <>
+            <Button size="sm" variant="outline" disabled={invite.isPending} onClick={() => invite.mutate()}>
+              {t("rental.tenants.resendInvite")}
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              disabled={revoke.isPending}
+              onClick={() => {
+                if (confirm(t("rental.tenants.revokeConfirm"))) revoke.mutate();
+              }}
+            >
+              {t("rental.tenants.revokePortal")}
+            </Button>
+          </>
+        )}
+        {!data.canInvite && !data.tenant.user_id && (
+          <p className="text-xs text-muted-foreground">{t("rental.tenants.inviteNotPrimary")}</p>
+        )}
+      </div>
 
       <Tabs defaultValue="details" className="mt-5">
         <TabsList className="flex-wrap">

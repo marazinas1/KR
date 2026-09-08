@@ -4,11 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 
 const STORAGE_KEY = "pv_session";
 
-/** Paths that must never be tracked (admin/staff/auth areas). */
+/** Paths that must never be tracked (admin/tenant/auth areas). */
 function isPrivatePath(path: string) {
   return (
     path.startsWith("/admin") ||
-    path.startsWith("/staff") ||
+    path.startsWith("/nuomininkas") ||
     path.startsWith("/auth") ||
     path.startsWith("/api")
   );

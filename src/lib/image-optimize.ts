@@ -37,7 +37,20 @@ function canvasToWebp(canvas: HTMLCanvasElement, quality: number): Promise<Blob>
  *  - Konvertuoja į WebP formatą.
  *  - Iteratyviai mažina kokybę kol dydis ≤ 200 KB (arba pasiekiama 0.55 riba).
  */
-export async function optimizeImage(source: Blob | File): Promise<OptimizedImage> {
+export type OptimizeOptions = { maxDimension?: number; maxBytes?: number };
+
+/**
+ * Evidence photos (meter dials, damage) must stay legible — AGENTS.md 5.6.
+ * Larger ceiling than marketing photos, same WebP + EXIF-strip pipeline.
+ */
+export const EVIDENCE_OPTIONS: OptimizeOptions = { maxDimension: 2000, maxBytes: 900 * 1024 };
+
+export async function optimizeImage(
+  source: Blob | File,
+  options: OptimizeOptions = {},
+): Promise<OptimizedImage> {
+  const maxDimension = options.maxDimension ?? MAX_DIMENSION;
+  const maxBytes = options.maxBytes ?? MAX_BYTES;
   const objectUrl = URL.createObjectURL(source);
   try {
     const img = await loadImage(objectUrl);
@@ -47,8 +60,8 @@ export async function optimizeImage(source: Blob | File): Promise<OptimizedImage
       throw new Error("Nekorektiška nuotrauka");
     }
     const largest = Math.max(targetW, targetH);
-    if (largest > MAX_DIMENSION) {
-      const scale = MAX_DIMENSION / largest;
+    if (largest > maxDimension) {
+      const scale = maxDimension / largest;
       targetW = Math.round(targetW * scale);
       targetH = Math.round(targetH * scale);
     }
@@ -65,7 +78,7 @@ export async function optimizeImage(source: Blob | File): Promise<OptimizedImage
     for (const q of QUALITY_STEPS) {
       const blob = await canvasToWebp(canvas, q);
       best = blob;
-      if (blob.size <= MAX_BYTES) break;
+      if (blob.size <= maxBytes) break;
     }
     if (!best) throw new Error("WebP konvertavimas nepavyko");
     return { blob: best, width: targetW, height: targetH, bytes: best.size };
@@ -82,8 +95,9 @@ export async function uploadOptimizedToStorage(
   source: Blob | File,
   folder: string,
   bucket: string = UNIT_PHOTO_BUCKET,
+  options: OptimizeOptions = {},
 ): Promise<{ url: string; path: string; width: number; height: number; bytes: number }> {
-  const optimized = await optimizeImage(source);
+  const optimized = await optimizeImage(source, options);
   const uuid =
     typeof crypto !== "undefined" && "randomUUID" in crypto
       ? crypto.randomUUID()

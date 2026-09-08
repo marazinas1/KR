@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { listTenants, saveTenant } from "@/lib/tenants.functions";
 
-export const Route = createFileRoute("/_authenticated/admin/tenants")({
+export const Route = createFileRoute("/_authenticated/admin/tenants/")({
   component: TenantsPage,
   head: () => ({
     meta: [

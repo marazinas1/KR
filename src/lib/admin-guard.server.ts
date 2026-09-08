@@ -4,7 +4,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 type Ctx = { supabase: SupabaseClient<any, any, any>; userId: string };
 
-async function hasRole(ctx: Ctx, role: "manager" | "owner" | "developer") {
+async function hasRole(ctx: Ctx, role: "manager" | "owner" | "developer" | "tenant") {
   const { data, error } = await ctx.supabase.rpc("has_role", {
     _user_id: ctx.userId,
     _role: role,
@@ -23,4 +23,9 @@ export async function requireOwner(ctx: Ctx) {
 
 export async function isOwner(ctx: Ctx) {
   return hasRole(ctx, "owner");
+}
+
+/** Tenant portal guard. The real boundary is RLS via current_tenant_id(). */
+export async function requireTenant(ctx: Ctx) {
+  if (!(await hasRole(ctx, "tenant"))) throw new Error("Forbidden");
 }
