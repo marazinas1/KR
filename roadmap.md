@@ -24,17 +24,17 @@
 - [x] Admin "Užklausos": status change, atomic convert-to-draft-lease (`convert_inquiry_to_lease`)
 - [ ] Deferred: new-inquiry email to owners (step 10)
 
-## Step 6 — Tenant portal (in progress)
-- [ ] Migration: tenant policies for shared building meters (meters + meter_readings), decision comment on tenant_owns_lease
-- [ ] `/nuomininkas` layout + home, readings, faults (+ detail), documents; delete `/staff` template
-- [ ] `tenant-portal.functions.ts`: lease, meters (unit + building shared), submit reading, issues, comments, documents, balance
-- [ ] submitMyReading meter check = same scope as getMyMeters (own unit + own building shared meters)
-- [ ] Invite to portal from tenant detail — v1: primary tenant on a lease only (lease_occupants not covered), documented in code
-- [ ] Login redirect: tenant-only users → /nuomininkas
-- [ ] Verification with printed results, esp. cross-tenant isolation (items 3 and 4)
+## Step 6 — Tenant portal (done)
+- [x] Migration: tenant policies for shared building meters (meters + meter_readings), decision comment on tenant_owns_lease
+- [x] `/nuomininkas` layout + home, readings, faults (+ detail), documents; delete `/staff` template
+- [x] `tenant-portal.functions.ts`: lease, meters (unit + building shared), submit reading, issues, comments, documents, balance
+- [x] submitMyReading meter check = same scope as getMyMeters (own unit + own building shared meters)
+- [x] Invite to portal from tenant detail — v1: primary tenant on a lease only (lease_occupants not covered), documented in code
+- [x] Login redirect: tenant-only users → /nuomininkas
+- [x] Verification with printed results, esp. cross-tenant isolation (items 3 and 4)
 
 ## Later
 - Step 4 admin units/tenants/leases (rebuilds the unit management screens removed above)
-- Step 5 public vacancy site; Step 6 tenant portal; Step 7 dashboard
+- Step 7 dashboard
 - Step 8 charges/invoices rebuilt against leases (invoice engine is currently unused)
 - Step 10 lease/reading/payment notification jobs (runScheduledNotifications is a stub)
