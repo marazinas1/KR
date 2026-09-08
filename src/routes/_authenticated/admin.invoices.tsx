@@ -137,7 +137,7 @@ function InvoicesPage() {
                 />
                 <NumberInput
                   value={l.qty}
-                  onChange={(v) => setLines(lines.map((x, j) => (j === i ? { ...x, qty: v } : x)))}
+                  onChange={(v) => setLines(lines.map((x, j) => (j === i ? { ...x, qty: v ?? 1 } : x)))}
                 />
                 <Input
                   value={l.unit}
@@ -147,7 +147,7 @@ function InvoicesPage() {
                 />
                 <NumberInput
                   value={l.gross}
-                  onChange={(v) => setLines(lines.map((x, j) => (j === i ? { ...x, gross: v } : x)))}
+                  onChange={(v) => setLines(lines.map((x, j) => (j === i ? { ...x, gross: v ?? 0 } : x)))}
                 />
                 <Button
                   type="button"
@@ -193,14 +193,14 @@ function InvoicesPage() {
             </tr>
           </thead>
           <tbody>
-            {(invoices as InvoiceRow[]).length === 0 && (
+            {(invoices as unknown as InvoiceRow[]).length === 0 && (
               <tr>
                 <td colSpan={5} className="p-6 text-center text-muted-foreground">
                   {t("invoices.empty")}
                 </td>
               </tr>
             )}
-            {(invoices as InvoiceRow[]).map((inv) => (
+            {(invoices as unknown as InvoiceRow[]).map((inv) => (
               <tr key={inv.id} className="border-b last:border-0">
                 <td className="p-3 font-medium">{inv.full_number}</td>
                 <td className="p-3">{inv.issue_date}</td>
