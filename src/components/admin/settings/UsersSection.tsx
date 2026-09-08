@@ -60,7 +60,7 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
 
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  const [role, setRole] = useState<InvitableRole>("administrator");
+  const [role, setRole] = useState<InvitableRole>("manager");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
 
