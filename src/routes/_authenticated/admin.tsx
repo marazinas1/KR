@@ -1,7 +1,7 @@
-import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BarChart3, Building2, FileEdit, FileText, Globe, Home, Inbox, LayoutDashboard, LogOut, Menu, Receipt, Settings2, UserCog, Users, Wallet } from "lucide-react";
 import { getMyRole } from "@/lib/properties.functions";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,6 +32,14 @@ function AdminLayout() {
   });
   const brandName = settingsData?.settings.displayName?.trim() || "Deerva";
   const { location } = useRouterState();
+  const navigate = useNavigate();
+  // Tenant-only logins belong in the tenant portal, not on a "no access" page.
+  useEffect(() => {
+    if (!isLoading && role && !role.isManager && role.isTenant) {
+      navigate({ to: "/nuomininkas", replace: true });
+    }
+  }, [isLoading, role, navigate]);
+
 
   if (isLoading) {
     return <div className="p-8 text-muted-foreground">{t("common.loading")}</div>;
