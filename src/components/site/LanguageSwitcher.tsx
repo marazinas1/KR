@@ -23,7 +23,7 @@ function readLocaleCookie(): Locale | null {
   return isLocale(value) ? value : null;
 }
 
-const NON_SITE_PREFIXES = ["/admin", "/staff", "/auth", "/reset-password", "/api"];
+const NON_SITE_PREFIXES = ["/admin", "/nuomininkas", "/auth", "/reset-password", "/api"];
 
 /**
  * Lithuanian is canonical at the root; visitors who explicitly picked English

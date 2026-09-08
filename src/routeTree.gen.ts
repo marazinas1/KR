@@ -17,7 +17,6 @@ import { Route as KontaktaiRouteImport } from './routes/kontaktai'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as AuthenticatedStaffRouteImport } from './routes/_authenticated/staff'
 import { Route as ButaiIndexRouteImport } from './routes/butai.index'
 import { Route as ButaiIdRouteImport } from './routes/butai.$id'
 import { Route as EnIndexRouteImport } from './routes/en/index'
@@ -27,15 +26,12 @@ import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminContentRouteImport } from './routes/_authenticated/admin.content'
 import { Route as AuthenticatedAdminContractsRouteImport } from './routes/_authenticated/admin.contracts'
 import { Route as AuthenticatedAdminExpensesRouteImport } from './routes/_authenticated/admin.expenses'
-import { Route as AuthenticatedAdminHousekeepingRouteImport } from './routes/_authenticated/admin.housekeeping'
 import { Route as AuthenticatedAdminInquiriesRouteImport } from './routes/_authenticated/admin.inquiries'
 import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin.invoices'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminTenantsRouteImport } from './routes/_authenticated/admin.tenants'
 import { Route as AuthenticatedAdminUnitsRouteImport } from './routes/_authenticated/admin.units'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
-import { Route as AuthenticatedStaffIndexRouteImport } from './routes/_authenticated/staff.index'
-import { Route as AuthenticatedStaffIdRouteImport } from './routes/_authenticated/staff.$id'
 import { Route as ApiPublicNotificationsCronRouteImport } from './routes/api/public/notifications-cron'
 import { Route as EnButaiIndexRouteImport } from './routes/en/butai.index'
 import { Route as EnButaiIdRouteImport } from './routes/en/butai.$id'
@@ -44,13 +40,7 @@ import { Route as AuthenticatedAdminUnitsIdRouteImport } from './routes/_authent
 import { Route as ApiPublicV1LegalRouteImport } from './routes/api/public/v1/legal'
 import { Route as ApiPublicV1PaymentDetailsRouteImport } from './routes/api/public/v1/payment-details'
 import { Route as ApiPublicV1PropertiesRouteImport } from './routes/api/public/v1/properties'
-import { Route as ApiStaffV1RoomsRouteImport } from './routes/api/staff/v1/rooms'
 import { Route as ApiPublicV1PropertiesIdRouteImport } from './routes/api/public/v1/properties.$id'
-import { Route as ApiStaffV1RoomsIdAssignRouteImport } from './routes/api/staff/v1/rooms.$id.assign'
-import { Route as ApiStaffV1RoomsIdCommentsRouteImport } from './routes/api/staff/v1/rooms.$id.comments'
-import { Route as ApiStaffV1RoomsIdIssueRouteImport } from './routes/api/staff/v1/rooms.$id.issue'
-import { Route as ApiStaffV1RoomsIdStatusRouteImport } from './routes/api/staff/v1/rooms.$id.status'
-import { Route as ApiStaffV1RoomsIdUnassignRouteImport } from './routes/api/staff/v1/rooms.$id.unassign'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -89,11 +79,6 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedStaffRoute = AuthenticatedStaffRouteImport.update({
-  id: '/staff',
-  path: '/staff',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const ButaiIndexRoute = ButaiIndexRouteImport.update({
@@ -145,12 +130,6 @@ const AuthenticatedAdminExpensesRoute =
     path: '/expenses',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminHousekeepingRoute =
-  AuthenticatedAdminHousekeepingRouteImport.update({
-    id: '/housekeeping',
-    path: '/housekeeping',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
 const AuthenticatedAdminInquiriesRoute =
   AuthenticatedAdminInquiriesRouteImport.update({
     id: '/inquiries',
@@ -184,16 +163,6 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
   getParentRoute: () => AuthenticatedAdminRoute,
-} as any)
-const AuthenticatedStaffIndexRoute = AuthenticatedStaffIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthenticatedStaffRoute,
-} as any)
-const AuthenticatedStaffIdRoute = AuthenticatedStaffIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AuthenticatedStaffRoute,
 } as any)
 const ApiPublicNotificationsCronRoute =
   ApiPublicNotificationsCronRouteImport.update({
@@ -239,43 +208,11 @@ const ApiPublicV1PropertiesRoute = ApiPublicV1PropertiesRouteImport.update({
   path: '/api/public/v1/properties',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiStaffV1RoomsRoute = ApiStaffV1RoomsRouteImport.update({
-  id: '/api/staff/v1/rooms',
-  path: '/api/staff/v1/rooms',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicV1PropertiesIdRoute = ApiPublicV1PropertiesIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => ApiPublicV1PropertiesRoute,
 } as any)
-const ApiStaffV1RoomsIdAssignRoute = ApiStaffV1RoomsIdAssignRouteImport.update({
-  id: '/$id/assign',
-  path: '/$id/assign',
-  getParentRoute: () => ApiStaffV1RoomsRoute,
-} as any)
-const ApiStaffV1RoomsIdCommentsRoute =
-  ApiStaffV1RoomsIdCommentsRouteImport.update({
-    id: '/$id/comments',
-    path: '/$id/comments',
-    getParentRoute: () => ApiStaffV1RoomsRoute,
-  } as any)
-const ApiStaffV1RoomsIdIssueRoute = ApiStaffV1RoomsIdIssueRouteImport.update({
-  id: '/$id/issue',
-  path: '/$id/issue',
-  getParentRoute: () => ApiStaffV1RoomsRoute,
-} as any)
-const ApiStaffV1RoomsIdStatusRoute = ApiStaffV1RoomsIdStatusRouteImport.update({
-  id: '/$id/status',
-  path: '/$id/status',
-  getParentRoute: () => ApiStaffV1RoomsRoute,
-} as any)
-const ApiStaffV1RoomsIdUnassignRoute =
-  ApiStaffV1RoomsIdUnassignRouteImport.update({
-    id: '/$id/unassign',
-    path: '/$id/unassign',
-    getParentRoute: () => ApiStaffV1RoomsRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -285,7 +222,6 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/staff': typeof AuthenticatedStaffRouteWithChildren
   '/butai/$id': typeof ButaiIdRoute
   '/en/kontaktai': typeof EnKontaktaiRoute
   '/butai/': typeof ButaiIndexRoute
@@ -294,31 +230,22 @@ export interface FileRoutesByFullPath {
   '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/contracts': typeof AuthenticatedAdminContractsRoute
   '/admin/expenses': typeof AuthenticatedAdminExpensesRoute
-  '/admin/housekeeping': typeof AuthenticatedAdminHousekeepingRoute
   '/admin/inquiries': typeof AuthenticatedAdminInquiriesRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/tenants': typeof AuthenticatedAdminTenantsRouteWithChildren
   '/admin/units': typeof AuthenticatedAdminUnitsRouteWithChildren
   '/admin/users': typeof AuthenticatedAdminUsersRoute
-  '/staff/$id': typeof AuthenticatedStaffIdRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/en/butai/$id': typeof EnButaiIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
-  '/staff/': typeof AuthenticatedStaffIndexRoute
   '/en/butai/': typeof EnButaiIndexRoute
   '/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
   '/api/public/v1/properties': typeof ApiPublicV1PropertiesRouteWithChildren
-  '/api/staff/v1/rooms': typeof ApiStaffV1RoomsRouteWithChildren
   '/api/public/v1/properties/$id': typeof ApiPublicV1PropertiesIdRoute
-  '/api/staff/v1/rooms/$id/assign': typeof ApiStaffV1RoomsIdAssignRoute
-  '/api/staff/v1/rooms/$id/comments': typeof ApiStaffV1RoomsIdCommentsRoute
-  '/api/staff/v1/rooms/$id/issue': typeof ApiStaffV1RoomsIdIssueRoute
-  '/api/staff/v1/rooms/$id/status': typeof ApiStaffV1RoomsIdStatusRoute
-  '/api/staff/v1/rooms/$id/unassign': typeof ApiStaffV1RoomsIdUnassignRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -334,31 +261,22 @@ export interface FileRoutesByTo {
   '/admin/content': typeof AuthenticatedAdminContentRoute
   '/admin/contracts': typeof AuthenticatedAdminContractsRoute
   '/admin/expenses': typeof AuthenticatedAdminExpensesRoute
-  '/admin/housekeeping': typeof AuthenticatedAdminHousekeepingRoute
   '/admin/inquiries': typeof AuthenticatedAdminInquiriesRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/tenants': typeof AuthenticatedAdminTenantsRouteWithChildren
   '/admin/units': typeof AuthenticatedAdminUnitsRouteWithChildren
   '/admin/users': typeof AuthenticatedAdminUsersRoute
-  '/staff/$id': typeof AuthenticatedStaffIdRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/en/butai/$id': typeof EnButaiIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
-  '/staff': typeof AuthenticatedStaffIndexRoute
   '/en/butai': typeof EnButaiIndexRoute
   '/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
   '/api/public/v1/properties': typeof ApiPublicV1PropertiesRouteWithChildren
-  '/api/staff/v1/rooms': typeof ApiStaffV1RoomsRouteWithChildren
   '/api/public/v1/properties/$id': typeof ApiPublicV1PropertiesIdRoute
-  '/api/staff/v1/rooms/$id/assign': typeof ApiStaffV1RoomsIdAssignRoute
-  '/api/staff/v1/rooms/$id/comments': typeof ApiStaffV1RoomsIdCommentsRoute
-  '/api/staff/v1/rooms/$id/issue': typeof ApiStaffV1RoomsIdIssueRoute
-  '/api/staff/v1/rooms/$id/status': typeof ApiStaffV1RoomsIdStatusRoute
-  '/api/staff/v1/rooms/$id/unassign': typeof ApiStaffV1RoomsIdUnassignRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -370,7 +288,6 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/_authenticated/staff': typeof AuthenticatedStaffRouteWithChildren
   '/butai/$id': typeof ButaiIdRoute
   '/en/kontaktai': typeof EnKontaktaiRoute
   '/butai/': typeof ButaiIndexRoute
@@ -379,31 +296,22 @@ export interface FileRoutesById {
   '/_authenticated/admin/content': typeof AuthenticatedAdminContentRoute
   '/_authenticated/admin/contracts': typeof AuthenticatedAdminContractsRoute
   '/_authenticated/admin/expenses': typeof AuthenticatedAdminExpensesRoute
-  '/_authenticated/admin/housekeeping': typeof AuthenticatedAdminHousekeepingRoute
   '/_authenticated/admin/inquiries': typeof AuthenticatedAdminInquiriesRoute
   '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/tenants': typeof AuthenticatedAdminTenantsRouteWithChildren
   '/_authenticated/admin/units': typeof AuthenticatedAdminUnitsRouteWithChildren
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
-  '/_authenticated/staff/$id': typeof AuthenticatedStaffIdRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/en/butai/$id': typeof EnButaiIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
-  '/_authenticated/staff/': typeof AuthenticatedStaffIndexRoute
   '/en/butai/': typeof EnButaiIndexRoute
   '/_authenticated/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/_authenticated/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
   '/api/public/v1/properties': typeof ApiPublicV1PropertiesRouteWithChildren
-  '/api/staff/v1/rooms': typeof ApiStaffV1RoomsRouteWithChildren
   '/api/public/v1/properties/$id': typeof ApiPublicV1PropertiesIdRoute
-  '/api/staff/v1/rooms/$id/assign': typeof ApiStaffV1RoomsIdAssignRoute
-  '/api/staff/v1/rooms/$id/comments': typeof ApiStaffV1RoomsIdCommentsRoute
-  '/api/staff/v1/rooms/$id/issue': typeof ApiStaffV1RoomsIdIssueRoute
-  '/api/staff/v1/rooms/$id/status': typeof ApiStaffV1RoomsIdStatusRoute
-  '/api/staff/v1/rooms/$id/unassign': typeof ApiStaffV1RoomsIdUnassignRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -415,7 +323,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/admin'
-    | '/staff'
     | '/butai/$id'
     | '/en/kontaktai'
     | '/butai/'
@@ -424,31 +331,22 @@ export interface FileRouteTypes {
     | '/admin/content'
     | '/admin/contracts'
     | '/admin/expenses'
-    | '/admin/housekeeping'
     | '/admin/inquiries'
     | '/admin/invoices'
     | '/admin/settings'
     | '/admin/tenants'
     | '/admin/units'
     | '/admin/users'
-    | '/staff/$id'
     | '/api/public/notifications-cron'
     | '/en/butai/$id'
     | '/admin/'
-    | '/staff/'
     | '/en/butai/'
     | '/admin/tenants/$id'
     | '/admin/units/$id'
     | '/api/public/v1/legal'
     | '/api/public/v1/payment-details'
     | '/api/public/v1/properties'
-    | '/api/staff/v1/rooms'
     | '/api/public/v1/properties/$id'
-    | '/api/staff/v1/rooms/$id/assign'
-    | '/api/staff/v1/rooms/$id/comments'
-    | '/api/staff/v1/rooms/$id/issue'
-    | '/api/staff/v1/rooms/$id/status'
-    | '/api/staff/v1/rooms/$id/unassign'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -464,31 +362,22 @@ export interface FileRouteTypes {
     | '/admin/content'
     | '/admin/contracts'
     | '/admin/expenses'
-    | '/admin/housekeeping'
     | '/admin/inquiries'
     | '/admin/invoices'
     | '/admin/settings'
     | '/admin/tenants'
     | '/admin/units'
     | '/admin/users'
-    | '/staff/$id'
     | '/api/public/notifications-cron'
     | '/en/butai/$id'
     | '/admin'
-    | '/staff'
     | '/en/butai'
     | '/admin/tenants/$id'
     | '/admin/units/$id'
     | '/api/public/v1/legal'
     | '/api/public/v1/payment-details'
     | '/api/public/v1/properties'
-    | '/api/staff/v1/rooms'
     | '/api/public/v1/properties/$id'
-    | '/api/staff/v1/rooms/$id/assign'
-    | '/api/staff/v1/rooms/$id/comments'
-    | '/api/staff/v1/rooms/$id/issue'
-    | '/api/staff/v1/rooms/$id/status'
-    | '/api/staff/v1/rooms/$id/unassign'
   id:
     | '__root__'
     | '/'
@@ -499,7 +388,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/sitemap.xml'
     | '/_authenticated/admin'
-    | '/_authenticated/staff'
     | '/butai/$id'
     | '/en/kontaktai'
     | '/butai/'
@@ -508,31 +396,22 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/content'
     | '/_authenticated/admin/contracts'
     | '/_authenticated/admin/expenses'
-    | '/_authenticated/admin/housekeeping'
     | '/_authenticated/admin/inquiries'
     | '/_authenticated/admin/invoices'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/tenants'
     | '/_authenticated/admin/units'
     | '/_authenticated/admin/users'
-    | '/_authenticated/staff/$id'
     | '/api/public/notifications-cron'
     | '/en/butai/$id'
     | '/_authenticated/admin/'
-    | '/_authenticated/staff/'
     | '/en/butai/'
     | '/_authenticated/admin/tenants/$id'
     | '/_authenticated/admin/units/$id'
     | '/api/public/v1/legal'
     | '/api/public/v1/payment-details'
     | '/api/public/v1/properties'
-    | '/api/staff/v1/rooms'
     | '/api/public/v1/properties/$id'
-    | '/api/staff/v1/rooms/$id/assign'
-    | '/api/staff/v1/rooms/$id/comments'
-    | '/api/staff/v1/rooms/$id/issue'
-    | '/api/staff/v1/rooms/$id/status'
-    | '/api/staff/v1/rooms/$id/unassign'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -549,7 +428,6 @@ export interface RootRouteChildren {
   ApiPublicV1LegalRoute: typeof ApiPublicV1LegalRoute
   ApiPublicV1PaymentDetailsRoute: typeof ApiPublicV1PaymentDetailsRoute
   ApiPublicV1PropertiesRoute: typeof ApiPublicV1PropertiesRouteWithChildren
-  ApiStaffV1RoomsRoute: typeof ApiStaffV1RoomsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -608,13 +486,6 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/staff': {
-      id: '/_authenticated/staff'
-      path: '/staff'
-      fullPath: '/staff'
-      preLoaderRoute: typeof AuthenticatedStaffRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/butai/': {
@@ -680,13 +551,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminExpensesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/housekeeping': {
-      id: '/_authenticated/admin/housekeeping'
-      path: '/housekeeping'
-      fullPath: '/admin/housekeeping'
-      preLoaderRoute: typeof AuthenticatedAdminHousekeepingRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
     '/_authenticated/admin/inquiries': {
       id: '/_authenticated/admin/inquiries'
       path: '/inquiries'
@@ -728,20 +592,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/users'
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
-    }
-    '/_authenticated/staff/': {
-      id: '/_authenticated/staff/'
-      path: '/'
-      fullPath: '/staff/'
-      preLoaderRoute: typeof AuthenticatedStaffIndexRouteImport
-      parentRoute: typeof AuthenticatedStaffRoute
-    }
-    '/_authenticated/staff/$id': {
-      id: '/_authenticated/staff/$id'
-      path: '/$id'
-      fullPath: '/staff/$id'
-      preLoaderRoute: typeof AuthenticatedStaffIdRouteImport
-      parentRoute: typeof AuthenticatedStaffRoute
     }
     '/api/public/notifications-cron': {
       id: '/api/public/notifications-cron'
@@ -799,54 +649,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1PropertiesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/staff/v1/rooms': {
-      id: '/api/staff/v1/rooms'
-      path: '/api/staff/v1/rooms'
-      fullPath: '/api/staff/v1/rooms'
-      preLoaderRoute: typeof ApiStaffV1RoomsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/v1/properties/$id': {
       id: '/api/public/v1/properties/$id'
       path: '/$id'
       fullPath: '/api/public/v1/properties/$id'
       preLoaderRoute: typeof ApiPublicV1PropertiesIdRouteImport
       parentRoute: typeof ApiPublicV1PropertiesRoute
-    }
-    '/api/staff/v1/rooms/$id/assign': {
-      id: '/api/staff/v1/rooms/$id/assign'
-      path: '/$id/assign'
-      fullPath: '/api/staff/v1/rooms/$id/assign'
-      preLoaderRoute: typeof ApiStaffV1RoomsIdAssignRouteImport
-      parentRoute: typeof ApiStaffV1RoomsRoute
-    }
-    '/api/staff/v1/rooms/$id/comments': {
-      id: '/api/staff/v1/rooms/$id/comments'
-      path: '/$id/comments'
-      fullPath: '/api/staff/v1/rooms/$id/comments'
-      preLoaderRoute: typeof ApiStaffV1RoomsIdCommentsRouteImport
-      parentRoute: typeof ApiStaffV1RoomsRoute
-    }
-    '/api/staff/v1/rooms/$id/issue': {
-      id: '/api/staff/v1/rooms/$id/issue'
-      path: '/$id/issue'
-      fullPath: '/api/staff/v1/rooms/$id/issue'
-      preLoaderRoute: typeof ApiStaffV1RoomsIdIssueRouteImport
-      parentRoute: typeof ApiStaffV1RoomsRoute
-    }
-    '/api/staff/v1/rooms/$id/status': {
-      id: '/api/staff/v1/rooms/$id/status'
-      path: '/$id/status'
-      fullPath: '/api/staff/v1/rooms/$id/status'
-      preLoaderRoute: typeof ApiStaffV1RoomsIdStatusRouteImport
-      parentRoute: typeof ApiStaffV1RoomsRoute
-    }
-    '/api/staff/v1/rooms/$id/unassign': {
-      id: '/api/staff/v1/rooms/$id/unassign'
-      path: '/$id/unassign'
-      fullPath: '/api/staff/v1/rooms/$id/unassign'
-      preLoaderRoute: typeof ApiStaffV1RoomsIdUnassignRouteImport
-      parentRoute: typeof ApiStaffV1RoomsRoute
     }
   }
 }
@@ -884,7 +692,6 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminContentRoute: typeof AuthenticatedAdminContentRoute
   AuthenticatedAdminContractsRoute: typeof AuthenticatedAdminContractsRoute
   AuthenticatedAdminExpensesRoute: typeof AuthenticatedAdminExpensesRoute
-  AuthenticatedAdminHousekeepingRoute: typeof AuthenticatedAdminHousekeepingRoute
   AuthenticatedAdminInquiriesRoute: typeof AuthenticatedAdminInquiriesRoute
   AuthenticatedAdminInvoicesRoute: typeof AuthenticatedAdminInvoicesRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
@@ -899,7 +706,6 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminContentRoute: AuthenticatedAdminContentRoute,
   AuthenticatedAdminContractsRoute: AuthenticatedAdminContractsRoute,
   AuthenticatedAdminExpensesRoute: AuthenticatedAdminExpensesRoute,
-  AuthenticatedAdminHousekeepingRoute: AuthenticatedAdminHousekeepingRoute,
   AuthenticatedAdminInquiriesRoute: AuthenticatedAdminInquiriesRoute,
   AuthenticatedAdminInvoicesRoute: AuthenticatedAdminInvoicesRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
@@ -912,27 +718,12 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
-interface AuthenticatedStaffRouteChildren {
-  AuthenticatedStaffIdRoute: typeof AuthenticatedStaffIdRoute
-  AuthenticatedStaffIndexRoute: typeof AuthenticatedStaffIndexRoute
-}
-
-const AuthenticatedStaffRouteChildren: AuthenticatedStaffRouteChildren = {
-  AuthenticatedStaffIdRoute: AuthenticatedStaffIdRoute,
-  AuthenticatedStaffIndexRoute: AuthenticatedStaffIndexRoute,
-}
-
-const AuthenticatedStaffRouteWithChildren =
-  AuthenticatedStaffRoute._addFileChildren(AuthenticatedStaffRouteChildren)
-
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
-  AuthenticatedStaffRoute: typeof AuthenticatedStaffRouteWithChildren
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
-  AuthenticatedStaffRoute: AuthenticatedStaffRouteWithChildren,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -968,26 +759,6 @@ const ApiPublicV1PropertiesRouteWithChildren =
     ApiPublicV1PropertiesRouteChildren,
   )
 
-interface ApiStaffV1RoomsRouteChildren {
-  ApiStaffV1RoomsIdAssignRoute: typeof ApiStaffV1RoomsIdAssignRoute
-  ApiStaffV1RoomsIdCommentsRoute: typeof ApiStaffV1RoomsIdCommentsRoute
-  ApiStaffV1RoomsIdIssueRoute: typeof ApiStaffV1RoomsIdIssueRoute
-  ApiStaffV1RoomsIdStatusRoute: typeof ApiStaffV1RoomsIdStatusRoute
-  ApiStaffV1RoomsIdUnassignRoute: typeof ApiStaffV1RoomsIdUnassignRoute
-}
-
-const ApiStaffV1RoomsRouteChildren: ApiStaffV1RoomsRouteChildren = {
-  ApiStaffV1RoomsIdAssignRoute: ApiStaffV1RoomsIdAssignRoute,
-  ApiStaffV1RoomsIdCommentsRoute: ApiStaffV1RoomsIdCommentsRoute,
-  ApiStaffV1RoomsIdIssueRoute: ApiStaffV1RoomsIdIssueRoute,
-  ApiStaffV1RoomsIdStatusRoute: ApiStaffV1RoomsIdStatusRoute,
-  ApiStaffV1RoomsIdUnassignRoute: ApiStaffV1RoomsIdUnassignRoute,
-}
-
-const ApiStaffV1RoomsRouteWithChildren = ApiStaffV1RoomsRoute._addFileChildren(
-  ApiStaffV1RoomsRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -1002,7 +773,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicV1LegalRoute: ApiPublicV1LegalRoute,
   ApiPublicV1PaymentDetailsRoute: ApiPublicV1PaymentDetailsRoute,
   ApiPublicV1PropertiesRoute: ApiPublicV1PropertiesRouteWithChildren,
-  ApiStaffV1RoomsRoute: ApiStaffV1RoomsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

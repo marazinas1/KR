@@ -20,7 +20,7 @@ import { useRememberedLocaleRedirect } from "@/components/site/LanguageSwitcher"
 import { htmlLang, localeFromPath } from "@/lib/locale";
 
 /** Core (administravimo / personalo) maršrutai neturi svetainės antraštės ir poraštės. */
-const CORE_PREFIXES = ["/admin", "/staff", "/auth", "/reset-password", "/api"];
+const CORE_PREFIXES = ["/admin", "/nuomininkas", "/auth", "/reset-password", "/api"];
 
 function isCorePath(pathname: string) {
   return CORE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));

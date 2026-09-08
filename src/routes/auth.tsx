@@ -39,6 +39,7 @@ function LoginPage() {
       try {
         const role = await fetchRole();
         if (role.isManager) navigate({ to: "/admin", replace: true });
+        else if (role.isTenant) navigate({ to: "/nuomininkas", replace: true });
         else navigate({ to: "/admin", replace: true });
       } catch {
         navigate({ to: "/admin", replace: true });
