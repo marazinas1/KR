@@ -113,6 +113,11 @@ export function LeasePanel({
             <Button variant="outline" onClick={() => setRenewOpen(true)}>
               {t("rental.lease.renew")}
             </Button>
+            <Button variant="outline" asChild>
+              <Link to="/admin/charges" search={{ lease: active.id }}>
+                {t("rental.nav.charges")}
+              </Link>
+            </Button>
             <Button variant="destructive" onClick={() => setTerminateOpen(true)}>
               {t("rental.lease.terminate")}
             </Button>
