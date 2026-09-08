@@ -10,7 +10,9 @@ Rules for any AI agent (Lovable, Claude, or otherwise) working in this repositor
 
 Revoo's first product line was short-term rental (vacation rentals and hotels; the `demo-rentals` / Dharma Stay project). **This project is the opposite branch: long-term residential rental management.** Nothing here is nightly, nothing here has guests, check-in times, or availability calendars.
 
-**Kazimieras and Rapolas** are the first clients of this branch. They co-own a portfolio of roughly **100 long-term rental units** in Lithuania: small apartments and individual rooms in shared/dormitory-style buildings. Budget segment, low rent per unit, high unit count. Both are **owners** in the system. Rapolas is the one who actually opens the admin every morning and runs day-to-day operations.
+**Kazimieras and Rapolas** are the first clients of this branch. They co-own a portfolio of roughly **100 long-term rental units, concentrated in Klaipėda**: small apartments and individual rooms in shared/dormitory-style buildings. Budget segment, low rent per unit, high unit count. Both are **owners** in the system. Rapolas is the one who actually opens the admin every morning and runs day-to-day operations.
+
+This single-city concentration is a fact about this deployment, not a rule for the product — Revoo will sell this same system to landlords in other cities, so nothing about Klaipėda specifically belongs in code or migrations (see the white-label rule in section 3). It matters for realistic example data, and later for anything city-specific like utility providers or map defaults for this deployment's own settings.
 
 **Today they run all of this in Excel.** Spreadsheets for units, tenants, contract dates, meter readings, and payments; phone calls, SMS and messaging apps for everything else. Contracts get sent as files, expire without warning, and get renewed late. Meter readings arrive by text message or not at all. Fault reports arrive by phone call with no record. Nothing is searchable and nothing is auditable.
 
