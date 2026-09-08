@@ -79,7 +79,11 @@ function AdminLayout() {
       <nav className="flex-1 space-y-1 px-2">
           {links.map((l) => {
             const Icon = l.icon;
-            const active = location.pathname === l.to;
+            const active =
+              l.to === "/admin"
+                ? location.pathname === "/admin"
+                : location.pathname.startsWith(l.to);
+
             return (
               <Link
                 key={l.to}
