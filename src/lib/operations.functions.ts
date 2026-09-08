@@ -32,7 +32,7 @@ export const upsertMaintenance = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        property_id: z.string().uuid(),
+        unit_id: z.string().uuid(),
         type: z.enum(MAINTENANCE_TYPES),
         due_date: z.string().nullable().optional(),
         last_done_at: z.string().nullable().optional(),
@@ -44,7 +44,7 @@ export const upsertMaintenance = createServerFn({ method: "POST" })
     await ensureAdmin(context);
     const { error } = await context.supabase
       .from("property_maintenance")
-      .upsert(data, { onConflict: "property_id,type" });
+      .upsert(data, { onConflict: "unit_id,type" });
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -56,7 +56,7 @@ export const listInvestments = createServerFn({ method: "GET" })
     await ensureAdmin(context);
     const { data, error } = await context.supabase
       .from("property_investments")
-      .select("*, properties(name)")
+      .select("*, units(name)")
       .order("purchase_date", { ascending: false });
     if (error) throw new Error(error.message);
     return data ?? [];
@@ -67,7 +67,7 @@ export const createInvestment = createServerFn({ method: "POST" })
   .inputValidator((d) =>
     z
       .object({
-        property_id: z.string().uuid(),
+        unit_id: z.string().uuid(),
         category: z.enum(INVESTMENT_CATEGORIES).default("purchase"),
         amount: z.number().min(0).max(10000000),
         purchase_date: z.string(),
@@ -102,7 +102,7 @@ export const listExpenses = createServerFn({ method: "GET" })
     await ensureAdmin(context);
     const { data, error } = await context.supabase
       .from("expenses")
-      .select("*, properties(name)")
+      .select("*, units(name)")
       .order("expense_date", { ascending: false })
       .limit(200);
     if (error) throw new Error(error.message);
@@ -117,7 +117,7 @@ export const createExpense = createServerFn({ method: "POST" })
         category: z.enum(EXPENSE_CATEGORIES),
         amount: z.number().min(0).max(10000000),
         expense_date: z.string(),
-        property_id: z.string().uuid().nullable().optional(),
+        unit_id: z.string().uuid().nullable().optional(),
         note: z.string().max(500).default(""),
       })
       .parse(d),

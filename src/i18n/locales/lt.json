@@ -394,7 +394,8 @@
     "paymentMethod": {
       "bank_transfer": "Banko pavedimu",
       "card": "Banko kortele",
-      "cash": "Grynaisiais"
+      "cash": "Grynaisiais",
+      "other": "Kita"
     },
     "propertyType": {
       "cottage": "Namelis su pirtimi ir kubilu",
@@ -690,28 +691,6 @@
         },
         "title": "Prekės ženklas"
       },
-      "cancellation": {
-        "description": "Sąlygos, taikomos atšaukus rezervaciją arba neatvykus.",
-        "fields": {
-          "cancellationFee": {
-            "label": "Atšaukimo mokestis"
-          },
-          "cancellationFeeType": {
-            "label": "Atšaukimo mokesčio tipas"
-          },
-          "cancellationPolicyText": {
-            "help": "Tekstas rodomas svečiui rezervacijos metu ir patvirtinimo laiške.",
-            "label": "Atšaukimo taisyklės"
-          },
-          "freeCancellationDays": {
-            "label": "Nemokamo atšaukimo terminas"
-          },
-          "noShowFee": {
-            "label": "Neatvykimo mokestis"
-          }
-        },
-        "title": "Atšaukimo politika"
-      },
       "general": {
         "description": "Bendri valdytojo duomenys, naudojami sąskaitose, laiškuose ir svetainėje (galioja visiems objektams).",
         "fields": {
@@ -761,30 +740,6 @@
         },
         "title": "Objekto informacija"
       },
-      "guests": {
-        "description": "Taisyklės vaikams, augintiniams ir ramybės laikui.",
-        "fields": {
-          "childrenFreeUntilAge": {
-            "label": "Vaikai gyvena nemokamai iki"
-          },
-          "minGuestAge": {
-            "label": "Minimalus svečio amžius"
-          },
-          "partiesAllowed": {
-            "label": "Leidžiami vakarėliai"
-          },
-          "petsAllowed": {
-            "label": "Leidžiami augintiniai"
-          },
-          "quietHoursFrom": {
-            "label": "Ramybės laikas nuo"
-          },
-          "quietHoursTo": {
-            "label": "Ramybės laikas iki"
-          }
-        },
-        "title": "Svečių politika"
-      },
       "invoicing": {
         "description": "Rekvizitai ir numeracija, naudojami generuojant sąskaitas.",
         "fields": {
@@ -830,116 +785,53 @@
       "notifications": {
         "description": "Kokius laiškus sistema siunčia svečiams automatiškai.",
         "fields": {
-          "checkinReminderHoursBefore": {
-            "label": "Atvykimo priminimas prieš"
+          "notifyReadingReminder": {
+            "label": "Priminimas pateikti rodmenis"
           },
-          "notifyBookingChange": {
-            "label": "Rezervacijos pakeitimas"
+          "notifyLeaseExpiring": {
+            "label": "Įspėjimas apie besibaigiančią sutartį"
           },
-          "notifyBookingConfirmation": {
-            "label": "Rezervacijos patvirtinimas"
+          "notifyPaymentOverdue": {
+            "label": "Pranešimas apie vėluojantį mokėjimą"
           },
-          "notifyCancellationConfirmation": {
-            "label": "Atšaukimo patvirtinimas"
+          "notifyIssueUpdate": {
+            "label": "Gedimo būsenos pakeitimai"
           },
-          "notifyCheckinReminder": {
-            "label": "Atvykimo priminimas"
-          },
-          "notifyReviewRequest": {
-            "label": "Atsiliepimo prašymas"
-          },
-          "reviewLink": {
-            "help": "Naudokite kintamąjį {{review_link}} atsiliepimo prašymo laiške.",
-            "label": "Atsiliepimų rinkimo nuoroda"
-          },
-          "reviewRequestHoursAfter": {
-            "label": "Atsiliepimo prašymas po išvykimo"
+          "notifyNewInquiry": {
+            "label": "Nauja užklausa iš viešo puslapio"
           }
         },
         "title": "Automatiniai pranešimai"
       },
-      "payments": {
-        "description": "Avanso reikalavimai ir priimami mokėjimo būdai.",
+      "rental": {
+        "title": "Nuomos taisyklės",
+        "description": "Mokėjimo terminai, įspėjimo laikotarpis ir skaitiklių rodmenų langas.",
         "fields": {
-          "autoRefundDeposit": {
-            "label": "Automatiškai grąžinti užstatą"
+          "paymentDueDay": {
+            "label": "Mokėjimo diena",
+            "help": "Kelinta mėnesio diena turi būti sumokėta nuoma."
           },
-          "depositAmount": {
-            "help": "Priklauso nuo pasirinkto avanso tipo.",
-            "label": "Avanso dydis"
+          "defaultNoticeDays": {
+            "label": "Įspėjimo terminas"
           },
-          "depositRequired": {
-            "label": "Reikalingas avansas"
+          "readingWindowFromDay": {
+            "label": "Rodmenų teikimas nuo",
+            "help": "Nuo kelintos mėnesio dienos nuomininkai gali teikti rodmenis."
           },
-          "depositType": {
-            "label": "Avanso tipas"
+          "readingWindowToDay": {
+            "label": "Rodmenų teikimas iki"
           },
-          "paymentDueDays": {
-            "label": "Apmokėjimo terminas"
+          "requireMeterPhoto": {
+            "label": "Reikalauti skaitiklio nuotraukos",
+            "help": "Nuomininkas privalo pridėti skaitiklio nuotrauką."
           },
           "paymentMethods": {
-            "label": "Leidžiami mokėjimo būdai"
-          }
-        },
-        "title": "Mokėjimai"
-      },
-      "stay": {
-        "description": "Atvykimo ir išvykimo laikai bei rezervacijų apribojimai.",
-        "fields": {
-          "autoConfirmBookings": {
-            "help": "Naujos rezervacijos iškart gauna patvirtintos būseną.",
-            "label": "Automatiškai patvirtinti rezervacijas"
-          },
-          "checkinFrom": {
-            "label": "Check-in nuo"
-          },
-          "checkinUntil": {
-            "label": "Check-in iki"
-          },
-          "checkoutUntil": {
-            "label": "Check-out iki"
-          },
-          "maxAdvanceDays": {
-            "help": "Kiek dienų į priekį svečiai gali rezervuoti.",
-            "label": "Rezervacijos laikotarpis į priekį"
-          },
-          "maxNights": {
-            "label": "Maksimalus nakvynių skaičius"
-          },
-          "minNights": {
-            "label": "Minimalus nakvynių skaičius"
-          },
-          "requireEmail": {
-            "label": "Rezervacijai privalomas el. paštas"
-          },
-          "requirePhone": {
-            "label": "Rezervacijai privalomas telefono numeris"
-          },
-          "stayoverCleanEveryDays": {
-            "help": "Kas kiek parų tvarkomi kambariai, kuriuose svečias tebegyvena. 0 — tarpinis tvarkymas nevykdomas.",
-            "label": "Tarpinis tvarkymas kas"
-          }
-        },
-        "title": "Viešnagės taisyklės"
-      },
-      "taxes": {
-        "description": "Mokesčiai, taikomi skaičiuojant galutinę rezervacijos kainą.",
-        "fields": {
-          "cityTax": {
-            "label": "Miesto mokestis"
-          },
-          "cityTaxMinAge": {
-            "help": "Jaunesniems svečiams mokestis netaikomas.",
-            "label": "Miesto mokesčio amžiaus riba"
-          },
-          "extraGuestFee": {
-            "label": "Mokestis už papildomą svečią"
+            "label": "Mokėjimo būdai"
           },
           "vatRate": {
             "label": "PVM tarifas"
           }
-        },
-        "title": "Mokesčiai"
+        }
       }
     },
     "selectPlaceholder": "Pasirinkite…",

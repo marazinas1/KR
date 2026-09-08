@@ -9,9 +9,9 @@ export const getPropertySettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { data: row, error } = await context.supabase
-      .from("property_settings")
+      .from("org_settings")
       .select("*")
-      .eq("scope", "global")
+      .eq("singleton", true)
       .maybeSingle();
     if (error) {
       console.error("[getPropertySettings]", error.message);
@@ -42,13 +42,13 @@ export const savePropertySettings = createServerFn({ method: "POST" })
 
     const patch = {
       ...sectionToColumns(data.values),
-      scope: "global",
+      singleton: true,
       updated_by: context.userId,
     };
 
     const { data: row, error } = await context.supabase
-      .from("property_settings")
-      .upsert(patch as never, { onConflict: "scope" })
+      .from("org_settings")
+      .upsert(patch as never, { onConflict: "singleton" })
       .select("*")
       .single();
 
@@ -61,14 +61,15 @@ export const savePropertySettings = createServerFn({ method: "POST" })
       settings: rowToSettings(row as Record<string, unknown>),
     };
   });
-/** Vieša (be autentifikacijos) prekės ženklo informacija prisijungimo puslapiui. */
+
+/** Public (unauthenticated) branding for the sign-in screen. */
 export const getPublicBranding = createServerFn({ method: "GET" }).handler(
   async (): Promise<{ displayName: string; logoUrl: string }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
-      .from("property_settings")
+      .from("org_settings")
       .select("display_name, brand_logo_url")
-      .eq("scope", "global")
+      .eq("singleton", true)
       .maybeSingle();
     if (error) {
       console.error("[getPublicBranding]", error.message);

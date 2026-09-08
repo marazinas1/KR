@@ -5,8 +5,7 @@ export function sectionToColumns(values: Record<string, unknown>) {
   for (const [key, value] of Object.entries(values)) {
     const column = SETTINGS_COLUMN_MAP[key as keyof PropertySettings];
     if (!column) continue;
-    patch[column] =
-      value === "" && key !== "cancellationPolicyText" && key !== "invoiceNotes" ? null : value;
+    patch[column] = value === "" && key !== "invoiceNotes" ? null : value;
   }
   return patch;
 }
@@ -17,7 +16,7 @@ export async function assertSettingsAdmin(ctx: { supabase: any; userId: string }
     _role: "owner",
   });
   if (error) {
-    console.error("[property-settings:has_role]", error.message);
+    console.error("[org-settings:has_role]", error.message);
     throw new Error("Nepavyko patikrinti teisių.");
   }
   if (!data) throw new Error("Neturite teisių keisti nustatymų.");

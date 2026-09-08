@@ -47,7 +47,6 @@ function AdminLayout() {
 
   const links = [
     { to: "/admin", label: t("nav.dashboard"), icon: LayoutDashboard },
-    { to: "/admin/properties", label: t("nav.properties"), icon: Home },
     { to: "/admin/housekeeping", label: t("nav.housekeeping"), icon: Sparkles },
     { to: "/admin/contracts", label: t("nav.contracts"), icon: FileText },
     { to: "/admin/expenses", label: t("nav.expenses"), icon: Wallet },
