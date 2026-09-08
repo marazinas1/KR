@@ -10,14 +10,19 @@ export const SITE_URL = (
   import.meta.env?.['VITE_SITE_URL'] || FALLBACK_SITE_URL
 ).replace(/\/$/, "");
 
-/**
- * The public vacancy site is built in step 5. Until then the site chrome has a
- * single home link and no client-specific navigation.
- */
-export function mainNav(homeLabel: string): NavEntry[] {
-  return [{ label: homeLabel, to: "/" }];
+/** Public vacancy site navigation. Labels are translated by the caller. */
+export function mainNav(labels: { home: string; units: string; contacts: string }): NavEntry[] {
+  return [
+    { label: labels.home, to: "/" },
+    { label: labels.units, to: "/butai" },
+    { label: labels.contacts, to: "/kontaktai" },
+  ];
 }
 
-export function footerNav(homeLabel: string): NavLink[] {
-  return [{ label: homeLabel, to: "/" }];
+export function footerNav(labels: { home: string; units: string; contacts: string }): NavLink[] {
+  return [
+    { label: labels.home, to: "/" },
+    { label: labels.units, to: "/butai" },
+    { label: labels.contacts, to: "/kontaktai" },
+  ];
 }

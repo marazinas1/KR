@@ -13,11 +13,15 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as EnRouteRouteImport } from './routes/en/route'
+import { Route as KontaktaiRouteImport } from './routes/kontaktai'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedStaffRouteImport } from './routes/_authenticated/staff'
+import { Route as ButaiIndexRouteImport } from './routes/butai.index'
+import { Route as ButaiIdRouteImport } from './routes/butai.$id'
 import { Route as EnIndexRouteImport } from './routes/en/index'
+import { Route as EnKontaktaiRouteImport } from './routes/en/kontaktai'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAnalyticsRouteImport } from './routes/_authenticated/admin.analytics'
 import { Route as AuthenticatedAdminContentRouteImport } from './routes/_authenticated/admin.content'
@@ -32,6 +36,8 @@ import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authentic
 import { Route as AuthenticatedStaffIndexRouteImport } from './routes/_authenticated/staff.index'
 import { Route as AuthenticatedStaffIdRouteImport } from './routes/_authenticated/staff.$id'
 import { Route as ApiPublicNotificationsCronRouteImport } from './routes/api/public/notifications-cron'
+import { Route as EnButaiIndexRouteImport } from './routes/en/butai.index'
+import { Route as EnButaiIdRouteImport } from './routes/en/butai.$id'
 import { Route as AuthenticatedAdminTenantsIdRouteImport } from './routes/_authenticated/admin.tenants.$id'
 import { Route as AuthenticatedAdminUnitsIdRouteImport } from './routes/_authenticated/admin.units.$id'
 import { Route as ApiPublicV1LegalRouteImport } from './routes/api/public/v1/legal'
@@ -64,6 +70,11 @@ const EnRouteRoute = EnRouteRouteImport.update({
   path: '/en',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KontaktaiRoute = KontaktaiRouteImport.update({
+  id: '/kontaktai',
+  path: '/kontaktai',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -84,9 +95,24 @@ const AuthenticatedStaffRoute = AuthenticatedStaffRouteImport.update({
   path: '/staff',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ButaiIndexRoute = ButaiIndexRouteImport.update({
+  id: '/butai/',
+  path: '/butai/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ButaiIdRoute = ButaiIdRouteImport.update({
+  id: '/butai/$id',
+  path: '/butai/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EnIndexRoute = EnIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => EnRouteRoute,
+} as any)
+const EnKontaktaiRoute = EnKontaktaiRouteImport.update({
+  id: '/kontaktai',
+  path: '/kontaktai',
   getParentRoute: () => EnRouteRoute,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -168,6 +194,16 @@ const ApiPublicNotificationsCronRoute =
     path: '/api/public/notifications-cron',
     getParentRoute: () => rootRouteImport,
   } as any)
+const EnButaiIndexRoute = EnButaiIndexRouteImport.update({
+  id: '/butai/',
+  path: '/butai/',
+  getParentRoute: () => EnRouteRoute,
+} as any)
+const EnButaiIdRoute = EnButaiIdRouteImport.update({
+  id: '/butai/$id',
+  path: '/butai/$id',
+  getParentRoute: () => EnRouteRoute,
+} as any)
 const AuthenticatedAdminTenantsIdRoute =
   AuthenticatedAdminTenantsIdRouteImport.update({
     id: '/$id',
@@ -238,10 +274,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/en': typeof EnRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/kontaktai': typeof KontaktaiRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/staff': typeof AuthenticatedStaffRouteWithChildren
+  '/butai/$id': typeof ButaiIdRoute
+  '/en/kontaktai': typeof EnKontaktaiRoute
+  '/butai/': typeof ButaiIndexRoute
   '/en/': typeof EnIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
@@ -255,8 +295,10 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/staff/$id': typeof AuthenticatedStaffIdRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
+  '/en/butai/$id': typeof EnButaiIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/staff/': typeof AuthenticatedStaffIndexRoute
+  '/en/butai/': typeof EnButaiIndexRoute
   '/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
@@ -273,8 +315,12 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/kontaktai': typeof KontaktaiRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/butai/$id': typeof ButaiIdRoute
+  '/en/kontaktai': typeof EnKontaktaiRoute
+  '/butai': typeof ButaiIndexRoute
   '/en': typeof EnIndexRoute
   '/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/admin/content': typeof AuthenticatedAdminContentRoute
@@ -288,8 +334,10 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/staff/$id': typeof AuthenticatedStaffIdRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
+  '/en/butai/$id': typeof EnButaiIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/staff': typeof AuthenticatedStaffIndexRoute
+  '/en/butai': typeof EnButaiIndexRoute
   '/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
@@ -309,10 +357,14 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/en': typeof EnRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/kontaktai': typeof KontaktaiRoute
   '/reset-password': typeof ResetPasswordRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/staff': typeof AuthenticatedStaffRouteWithChildren
+  '/butai/$id': typeof ButaiIdRoute
+  '/en/kontaktai': typeof EnKontaktaiRoute
+  '/butai/': typeof ButaiIndexRoute
   '/en/': typeof EnIndexRoute
   '/_authenticated/admin/analytics': typeof AuthenticatedAdminAnalyticsRoute
   '/_authenticated/admin/content': typeof AuthenticatedAdminContentRoute
@@ -326,8 +378,10 @@ export interface FileRoutesById {
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/staff/$id': typeof AuthenticatedStaffIdRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
+  '/en/butai/$id': typeof EnButaiIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/staff/': typeof AuthenticatedStaffIndexRoute
+  '/en/butai/': typeof EnButaiIndexRoute
   '/_authenticated/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/_authenticated/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
@@ -347,10 +401,14 @@ export interface FileRouteTypes {
     | '/'
     | '/en'
     | '/auth'
+    | '/kontaktai'
     | '/reset-password'
     | '/sitemap.xml'
     | '/admin'
     | '/staff'
+    | '/butai/$id'
+    | '/en/kontaktai'
+    | '/butai/'
     | '/en/'
     | '/admin/analytics'
     | '/admin/content'
@@ -364,8 +422,10 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/staff/$id'
     | '/api/public/notifications-cron'
+    | '/en/butai/$id'
     | '/admin/'
     | '/staff/'
+    | '/en/butai/'
     | '/admin/tenants/$id'
     | '/admin/units/$id'
     | '/api/public/v1/legal'
@@ -382,8 +442,12 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/kontaktai'
     | '/reset-password'
     | '/sitemap.xml'
+    | '/butai/$id'
+    | '/en/kontaktai'
+    | '/butai'
     | '/en'
     | '/admin/analytics'
     | '/admin/content'
@@ -397,8 +461,10 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/staff/$id'
     | '/api/public/notifications-cron'
+    | '/en/butai/$id'
     | '/admin'
     | '/staff'
+    | '/en/butai'
     | '/admin/tenants/$id'
     | '/admin/units/$id'
     | '/api/public/v1/legal'
@@ -417,10 +483,14 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/en'
     | '/auth'
+    | '/kontaktai'
     | '/reset-password'
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/_authenticated/staff'
+    | '/butai/$id'
+    | '/en/kontaktai'
+    | '/butai/'
     | '/en/'
     | '/_authenticated/admin/analytics'
     | '/_authenticated/admin/content'
@@ -434,8 +504,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/users'
     | '/_authenticated/staff/$id'
     | '/api/public/notifications-cron'
+    | '/en/butai/$id'
     | '/_authenticated/admin/'
     | '/_authenticated/staff/'
+    | '/en/butai/'
     | '/_authenticated/admin/tenants/$id'
     | '/_authenticated/admin/units/$id'
     | '/api/public/v1/legal'
@@ -455,8 +527,11 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   EnRouteRoute: typeof EnRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  KontaktaiRoute: typeof KontaktaiRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ButaiIdRoute: typeof ButaiIdRoute
+  ButaiIndexRoute: typeof ButaiIndexRoute
   ApiPublicNotificationsCronRoute: typeof ApiPublicNotificationsCronRoute
   ApiPublicV1LegalRoute: typeof ApiPublicV1LegalRoute
   ApiPublicV1PaymentDetailsRoute: typeof ApiPublicV1PaymentDetailsRoute
@@ -494,6 +569,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kontaktai': {
+      id: '/kontaktai'
+      path: '/kontaktai'
+      fullPath: '/kontaktai'
+      preLoaderRoute: typeof KontaktaiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -522,11 +604,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStaffRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/butai/': {
+      id: '/butai/'
+      path: '/butai'
+      fullPath: '/butai/'
+      preLoaderRoute: typeof ButaiIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/butai/$id': {
+      id: '/butai/$id'
+      path: '/butai/$id'
+      fullPath: '/butai/$id'
+      preLoaderRoute: typeof ButaiIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/en/': {
       id: '/en/'
       path: '/'
       fullPath: '/en/'
       preLoaderRoute: typeof EnIndexRouteImport
+      parentRoute: typeof EnRouteRoute
+    }
+    '/en/kontaktai': {
+      id: '/en/kontaktai'
+      path: '/kontaktai'
+      fullPath: '/en/kontaktai'
+      preLoaderRoute: typeof EnKontaktaiRouteImport
       parentRoute: typeof EnRouteRoute
     }
     '/_authenticated/admin/': {
@@ -626,6 +729,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/notifications-cron'
       preLoaderRoute: typeof ApiPublicNotificationsCronRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/en/butai/': {
+      id: '/en/butai/'
+      path: '/butai'
+      fullPath: '/en/butai/'
+      preLoaderRoute: typeof EnButaiIndexRouteImport
+      parentRoute: typeof EnRouteRoute
+    }
+    '/en/butai/$id': {
+      id: '/en/butai/$id'
+      path: '/butai/$id'
+      fullPath: '/en/butai/$id'
+      preLoaderRoute: typeof EnButaiIdRouteImport
+      parentRoute: typeof EnRouteRoute
     }
     '/_authenticated/admin/tenants/$id': {
       id: '/_authenticated/admin/tenants/$id'
@@ -800,11 +917,17 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface EnRouteRouteChildren {
+  EnKontaktaiRoute: typeof EnKontaktaiRoute
   EnIndexRoute: typeof EnIndexRoute
+  EnButaiIdRoute: typeof EnButaiIdRoute
+  EnButaiIndexRoute: typeof EnButaiIndexRoute
 }
 
 const EnRouteRouteChildren: EnRouteRouteChildren = {
+  EnKontaktaiRoute: EnKontaktaiRoute,
   EnIndexRoute: EnIndexRoute,
+  EnButaiIdRoute: EnButaiIdRoute,
+  EnButaiIndexRoute: EnButaiIndexRoute,
 }
 
 const EnRouteRouteWithChildren =
@@ -848,8 +971,11 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   EnRouteRoute: EnRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  KontaktaiRoute: KontaktaiRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ButaiIdRoute: ButaiIdRoute,
+  ButaiIndexRoute: ButaiIndexRoute,
   ApiPublicNotificationsCronRoute: ApiPublicNotificationsCronRoute,
   ApiPublicV1LegalRoute: ApiPublicV1LegalRoute,
   ApiPublicV1PaymentDetailsRoute: ApiPublicV1PaymentDetailsRoute,
