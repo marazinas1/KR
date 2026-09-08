@@ -33,7 +33,7 @@ import {
   updateUserName,
 } from "@/lib/users.functions";
 
-type InvitableRole = "owner" | "manager";
+type InvitableRole = "developer" | "owner" | "manager";
 
 const ROLE_LABEL_KEYS: Record<string, string> = {
   developer: "settings.users.role_developer",
