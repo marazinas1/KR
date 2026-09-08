@@ -125,6 +125,7 @@ computeBalances(db, todayIso, opts?) -> Map<lease_id, {charged, paid, balance}>
 2. A reading whose type has **no** rate → printed preview showing it as blocked with the reason, and `SELECT count(*) FROM charges` proving nothing was written for it.
 3. Generate the same period twice → printed `created`/`skipped` counts and a `count(*)` proving one rent row per lease.
 4. Pro-rated first month printed against a hand-computed figure.
-5. Issue an invoice from those charges → printed `full_number` from the existing series, printed `charges.invoice_id` set on exactly those rows, PDF rendered in the browser.
+5. Issue an invoice from those charges → printed `full_number` from the existing series, printed `charges.invoice_id` set on exactly those rows, PDF rendered in the browser. Plus a negative case: calling the function with one already-invoiced charge in the array → printed error and a printed check that **no** new invoice row and no changed `invoice_id` remain (rollback proven, not assumed).
 6. Same lease read three ways — dashboard debtor card, `listUnits` balance, tenant `getMyBalance` while signed in as that tenant — printed side by side, identical numbers.
 7. Fixture cleanup counts = 0, `bunx tsgo --noEmit`, full `bun run build` tail.
+8. **Shared meter across three leases:** fixture with one building meter and three leases in that building, one approved reading. Printed all `charges` rows for that `meter_reading_id` — three rows, one per `lease_id`, split amounts summing to the full consumption cost. Then a second generate run for the same period, printed again: still exactly three rows, `skipped = 3`.
