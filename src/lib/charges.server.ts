@@ -6,9 +6,19 @@
  *   fixed:   one row per (lease, period, rate) when rate.fixed_monthly > 0
  *   rent:    monthly_rent, pro-rated by days when the lease starts/ends inside the month
  *
+ * ROUNDING: every money product is rounded by Postgres `round_money_products()`
+ * in `numeric` (half away from zero). Raw DB strings ("0.2345", "150.000") are
+ * sent as-is, so 0.2345 × 150 = 35.175 → 35.18, not the float artefact 35.17.
+ * JS never multiplies money; it only splits already-rounded cents (integers).
+ *
  * Shared (building) meters: the reading's cost is split equally across the
  * leases holding units in that building during the period (largest-remainder,
  * so the per-lease cents always sum to the full cost).
+ *
+ * The rate's fixed_monthly fee for a shared meter is split the SAME way — it is
+ * one subscription fee per meter, not per tenant, so three leases on one
+ * building water meter pay 0.50 + 0.50 + 0.50 of a 1.50 fee, not 1.50 each.
+ * A lease whose OWN unit meter uses the same rate pays the full fee.
  *
  * A reading with no effective tariff is reported as a BLOCKED line — nothing is
  * written for it, never a zero-amount substitute.
@@ -53,8 +63,24 @@ export type ChargePreview = {
   total: number;
 };
 
-const r2 = (n: number) => Math.round(n * 100) / 100;
+/** Display-only 3dp for quantities — never used for money. */
 const r3 = (n: number) => Math.round(n * 1000) / 1000;
+
+/** One money product to be rounded by Postgres: round(a*b/div, 2) in numeric. */
+export type MoneyProduct = { a: string | number; b: string | number; div?: number };
+
+/** Sums cents that are already 2dp; exact because inputs are 2dp multiples. */
+const sumCents = (xs: number[]) => xs.reduce((s, x) => s + Math.round(x * 100), 0) / 100;
+
+/** Batch rounding authority — see header comment. */
+export async function roundMoneyProducts(db: Db, items: MoneyProduct[]): Promise<number[]> {
+  if (items.length === 0) return [];
+  const { data, error } = await db.rpc("round_money_products", { _items: items });
+  if (error) throw new Error(error.message);
+  const out = (data as unknown as (string | number)[]).map(Number);
+  if (out.length !== items.length) throw new Error("RoundingCountMismatch");
+  return out;
+}
 
 export function normalizePeriod(period: string): string {
   if (!/^\d{4}-\d{2}(-\d{2})?$/.test(period)) throw new Error("InvalidPeriod");
@@ -72,19 +98,17 @@ function dayDiffInclusive(a: string, b: string) {
   return Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86_400_000) + 1;
 }
 
-/** Exported for the pro-rating verification. */
-export function rentForPeriod(
-  monthlyRent: number,
+/** Covered-day window of a lease inside a period; the money itself is rounded in SQL. */
+export function rentCoverage(
   leaseStart: string,
   leaseEnd: string | null,
   period: string,
-): { amount: number; coveredFrom: string; coveredTo: string; days: number; daysInMonth: number } {
+): { coveredFrom: string; coveredTo: string; days: number; daysInMonth: number } {
   const { start, end, daysInMonth } = monthBounds(period);
   const coveredFrom = leaseStart > start ? leaseStart : start;
   const coveredTo = leaseEnd && leaseEnd < end ? leaseEnd : end;
   const days = Math.max(0, dayDiffInclusive(coveredFrom, coveredTo));
-  const amount = days >= daysInMonth ? r2(monthlyRent) : r2((monthlyRent * days) / daysInMonth);
-  return { amount, coveredFrom, coveredTo, days, daysInMonth };
+  return { coveredFrom, coveredTo, days, daysInMonth };
 }
 
 /** Largest-remainder split of `total` (2dp) into n parts that sum exactly. */
@@ -104,7 +128,8 @@ type Lease = {
   unit_id: string;
   start_date: string;
   end_date: string | null;
-  monthly_rent: number;
+  /** raw numeric string from the DB — passed to SQL untouched */
+  monthly_rent: string;
 };
 
 export async function previewPeriodCharges(db: Db, rawPeriod: string): Promise<ChargePreview> {
@@ -135,7 +160,7 @@ export async function previewPeriodCharges(db: Db, rawPeriod: string): Promise<C
   ]);
   for (const e of [lErr, uErr, rErr, mErr, tErr]) if (e) throw new Error(e.message);
 
-  const leaseList: Lease[] = (leases ?? []).map((l: any) => ({ ...l, monthly_rent: Number(l.monthly_rent) }));
+  const leaseList: Lease[] = (leases ?? []).map((l: any) => ({ ...l, monthly_rent: String(l.monthly_rent) }));
   const leaseByUnit = new Map(leaseList.map((l) => [l.unit_id, l]));
   const unitBuilding = new Map((units ?? []).map((u: any) => [u.id, u.building_id as string | null]));
   const meterById = new Map((meters ?? []).map((m: any) => [m.id, m]));
@@ -147,50 +172,35 @@ export async function previewPeriodCharges(db: Db, rawPeriod: string): Promise<C
     if (!cur || r.effective_from > cur.effective_from) rateByType.set(r.type, r);
   }
 
-  const lines: PreviewLine[] = [];
   const blocked: BlockedLine[] = [];
 
+  // Phase A — collect every money product; Postgres rounds them all in one call.
+  const products: MoneyProduct[] = [];
+  const enqueue = (p: MoneyProduct) => products.push(p) - 1;
+
   // --- rent ---
+  type RentJob = { lease: Lease; cov: ReturnType<typeof rentCoverage>; idx: number };
+  const rentJobs: RentJob[] = [];
   for (const l of leaseList) {
-    const rent = rentForPeriod(l.monthly_rent, l.start_date, l.end_date, period);
-    if (rent.days <= 0) continue;
-    const full = rent.days >= rent.daysInMonth;
-    lines.push({
-      lease_id: l.id,
-      unit_id: l.unit_id,
-      period,
-      kind: "rent",
-      meter_reading_id: null,
-      utility_rate_id: null,
-      meter_type: null,
-      description: full ? `rent ${period.slice(0, 7)}` : `rent ${rent.coveredFrom}..${rent.coveredTo} (${rent.days}/${rent.daysInMonth} d)`,
-      quantity: full ? 1 : r3(rent.days / rent.daysInMonth),
-      unit_price: l.monthly_rent,
-      amount: rent.amount,
-    });
+    const cov = rentCoverage(l.start_date, l.end_date, period);
+    if (cov.days <= 0) continue;
+    const full = cov.days >= cov.daysInMonth;
+    // full month: rent × 1; partial: rent × days / daysInMonth — all in numeric
+    const idx = enqueue(full ? { a: l.monthly_rent, b: 1 } : { a: l.monthly_rent, b: cov.days, div: cov.daysInMonth });
+    rentJobs.push({ lease: l, cov, idx });
   }
 
   // --- utilities from approved readings ---
-  // (lease_id, rate_id) pairs that need a fixed fee row
-  const fixedNeeded = new Map<string, { lease: Lease; rate: any; meterType: string }>();
-
+  type UtilJob = { rd: any; meter: any; rate: any; targets: Lease[]; idx: number };
+  const utilJobs: UtilJob[] = [];
   for (const rd of readings ?? []) {
     const meter = meterById.get(rd.meter_id);
     if (!meter) continue;
-    const consumption = Number(rd.consumption);
     const rate = rateByType.get(meter.type);
     if (!rate) {
-      blocked.push({
-        reason: "no_rate",
-        meter_type: meter.type,
-        meter_reading_id: rd.id,
-        unit_id: meter.unit_id,
-        building_id: meter.building_id,
-        period,
-      });
+      blocked.push({ reason: "no_rate", meter_type: meter.type, meter_reading_id: rd.id, unit_id: meter.unit_id, building_id: meter.building_id, period });
       continue;
     }
-    const price = Number(rate.price_per_unit);
 
     let targets: Lease[];
     if (meter.unit_id) {
@@ -209,10 +219,43 @@ export async function previewPeriodCharges(db: Db, rawPeriod: string): Promise<C
         continue;
       }
     }
+    // raw strings from the DB → exact numeric multiplication in SQL
+    const idx = enqueue({ a: String(rd.consumption), b: String(rate.price_per_unit) });
+    utilJobs.push({ rd, meter, rate, targets, idx });
+  }
 
+  const rounded = await roundMoneyProducts(db, products);
+
+  // Phase B — build lines from the SQL-rounded amounts.
+  const lines: PreviewLine[] = [];
+
+  for (const { lease: l, cov, idx } of rentJobs) {
+    const full = cov.days >= cov.daysInMonth;
+    lines.push({
+      lease_id: l.id,
+      unit_id: l.unit_id,
+      period,
+      kind: "rent",
+      meter_reading_id: null,
+      utility_rate_id: null,
+      meter_type: null,
+      description: full ? `rent ${period.slice(0, 7)}` : `rent ${cov.coveredFrom}..${cov.coveredTo} (${cov.days}/${cov.daysInMonth} d)`,
+      quantity: full ? 1 : r3(cov.days / cov.daysInMonth),
+      unit_price: Number(l.monthly_rent),
+      amount: rounded[idx]!,
+    });
+  }
+
+  // (lease_id, rate_id) → fixed-fee share. A full (n=1) share always wins over a split one.
+  const fixedNeeded = new Map<string, { lease: Lease; rate: any; meterType: string; share: number; n: number }>();
+
+  for (const { rd, meter, rate, targets, idx } of utilJobs) {
     const n = targets.length;
-    const totalCost = r2(consumption * price);
+    const consumption = Number(rd.consumption);
+    const totalCost = rounded[idx]!;
     const shares = n === 1 ? [totalCost] : splitCents(totalCost, n);
+    const fixed = Number(rate.fixed_monthly); // numeric(…,2) from the DB — already exact cents
+    const fixedShares = fixed > 0 ? (n === 1 ? [fixed] : splitCents(fixed, n)) : null;
     targets.forEach((l, i) => {
       lines.push({
         lease_id: l.id,
@@ -227,17 +270,19 @@ export async function previewPeriodCharges(db: Db, rawPeriod: string): Promise<C
             ? `${meter.type} ${meter.serial_number} ${period.slice(0, 7)}`
             : `${meter.type} ${meter.serial_number} ${period.slice(0, 7)} (shared 1/${n})`,
         quantity: n === 1 ? r3(consumption) : r3(consumption / n),
-        unit_price: price,
+        unit_price: Number(rate.price_per_unit),
         amount: shares[i]!,
       });
-      if (Number(rate.fixed_monthly) > 0) {
-        fixedNeeded.set(`${l.id}:${rate.id}`, { lease: l, rate, meterType: meter.type });
+      if (fixedShares) {
+        const key = `${l.id}:${rate.id}`;
+        const cur = fixedNeeded.get(key);
+        if (!cur || (cur.n > 1 && n === 1)) fixedNeeded.set(key, { lease: l, rate, meterType: meter.type, share: fixedShares[i]!, n });
       }
     });
   }
 
-  // --- fixed monthly fees (one per lease × rate) ---
-  for (const { lease, rate, meterType } of fixedNeeded.values()) {
+  // --- fixed monthly fees (one per lease × rate; split for shared meters, see header) ---
+  for (const { lease, rate, meterType, share, n } of fixedNeeded.values()) {
     lines.push({
       lease_id: lease.id,
       unit_id: lease.unit_id,
@@ -246,14 +291,14 @@ export async function previewPeriodCharges(db: Db, rawPeriod: string): Promise<C
       meter_reading_id: null,
       utility_rate_id: rate.id,
       meter_type: meterType,
-      description: `${meterType} fixed fee ${period.slice(0, 7)}`,
-      quantity: 1,
+      description: n === 1 ? `${meterType} fixed fee ${period.slice(0, 7)}` : `${meterType} fixed fee ${period.slice(0, 7)} (shared 1/${n})`,
+      quantity: n === 1 ? 1 : r3(1 / n),
       unit_price: Number(rate.fixed_monthly),
-      amount: r2(Number(rate.fixed_monthly)),
+      amount: share,
     });
   }
 
-  const total = r2(lines.reduce((s, l) => s + l.amount, 0));
+  const total = sumCents(lines.map((l) => l.amount));
   return { period, lines, blocked, total };
 }
 
