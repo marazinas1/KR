@@ -954,7 +954,8 @@
     "nav": {
       "units": "Units",
       "tenants": "Tenants",
-      "inquiries": "Inquiries"
+      "inquiries": "Inquiries",
+      "issues": "Faults"
     },
     "tabs": {
       "overview": "Overview",
@@ -1071,7 +1072,17 @@
       "notesHint": "Visible to staff only.",
       "fListed": "Show on public site",
       "listedHint": "Availability date is computed from leases automatically.",
-      "fActive": "Active"
+      "fActive": "Active",
+      "view": {
+        "expiring": "Leases expiring within {{days}} days",
+        "vacant": "Vacant units",
+        "becoming_vacant": "Units becoming vacant",
+        "missing_readings": "Missing this month's readings",
+        "debtors": "Debtors"
+      },
+      "clearView": "Show all",
+      "owes": "Owes {{amount}} €",
+      "missingReadings": "Missing readings: {{count}}"
     },
     "tenants": {
       "title": "Tenants",
@@ -1230,6 +1241,64 @@
         "viewing_scheduled": "Viewing scheduled",
         "converted": "Converted",
         "dismissed": "Dismissed"
+      }
+    },
+    "issuesList": {
+      "title": "Faults",
+      "count": "{{count}} records",
+      "filter": {
+        "open": "Open",
+        "all": "All"
+      },
+      "anyStatus": "Any status",
+      "anyPriority": "Any priority",
+      "age": "Age",
+      "days": "{{count}} d"
+    },
+    "dashboard": {
+      "subtitle": "What needs attention today ({{date}})",
+      "none": "Nothing here.",
+      "kpi": {
+        "occupancy": "Occupancy",
+        "occupancyHint": "{{occupied}} of {{total}} active units",
+        "rentRoll": "Monthly rent roll",
+        "rentRollHint": "Sum of active leases",
+        "vacant": "Vacant units",
+        "vacantHint": "Available today",
+        "debt": "Outstanding",
+        "debtHint": "Debtors: {{count}}"
+      },
+      "expiring": {
+        "title": "Expiring leases",
+        "buckets": "30 d: {{d30}} · 60 d: {{d60}} · 90 d: {{d90}}",
+        "daysLeft": "{{count}} d left"
+      },
+      "vacant": {
+        "title": "Vacant units",
+        "becoming": "Becoming vacant (not renewing): {{count}}",
+        "days": "{{count}} d"
+      },
+      "readings": {
+        "title": "Missing readings",
+        "ofUnits": "{{missing}} / {{total}}",
+        "footer": "Meters without a reading: {{meters}} · pending review: {{review}}",
+        "allIn": "All readings for this month are in.",
+        "meters": "{{count}} meters"
+      },
+      "issues": {
+        "title": "Open faults"
+      },
+      "debtors": {
+        "title": "Debtors",
+        "total": "Total: {{amount}}"
+      },
+      "inquiries": {
+        "title": "New inquiries",
+        "footer": "From the public site"
+      },
+      "documents": {
+        "title": "Expiring documents",
+        "footer": "Expiring within 30 days or already expired"
       }
     }
   },

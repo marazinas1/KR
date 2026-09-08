@@ -331,6 +331,13 @@ export type Database = {
             foreignKeyName: "bookings_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["unit_id"]
+          },
+          {
+            foreignKeyName: "bookings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
             referencedRelation: "units"
             referencedColumns: ["id"]
           },
@@ -597,6 +604,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "charges_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["holding_lease_id"]
+          },
+          {
             foreignKeyName: "charges_meter_reading_id_fkey"
             columns: ["meter_reading_id"]
             isOneToOne: false
@@ -775,6 +789,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "documents_lease_fk"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["holding_lease_id"]
+          },
+          {
             foreignKeyName: "documents_tenant_fk"
             columns: ["tenant_id"]
             isOneToOne: false
@@ -787,6 +808,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_vacancies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_documents_property_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["unit_id"]
           },
           {
             foreignKeyName: "property_documents_property_id_fkey"
@@ -835,6 +863,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_vacancies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expenses_property_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["unit_id"]
           },
           {
             foreignKeyName: "expenses_property_id_fkey"
@@ -980,6 +1015,13 @@ export type Database = {
             referencedRelation: "leases"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "invoices_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["holding_lease_id"]
+          },
         ]
       }
       issue_comments: {
@@ -1087,11 +1129,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "issues_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["holding_lease_id"]
+          },
+          {
             foreignKeyName: "issues_unit_id_fkey"
             columns: ["unit_id"]
             isOneToOne: false
             referencedRelation: "public_vacancies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "issues_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["unit_id"]
           },
           {
             foreignKeyName: "issues_unit_id_fkey"
@@ -1143,6 +1199,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "leases"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lease_occupants_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["holding_lease_id"]
           },
           {
             foreignKeyName: "lease_occupants_tenant_id_fkey"
@@ -1225,6 +1288,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_vacancies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leases_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["unit_id"]
           },
           {
             foreignKeyName: "leases_unit_id_fkey"
@@ -1364,6 +1434,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_vacancies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "meters_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["unit_id"]
           },
           {
             foreignKeyName: "meters_unit_id_fkey"
@@ -1596,6 +1673,13 @@ export type Database = {
             referencedRelation: "leases"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "payments_lease_id_fkey"
+            columns: ["lease_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["holding_lease_id"]
+          },
         ]
       }
       property_investments: {
@@ -1636,6 +1720,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_vacancies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_investments_property_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["unit_id"]
           },
           {
             foreignKeyName: "property_investments_property_id_fkey"
@@ -1684,6 +1775,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_vacancies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "property_maintenance_property_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["unit_id"]
           },
           {
             foreignKeyName: "property_maintenance_property_id_fkey"
@@ -1749,11 +1847,25 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "rental_inquiries_converted_lease_id_fkey"
+            columns: ["converted_lease_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["holding_lease_id"]
+          },
+          {
             foreignKeyName: "rental_inquiries_unit_id_fkey"
             columns: ["unit_id"]
             isOneToOne: false
             referencedRelation: "public_vacancies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rental_inquiries_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["unit_id"]
           },
           {
             foreignKeyName: "rental_inquiries_unit_id_fkey"
@@ -1811,6 +1923,13 @@ export type Database = {
             isOneToOne: true
             referencedRelation: "public_vacancies"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "room_status_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: true
+            referencedRelation: "unit_availability"
+            referencedColumns: ["unit_id"]
           },
           {
             foreignKeyName: "room_status_property_id_fkey"
@@ -2004,6 +2123,13 @@ export type Database = {
             foreignKeyName: "property_events_property_id_fkey"
             columns: ["unit_id"]
             isOneToOne: false
+            referencedRelation: "unit_availability"
+            referencedColumns: ["unit_id"]
+          },
+          {
+            foreignKeyName: "property_events_property_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
             referencedRelation: "units"
             referencedColumns: ["id"]
           },
@@ -2185,6 +2311,33 @@ export type Database = {
         }
         Relationships: []
       }
+      unit_availability: {
+        Row: {
+          available_from: string | null
+          has_future_lease: boolean | null
+          holding_end_date: string | null
+          holding_lease_id: string | null
+          holding_monthly_rent: number | null
+          holding_renewal: boolean | null
+          holding_start_date: string | null
+          holding_tenant_id: string | null
+          is_active: boolean | null
+          is_listed: boolean | null
+          status: string | null
+          unit_id: string | null
+          vacant_days: number | null
+          vacant_since: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leases_tenant_id_fkey"
+            columns: ["holding_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       analytics_summary: { Args: { _from: string; _to: string }; Returns: Json }
@@ -2233,6 +2386,20 @@ export type Database = {
       tenant_owns_building: { Args: { _building_id: string }; Returns: boolean }
       tenant_owns_lease: { Args: { _lease_id: string }; Returns: boolean }
       tenant_owns_unit: { Args: { _unit_id: string }; Returns: boolean }
+      unit_availability_calc: {
+        Args: {
+          _created_at: string
+          _holding_end_date: string
+          _holding_renewal: boolean
+          _last_finished_end: string
+          _status: string
+        }
+        Returns: {
+          available_from: string
+          vacant_days: number
+          vacant_since: string
+        }[]
+      }
     }
     Enums: {
       app_role: "developer" | "owner" | "manager" | "tenant"

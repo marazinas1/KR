@@ -84,6 +84,9 @@ export const HOLDING_LEASE_STATUSES: LeaseStatus[] = ["active", "ending"];
 
 export const todayIso = () => new Date().toISOString().slice(0, 10);
 
+/** First day of the current month — the reading period the tenant portal submits against and the dashboard checks. */
+export const currentPeriod = () => `${new Date().toISOString().slice(0, 7)}-01`;
+
 export function daysBetween(fromIso: string, toIso: string): number {
   const a = Date.parse(`${fromIso.slice(0, 10)}T00:00:00Z`);
   const b = Date.parse(`${toIso.slice(0, 10)}T00:00:00Z`);

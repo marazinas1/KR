@@ -954,7 +954,8 @@
     "nav": {
       "units": "Butai",
       "tenants": "Nuomininkai",
-      "inquiries": "Užklausos"
+      "inquiries": "Užklausos",
+      "issues": "Gedimai"
     },
     "tabs": {
       "overview": "Apžvalga",
@@ -1071,7 +1072,17 @@
       "notesHint": "Matoma tik darbuotojams.",
       "fListed": "Rodyti viešame puslapyje",
       "listedHint": "Laisvumo data skaičiuojama automatiškai iš sutarčių.",
-      "fActive": "Aktyvus"
+      "fActive": "Aktyvus",
+      "view": {
+        "expiring": "Sutartys, besibaigiančios per {{days}} d.",
+        "vacant": "Tušti butai",
+        "becoming_vacant": "Atsilaisvinantys butai",
+        "missing_readings": "Trūksta šio mėnesio rodmenų",
+        "debtors": "Skolininkai"
+      },
+      "clearView": "Rodyti visus",
+      "owes": "Skola {{amount}} €",
+      "missingReadings": "Trūksta rodmenų: {{count}}"
     },
     "tenants": {
       "title": "Nuomininkai",
@@ -1230,6 +1241,64 @@
         "viewing_scheduled": "Apžiūra suplanuota",
         "converted": "Konvertuota",
         "dismissed": "Atmesta"
+      }
+    },
+    "issuesList": {
+      "title": "Gedimai",
+      "count": "Įrašų: {{count}}",
+      "filter": {
+        "open": "Atviri",
+        "all": "Visi"
+      },
+      "anyStatus": "Bet kuri būsena",
+      "anyPriority": "Bet kuris prioritetas",
+      "age": "Amžius",
+      "days": "{{count}} d."
+    },
+    "dashboard": {
+      "subtitle": "Kas reikalauja dėmesio šiandien ({{date}})",
+      "none": "Nieko nėra.",
+      "kpi": {
+        "occupancy": "Užimtumas",
+        "occupancyHint": "{{occupied}} iš {{total}} aktyvių butų",
+        "rentRoll": "Mėnesio nuoma",
+        "rentRollHint": "Aktyvių sutarčių suma",
+        "vacant": "Tušti butai",
+        "vacantHint": "Laisvi šiandien",
+        "debt": "Skolos",
+        "debtHint": "Skolininkų: {{count}}"
+      },
+      "expiring": {
+        "title": "Besibaigiančios sutartys",
+        "buckets": "30 d.: {{d30}} · 60 d.: {{d60}} · 90 d.: {{d90}}",
+        "daysLeft": "liko {{count}} d."
+      },
+      "vacant": {
+        "title": "Tušti butai",
+        "becoming": "Atsilaisvina (nepratęsiama): {{count}}",
+        "days": "{{count}} d."
+      },
+      "readings": {
+        "title": "Trūksta rodmenų",
+        "ofUnits": "{{missing}} / {{total}}",
+        "footer": "Skaitliukų be rodmens: {{meters}} · laukia patikros: {{review}}",
+        "allIn": "Visi šio mėnesio rodmenys pateikti.",
+        "meters": "{{count}} skait."
+      },
+      "issues": {
+        "title": "Atviri gedimai"
+      },
+      "debtors": {
+        "title": "Skolininkai",
+        "total": "Iš viso: {{amount}}"
+      },
+      "inquiries": {
+        "title": "Naujos užklausos",
+        "footer": "Iš viešos svetainės"
+      },
+      "documents": {
+        "title": "Besibaigiantys dokumentai",
+        "footer": "Baigiasi per 30 d. arba jau pasibaigę"
       }
     }
   },

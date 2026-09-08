@@ -16,7 +16,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { requireTenant } from "./admin-guard.server";
-import { HOLDING_LEASE_STATUSES, ISSUE_CATEGORIES } from "./rental";
+import { HOLDING_LEASE_STATUSES, ISSUE_CATEGORIES, currentPeriod } from "./rental";
 
 type Ctx = { supabase: any; userId: string };
 
@@ -109,7 +109,7 @@ export type MyMeter = {
   current: { id: string; value: number; status: string; period: string; photo_path: string } | null;
 };
 
-export const currentPeriod = () => `${new Date().toISOString().slice(0, 7)}-01`;
+export { currentPeriod };
 
 /**
  * Meters the tenant may read AND submit for: the unit's own meters plus the
