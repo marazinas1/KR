@@ -73,6 +73,7 @@ function TenantHome() {
             </p>
             <p className="text-xs text-muted-foreground">
               {t("tenant.charged")} {formatMoney(bal.charged)} · {t("tenant.paid")} {formatMoney(bal.paid)}
+              {bal.upcoming > 0 && <> · {t("tenant.upcoming")} {formatMoney(bal.upcoming)}</>}
             </p>
             {bal.charges.length > 0 && (
               <ul className="mt-3 divide-y text-sm">
