@@ -33,12 +33,12 @@
 - [x] Login redirect: tenant-only users → /nuomininkas
 - [x] Verification with printed results, esp. cross-tenant isolation (items 3 and 4)
 
-## Step 7 — Dashboard (in progress)
-- [ ] Migration: `unit_availability_calc()` function (end_date + 1 canonical), `unit_availability` view (invoker), `public_vacancies` recreated on the same function — no view-on-view
-- [ ] `listUnits` reads availability from the view (drops TS recomputation)
-- [ ] `getDashboard`: expiring 30/60/90, vacant + days, missing readings, open issues, debtors, new inquiries, expiring documents, occupancy/rent roll
-- [ ] Dashboard UI; units list `validateSearch` filters; inquiries `status` param; new `/admin/issues` list
-- [ ] Verification with printed results: anon rows from public_vacancies (real content), anon permission denied on unit_availability, fixture parity, tsgo, build, cleanup = 0
+## Step 7 — Dashboard (done)
+- [x] Migration: `unit_availability_calc()` function (end_date + 1 canonical), `unit_availability` view (invoker), `public_vacancies` recreated on the same function — no view-on-view
+- [x] `listUnits` reads availability from the view (drops TS recomputation)
+- [x] `getDashboard`: expiring 30/60/90, vacant + days, missing readings, open issues, debtors, new inquiries, expiring documents, occupancy/rent roll
+- [x] Dashboard UI; units list `validateSearch` filters; inquiries `status` param; new `/admin/issues` list
+- [x] Verification with printed results: anon rows from public_vacancies (real content), anon permission denied on unit_availability, fixture parity, tsgo, build, cleanup = 0
 
 ## Later
 - Step 8 charges/invoices rebuilt against leases (invoice engine is currently unused)
