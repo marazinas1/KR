@@ -74,10 +74,14 @@ export async function optimizeImage(source: Blob | File): Promise<OptimizedImage
   }
 }
 
-/** Įkelia optimizuotą WebP į `car-images` bucket'ą ir grąžina public URL. */
+/** Marketing photos of units live in the public `unit-photos` bucket. */
+export const UNIT_PHOTO_BUCKET = "unit-photos";
+
+/** Uploads an optimised WebP and returns its public URL. */
 export async function uploadOptimizedToStorage(
   source: Blob | File,
   folder: string,
+  bucket: string = UNIT_PHOTO_BUCKET,
 ): Promise<{ url: string; path: string; width: number; height: number; bytes: number }> {
   const optimized = await optimizeImage(source);
   const uuid =
@@ -87,14 +91,14 @@ export async function uploadOptimizedToStorage(
   const safeFolder = folder.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64) || "misc";
   const path = `${safeFolder}/${uuid}.webp`;
 
-  const { error } = await supabase.storage.from("car-images").upload(path, optimized.blob, {
+  const { error } = await supabase.storage.from(bucket).upload(path, optimized.blob, {
     contentType: "image/webp",
     cacheControl: "31536000",
     upsert: false,
   });
   if (error) throw new Error(error.message);
 
-  const { data } = supabase.storage.from("car-images").getPublicUrl(path);
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   return {
     url: data.publicUrl,
     path,
@@ -104,16 +108,20 @@ export async function uploadOptimizedToStorage(
   };
 }
 
-/** Bandys ištraukti storage path iš public URL. Jei ne šio bucket'o — grąžina null. */
-export function extractCarImagesPath(url: string): string | null {
-  const marker = "/storage/v1/object/public/car-images/";
+/** Extracts the storage path from a public URL of the given bucket. */
+export function extractStoragePath(url: string, bucket: string = UNIT_PHOTO_BUCKET): string | null {
+  const marker = `/storage/v1/object/public/${bucket}/`;
   const idx = url.indexOf(marker);
   if (idx === -1) return null;
   return decodeURIComponent(url.slice(idx + marker.length));
 }
 
-export async function removeFromStorage(url: string): Promise<void> {
-  const path = extractCarImagesPath(url);
+export async function removeFromStorage(
+  url: string,
+  bucket: string = UNIT_PHOTO_BUCKET,
+): Promise<void> {
+  const path = extractStoragePath(url, bucket);
   if (!path) return;
-  await supabase.storage.from("car-images").remove([path]);
+  await supabase.storage.from(bucket).remove([path]);
 }
+

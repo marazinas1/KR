@@ -1,0 +1,1 @@
+ALTER TABLE public.documents DROP CONSTRAINT IF EXISTS car_documents_kind_check;
