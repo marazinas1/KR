@@ -1,157 +1,58 @@
-# Step 3 — Core data model
+# Step 4 — Admin: units, tenants, leases
 
-Migration only for review. Nothing is executed until this plan is approved.
+Scope: three admin areas (Butai, Nuomininkai, Sutartys) built on the step-3 schema. No public site, no tenant portal, no dashboard cards, no billing generation. Nothing else in this task.
 
-Confirmed before writing: every operational table is empty (`properties`, `property_events`, `property_documents`, `bookings`, `expenses`, `invoices`, `property_investments`, `property_maintenance`, `room_status` = 0 rows). Only `property_settings` has 1 row (the `global` branding row). So conversions can be structural, and the one settings row is carried across with `INSERT ... SELECT`, never with literal values.
+## 1. Units list (`/admin/units`)
 
-## Scope correction (per review)
+Built for ~100 rows: one server query, client-side filtering, no pagination initially (virtualise only if it gets slow).
 
-**Dropped now:** `payment_transactions` only (no code reads it).
+- Search over name, unit number, address, building name.
+- Filters: building (dropdown from `buildings`), status (the five CHECK values only), listed / not listed.
+- Columns: unit (name + unit number + floor), building, rooms / m2, monthly rent, status badge, vacancy indicator, listed marker.
+- Vacancy indicator ("tuščias X d."): shown only for units with status `vacant`. Days = today minus the most recent `end_date` of that unit's non-active leases (`expired` / `terminated`); if the unit never had a lease, days = today minus `units.created_at`. Computed server-side in the list query so the list and any later dashboard card use one rule.
+- Row actions: open detail, toggle `is_listed`.
+- "Naujas butas" dialog + edit form: name, building (optional), unit number, floor, room count, area, monthly rent, deposit, address/city/country, description, notes, amenities, photos (existing upload pipeline, `unit-photos` bucket), `is_listed`, `is_active`, sort order.
+- **Status is a Select with exactly `vacant` / `occupied` / `reserved` / `renovation` / `inactive`** — never free text — matching the DB CHECK. The option list is a single exported const shared by the form, the filter and the badges, so the UI can never drift from the constraint.
 
-**Untouched until step 6** — the tenant-portal conversion template: `bookings`, `room_status`, `housekeeping_tasks`, `housekeeping_comments` and the whole `staff` / `housekeeping` module.
+## 2. Unit detail (`/admin/units/$id`)
 
-**Code cleaned now** (non-template readers of `bookings`):
-- `dashboard.functions.ts` — delete `getDashboardStats` entirely (dead since step 1).
-- `properties.functions.ts` — booking-date logic removed together with the `properties`→`units` conversion.
-- `invoices.server.ts` / `invoices.functions.ts` — drop the `bookings` read/join; invoices stay, no longer tied to a booking.
-- `notifications.server.ts` — remove booking-confirmation notification logic.
-- `api/public/v1/properties.ts` and `properties.$id.ts` — repointed to `units` with monthly rent; nightly fields gone.
-- The staff module keeps working: its `properties(name)` joins become `units(name)`.
+Header: name, building + unit number, status badge, `is_listed` switch, edit button. Tabs:
 
-## Table conversions
+- **Apžvalga** — key facts, photos, notes, rent/deposit, availability line ("laisvas nuo …" from the same rule the public view uses).
+- **Nuoma ir nuomininkas** — active lease card (tenant, term, rent, payment day, notice), occupants, plus lease history; actions: create / renew / terminate (section 4).
+- **Skaitliukai ir rodmenys** — meters for this unit (and the building's shared meters, read-only), add meter, per-meter reading history with status, approve / reject a submitted reading, add a reading manually. Reading writes go through the DB trigger — the UI never computes consumption.
+- **Gedimai** — issues for this unit with status/priority, open the thread, change status, assign, record cost.
+- **Dokumentai** — upload/list/delete against the private `documents` bucket via signed URLs, with `expires_at`.
+- **Sąnaudos** — expenses, investments and maintenance rows already keyed by `unit_id`.
+- **Timeline** — `unit_events`, plus derived entries from leases (occupied / vacated) so the history is complete without duplicating data.
 
-`properties` → **`units`** (rename in place, so existing foreign keys survive).
-Drop: `price_per_night`, `price_tiers`, `max_guests`, `beds`, `category`, `year`, `ical_import_url`, `ical_last_sync_at`, `ical_last_status`, `extra_services`, `door_code`, `property_type`, **`rooms`** (it is a `jsonb` short-term room/bed configuration, not a count — the new `room_count int` replaces its only long-term use; keeping both would leave two competing sources).
-Keep: `name`, `description`, `address`, `city`, `country`, `lat`, `lng`, `area_m2`, `amenities`, `cover_image_url`, `image_urls`, `features`, `is_active`, `sort_order`, `location_note`, timestamps.
-Add: `building_id uuid null → buildings`, `unit_number text not null default ''`, `floor int null`, `room_count int not null default 1`, `monthly_rent numeric(10,2) not null default 0`, `deposit numeric(10,2) not null default 0`, `status text not null default 'vacant' CHECK (status IN ('vacant','occupied','reserved','renovation','inactive'))`, `is_listed boolean not null default false`, `notes text not null default ''`.
+## 3. Tenants (`/admin/tenants`, `/admin/tenants/$id`)
 
-`property_events` → **`unit_events`** (`property_id`→`unit_id`; `reason` becomes `kind text not null CHECK (kind IN ('occupied','vacated','renovation','inspection','other'))`; `mileage_km` dropped).
+- List: search by name / phone / email, active filter, current unit column (from active lease), badge for "turi prisijungimą" (`user_id` set).
+- Create / edit: first name, last name, phone, email, notes, active flag. Never requires an account — see AGENTS.md 5.1.
+- Detail: contact block, current and past leases, occupancy on other leases, documents, issues reported, payments/balance summary (read-only until step 8).
+- Identity block (personal code, ID document) rendered only for owner/developer; hidden entirely for managers, matching the `tenant_identity` policy. The server function returns nothing for a manager rather than filtering in the UI.
+- Portal invite button is left as a stub link to step 6 — not built here.
 
-`property_documents` → **`documents`** (`property_id`→`unit_id` nullable; add `lease_id`, `tenant_id`, `bucket text not null default 'documents'`; keeps `kind`, `title`, `file_path`, `mime_type`, `size_bytes`, `expires_at`, `uploaded_by`).
-- `kind text not null CHECK (kind IN ('lease_contract','act','id_document','invoice','insurance','inspection','house_rules','other'))`.
-- `CHECK (unit_id IS NOT NULL OR lease_id IS NOT NULL OR tenant_id IS NOT NULL)` — a document must always be attached to something.
+## 4. Leases
 
-`property_settings` → **`org_settings`**. Drop every short-term column (check-in/out times, quiet hours, min/max nights, max advance days, guests, children-free age, city tax, extra guest fee, pets/parties, auto-confirm, review request, deposit-per-stay, cancellation fields, `property_id`, `scope`). Keep and extend: display name, logos, brand colours, company/VAT/bank details, invoice series and next number, currency, timezone, default language, contact phone/email, notification toggles, `integrations`. Add: `reading_window_from_day int default 25`, `reading_window_to_day int default 5`, `require_meter_photo boolean default true`, `payment_due_day int default 10`, `default_notice_days int default 30`. Single-row enforced by a `singleton boolean primary-key`-style unique constraint. `claim_invoice_number()` repointed to it.
+Actions available from the unit detail and from the tenant detail.
 
-`property_investments` / `property_maintenance` / `expenses` keep their shape, `property_id`→`unit_id`.
-
-## `documents` vs `signed_contracts` — decision
-
-They are **not** duplicates and a signed lease does **not** live in both as two competing records.
-
-- `signed_contracts` stays the system of record for a contract that this app generated and someone signed through it: it holds the rendered contract text, the signer, the signature and the signing timestamp, and it links to the `contract_templates` row it came from. Step 3 leaves it untouched — its foreign key still points at `bookings`, which also stays until step 6. Step 9 repoints it to `leases`.
-- `documents` is the file registry: anything uploaded or attached — scanned paper contracts signed off-app, hand-over acts, ID document scans, insurance, inspection reports, house rules. Every row is one file in a private bucket.
-- The overlap is deliberate and one-directional: when step 9 renders a signed contract to PDF, the **file** is stored in the `documents` bucket and gets one `documents` row with `kind = 'lease_contract'` and `signed_contract_id` set (that column is added in step 9, not now). The contract's content and signature stay only in `signed_contracts`; the PDF is only a file. Nothing is ever stored twice as authoritative data.
-
-
-## New tables
-
-All get `id uuid pk default gen_random_uuid()`, `created_at`, `updated_at` + touch trigger (except pure-append tables).
-
-Every status/type/kind text column below is written with an explicit `CHECK (col IN (...))` in the migration — never a comment listing the allowed values. The 5.7 view and the RLS policies match those strings exactly, so a typo must be impossible at database level.
-
-- **buildings** — `name`, `address`, `city`, `postal_code`, `country default 'LT'`, `kind text not null default 'apartment_building' CHECK (kind IN ('apartment_building','dormitory','house','other'))`, `lat`, `lng`, `notes`, `is_active`.
-- **tenants** — `first_name`, `last_name`, `phone`, `email`, `notes`, `user_id uuid null` (unique, links a portal login; never assumed set), `is_active`.
-- **tenant_identity** — `tenant_id` (unique), `personal_code text`, `id_doc_type`, `id_doc_number`, `issued_by`, `valid_until`. Separate table so a manager cannot read it at all.
-- **leases** — `unit_id`, `tenant_id` (primary tenant), `start_date`, `end_date null`, `monthly_rent`, `deposit`, `deposit_paid numeric default 0`, `payment_day int default 10`, `notice_days int default 30`, `status text not null default 'draft' CHECK (status IN ('draft','active','ending','expired','terminated'))`, `renewal boolean default true`, `terminated_at`, `termination_reason`, `notes`. Exclusion constraint: no two non-terminated leases on the same unit with overlapping dates (one unit = one rentable room, so one active lease each).
-- **lease_occupants** — `lease_id`, `full_name`, `phone`, `email`, `relation`, `tenant_id null`.
-- **meters** — `unit_id null`, `building_id null` (exactly one set, checked), `type text not null CHECK (type IN ('electricity_day','electricity_night','cold_water','hot_water','gas','heating'))`, `serial_number`, `uom`, `initial_reading numeric default 0`, `digits int`, `is_active`, `notes`.
-- **meter_readings** — `meter_id`, `period date` (first day of month), `value numeric(12,3)`, `consumption numeric(12,3)`, `photo_path`, `submitted_by uuid null`, `submitted_at`, `status text not null default 'submitted' CHECK (status IN ('submitted','approved','rejected'))`, `needs_review boolean default false`, `reviewed_by`, `reviewed_at`, `note`, `superseded_by uuid null`. Unique partial index on `(meter_id, period)` where `status <> 'rejected'` — one accepted reading per meter-period. Validation trigger (not a CHECK, because it reads other rows): value must be ≥ the last approved reading for that meter; a jump above a configurable multiple is accepted but flagged `needs_review`. No hard deletes — corrections insert a new row and set `superseded_by`.
-- **utility_rates** — `type` (same CHECK list as `meters.type`), `effective_from date`, `price_per_unit numeric(10,4)`, `fixed_monthly numeric(10,2) default 0`, `note`. Never updated in place; a new rate is a new row. Unique `(type, effective_from)`.
-- **charges** — `lease_id`, `period date`, `kind text not null CHECK (kind IN ('rent','utility','fixed','one_off','penalty'))`, `meter_reading_id null`, `utility_rate_id null`, `description`, `quantity`, `unit_price`, `amount numeric(10,2)`, `invoice_id null`.
-- **payments** — `lease_id`, `paid_at date`, `amount numeric(10,2)`, `method text not null default 'bank' CHECK (method IN ('bank','cash','other'))`, `reference`, `note`, `recorded_by`.
-- **issues** — `unit_id`, `lease_id null`, `reported_by uuid null`, `reporter_name`, `category`, `title`, `description`, `photo_paths jsonb default '[]'`, `priority text not null default 'normal' CHECK (priority IN ('low','normal','high','urgent'))`, `status text not null default 'new' CHECK (status IN ('new','acknowledged','in_progress','waiting','resolved','rejected'))`, `assigned_to`, `cost numeric null`, `resolved_at`.
-- **issue_comments** — `issue_id`, `author_id null`, `author_role`, `body`, `photo_paths`, `is_internal boolean default false` (internal notes hidden from the tenant).
-- **rental_inquiries** — `unit_id null`, `name`, `phone`, `email`, `move_in_date null`, `message`, `status text not null default 'new' CHECK (status IN ('new','contacted','viewing_scheduled','converted','dismissed'))`, `handled_by`, `converted_lease_id null`, `source text default 'public_site'`.
-
-Also carrying a CHECK, listed with their tables above: `units.status`, `unit_events.kind`, `documents.kind`.
-
-
-## RLS sketch
-
-Roles resolve through the step-2 helpers (`is_manager` already includes owner and developer; `is_owner` includes developer).
-
-Two tenant-scoping helpers, both `security definer`:
-- `current_tenant_id()` — the `tenants.id` whose `user_id = auth.uid()`.
-- `tenant_owns_lease(lease_id)` / `tenant_owns_unit(unit_id)` — true when a lease of `current_tenant_id()` with status `active|ending` covers that lease/unit.
-
-| Table | developer / owner | manager | tenant | anon |
-|---|---|---|---|---|
-| buildings, units | all | read + write, no delete | read own unit only | none (public site reads the view, not the table) |
-| tenants | all | read + write, no delete | read own row | — |
-| tenant_identity | all | **none** | none | — |
-| leases, lease_occupants | all | read + write, no delete | read own lease | — |
-| meters | all | read + write, no delete | read meters of own unit | — |
-| meter_readings | all | read + write + approve, no delete | read own; insert own with `status='submitted'` and `submitted_by = auth.uid()`; no update after insert | — |
-| utility_rates | all | read only | none | — |
-| charges | all | read + write, no delete | read own lease | — |
-| payments | all | read + write, no delete | read own lease | — |
-| issues | all | read + write, no delete | read own unit; insert for own unit; update only own `new` issue | — |
-| issue_comments | all | read + write | read non-internal on own issue; insert | — |
-| documents | all | read + write, no delete | read documents attached to own lease/unit/self | — |
-| unit_events | all | read + write, no delete | none | — |
-| rental_inquiries | all | read + update, no delete | none | **insert only** (no read) |
-| org_settings | owner (and developer) read + write | **read only — new policy, deliberate change** | none | — |
-| utility/invoice tables kept from before | unchanged from step 2 | | | |
-
-**Confirmed change from step 2:** under `property_settings` a manager had zero access. A manager now gets read access to `org_settings`, because the manager screens need the currency, timezone, invoice series, payment due day and the reading window to render anything sensible. Write access stays owner-only. This is not inherited — the migration drops the old owner-only policy set and creates a new, explicitly named `"Managers can read org settings"` `FOR SELECT TO authenticated USING (public.is_manager(auth.uid()))` policy alongside the owner write policy, and the verification query lists the policies on `org_settings` to prove both exist.
-
-
-Every new public table gets its GRANT block in the same migration (`authenticated` + `service_role`; `anon` only where a policy allows it — `rental_inquiries` insert and the vacancy view).
-
-## Availability (AGENTS.md 5.7) — exact logic
-
-A **view**, not a column, not a cron. `public.public_vacancies`, `security_invoker = off` so it can be read by `anon` without opening the `units` table itself, exposing only public-safe columns.
-
-```sql
-create view public.public_vacancies as
-select u.id, u.name, u.unit_number, u.description, u.city, u.address,
-       b.name as building_name, u.area_m2, u.room_count, u.floor,
-       u.monthly_rent, u.deposit, u.amenities, u.cover_image_url, u.image_urls,
-       case when u.status = 'vacant' then current_date
-            else l.end_date + 1 end as available_from,
-       (u.status = 'vacant')                    as vacant_now
-from public.units u
-left join public.buildings b on b.id = u.building_id
-left join lateral (
-  select l.end_date from public.leases l
-  where l.unit_id = u.id
-    and l.status in ('active','ending')
-    and l.start_date <= current_date
-    and (l.end_date is null or l.end_date >= current_date)
-    and l.renewal = false
-    and l.end_date is not null
-  order by l.end_date limit 1
-) l on true
-where u.is_active and u.is_listed
-  and ( u.status = 'vacant' or (u.status = 'occupied' and l.end_date is not null) )
-  -- hide anything already re-let: a future lease covering the free-from date
-  and not exists (
-    select 1 from public.leases f
-    where f.unit_id = u.id
-      and f.status in ('draft','active','ending')
-      and f.start_date > current_date
-  );
-```
-
-Read at request time, ordered by `available_from`, so a date can never go stale. `is_listed` gates visibility and can only hide, never invent, availability: an occupied unit with no notice given has no `end_date` row and therefore cannot appear. `reserved`, `renovation` and `inactive` never appear. `GRANT SELECT ON public.public_vacancies TO anon, authenticated;`
-
-## Storage buckets (AGENTS.md 5.3)
-
-Four buckets, created with the storage tool, policies written on `storage.objects` in the migration:
-
-| Bucket | Public | Limit | Contents | Access |
-|---|---|---|---|---|
-| `unit-photos` | yes | 10 MB | marketing photos of units | anyone reads; manager writes |
-| `documents` | **no** | 20 MB | every file in the `documents` table: contract PDFs, acts, ID scans, insurance | manager reads/writes; a tenant reads only paths under `lease/<own lease id>/` or `tenant/<own tenant id>/`; served through signed URLs only |
-| `meter-photos` | **no** | 10 MB | meter evidence photos | tenant writes into `<own unit id>/`, reads own; manager reads all |
-| `issue-photos` | **no** | 10 MB | fault and damage photos | same pattern as meter photos |
-
-Path convention `<scope>/<id>/<uuid>.<ext>` so the RLS policy can check ownership from `storage.foldername(name)`. Meter and fault photos keep a higher size ceiling than marketing images — a meter dial must stay readable. Deleting a tenant deletes their storage objects (a `before delete` trigger enqueues the paths; the delete pass runs in the same server function that deletes the tenant). The legacy public `car-images` bucket is emptied and dropped.
+- **Create**: unit, primary tenant, start date, end date (optional = open-ended), monthly rent (prefilled from unit), deposit, payment day, notice days, renewal flag, occupants, notes. Saves as `draft` or `active`. Overlap is enforced by the DB exclusion constraint; the form catches that error and shows a plain "šiuo laikotarpiu butas jau išnuomotas".
+- **Renew**: creates a **new** lease row starting the day after the current one ends, copying terms with editable rent/term; the old lease moves to `expired`. History is preserved as separate rows rather than mutating dates — a renewal is a new contract.
+- **Terminate**: sets `status = 'terminated'`, `terminated_at`, `termination_reason`, and an effective end date; unit status is set to `vacant` when the effective date is today or earlier, otherwise the unit stays `occupied` and flips on that date.
+- **`renewal` + `end_date` semantics** (the field pair that drives both the future dashboard warnings and `public_vacancies`):
+  - `renewal = true` — tenant is staying; the unit must not appear as becoming vacant.
+  - `renewal = false` with an `end_date` — notice given; the unit becomes publicly available from that date, exactly the condition the step-3 view already encodes.
+  - Setting `renewal = false` in the UI shows an inline note that the unit will appear on the public site from the end date if `is_listed` is on — so nobody publishes a unit by accident.
+  - Unit `status` and lease state are kept consistent by the write path: activating a lease sets the unit to `occupied`; terminating or expiring the last active lease sets it back to `vacant`.
 
 ## Technical notes
 
-- One migration, ordered: drop `payment_transactions` → rename/convert `properties`, `property_events`, `property_documents`, `property_settings` → create new tables → GRANTs → RLS enable → policies → triggers → view → storage policies.
-- `org_settings` is populated with `insert ... select` from the old settings row; no literal client values appear in SQL.
-- After the migration, `src/integrations/supabase/types.ts` regenerates and the code pass listed under "Scope correction" runs; `bunx tsgo --noEmit` must be clean before step 3 is called done.
-- Verification: every new policy is checked with a live `supabase--read_query` against `pg_policies`, plus a `tenant_identity` read attempt as a manager-scoped role, and a `public_vacancies` read as `anon`.
+- New server-function modules: `src/lib/units.functions.ts`, `src/lib/tenants.functions.ts`, `src/lib/leases.functions.ts`, `src/lib/meters.functions.ts`, `src/lib/issues.functions.ts`, `src/lib/documents.functions.ts` — all `createServerFn` with `requireSupabaseAuth`, each guarded by the existing `has_role(_role: 'manager')` check, deletes guarded by `is_owner`. RLS remains the real boundary; the guards only give clean errors.
+- Shared enums in `src/lib/unit-status.ts` (status, lease status, issue status/priority, meter type, document kind) mirroring the DB CHECK lists one-to-one.
+- Routes: `admin.units.tsx` (list), `admin.units.$id.tsx` (detail with tabs), `admin.tenants.tsx`, `admin.tenants.$id.tsx`. Sidebar gains "Butai" and "Nuomininkai" above Sutartys.
+- Data loading: TanStack Query with `useServerFn`, per-tab query keys so switching tabs doesn't refetch the whole unit.
+- All strings through i18n (`lt` + `en`); the leftover `properties.*` and `nav.properties` keys are reworked into `units.*` / `nav.units`.
+- Vacancy-days and availability logic lives in one server helper, so it cannot disagree with `public_vacancies`.
+- Verification before reporting done: `bunx tsgo --noEmit`, production build, and live SQL checks — status CHECK rejects an unknown value, overlapping lease create is rejected, terminate flips unit status, and a unit with `renewal = false` + future `end_date` appears in `public_vacancies` with the right date while a `renewal = true` unit does not.
