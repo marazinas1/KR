@@ -1,129 +1,138 @@
-# Step 2 — Roles and access
+# Step 3 — Core data model
 
-## Goal
-Replace the inherited role model with the strict hierarchy `developer → owner → manager → tenant`, update every active policy and application authorization check, and keep a tenant record independent from a tenant login.
+Migration only for review. Nothing is executed until this plan is approved.
 
-`PLAN.md` remains the only authoritative roadmap. Delete `roadmap.md` rather than maintain a second sequence.
+Confirmed before writing: every operational table is empty (`properties`, `property_events`, `property_documents`, `bookings`, `expenses`, `invoices`, `property_investments`, `property_maintenance`, `room_status` = 0 rows). Only `property_settings` has 1 row (the `global` branding row). So conversions can be structural, and the one settings row is carried across with `INSERT ... SELECT`, never with literal values.
 
-## Confirmed current state
-- The live enum currently contains seven labels: `admin`, `user`, `housekeeper`, `developer`, `owner`, `administrator`, `tenant`.
-- `user_roles` contains one assignment, and it is `developer`; that assignment must survive unchanged.
-- The live database has **30 policies across 23 tables** whose expressions reference a legacy role. All 30 currently call `has_role(auth.uid(), 'admin'::app_role)`; no active policy expression currently calls `administrator` or `housekeeper` directly.
-- `has_role` treats legacy `admin` as `developer | owner | administrator | admin`; `is_manager` and `is_tenant` do not exist.
-- The generic invitation currently accepts `developer`, `owner`, `administrator`, and `tenant`. There is not yet a `tenants` table to which a portal account can safely be linked.
+## Scope correction (per review)
 
-## 1. Rebuild the enum and role helpers
-Apply one repository-backed database migration:
+**Dropped now:** `payment_transactions` only (no code reads it).
 
-1. Temporarily remove/recreate the policies and functions that depend on `app_role`, replace the enum type, and restore `user_roles.role` against a new enum containing only:
-   - `developer`
-   - `owner`
-   - `manager`
-   - `tenant`
-2. Map any legacy assignments defensively during conversion:
-   - `administrator` and `admin` → `manager`
-   - `housekeeper` and `user` → no automatic privileged assignment; abort the migration if such rows exist so they can be reviewed rather than silently escalated. The live preflight currently shows only the developer row.
-3. Preserve the unique `(user_id, role)` rule, foreign key, trigger, RLS, and the existing developer assignment.
-4. Recreate the helpers as `SECURITY DEFINER` functions with `search_path = public`:
-   - `has_role(user, developer)` → exact developer
-   - `has_role(user, owner)` → developer or owner
-   - `has_role(user, manager)` → developer, owner, or manager
-   - `has_role(user, tenant)` → exact tenant only
-   - `is_developer` → exact developer
-   - `is_owner` → developer or owner
-   - `is_manager` → developer, owner, or manager
-   - `is_tenant` → exact tenant only
-5. Revoke default public/anonymous execution on these identity helpers; grant execution only where authenticated application access requires it. Recreate role policies as `TO authenticated` so public reads are not forced through staff checks.
-6. Ensure `authenticated` can read its own role rows and `service_role` retains full access. Role mutation remains server-controlled; no broad client-side role grants.
-7. Update the role-guard trigger so only a developer can create, change, or remove a developer assignment, while owners can manage allowed lower roles through the verified server flow.
+**Untouched until step 6** — the tenant-portal conversion template: `bookings`, `room_status`, `housekeeping_tasks`, `housekeeping_comments` and the whole `staff` / `housekeeping` module.
 
-## 2. Replace all 30 legacy RLS policies
-Recreate every policy below with a role-specific name and expression. Manager access means operational `SELECT`/`INSERT`/`UPDATE`; deletion is owner-only, matching the rule that managers cannot delete. Configuration, analytics, and user management remain owner-only.
+**Code cleaned now** (non-template readers of `bookings`):
+- `dashboard.functions.ts` — delete `getDashboardStats` entirely (dead since step 1).
+- `properties.functions.ts` — booking-date logic removed together with the `properties`→`units` conversion.
+- `invoices.server.ts` / `invoices.functions.ts` — drop the `bookings` read/join; invoices stay, no longer tied to a booking.
+- `notifications.server.ts` — remove booking-confirmation notification logic.
+- `api/public/v1/properties.ts` and `properties.$id.ts` — repointed to `units` with monthly rent; nightly fields gone.
+- The staff module keeps working: its `properties(name)` joins become `units(name)`.
 
-### Operational access: manager and above
-1. `booking_notifications` — `Admins can view notification log` → manager-and-above `SELECT`.
-2. `bookings` — `Admins manage bookings` → manager-and-above `SELECT/INSERT/UPDATE`, owner-and-above `DELETE`.
-3. `car_investments` — `Admins manage car_investments` → manager-and-above `SELECT/INSERT/UPDATE`, owner-and-above `DELETE`.
-4. `car_maintenance` — `Admins manage car_maintenance` → manager-and-above `SELECT/INSERT/UPDATE`, owner-and-above `DELETE`.
-5. `cars` — `Admins manage cars` → manager-and-above `INSERT/UPDATE`, owner-and-above `DELETE`; `Admins view all cars` → manager-and-above `SELECT`.
-6. `expenses` — `Admins manage expenses` → manager-and-above `SELECT/INSERT/UPDATE`, owner-and-above `DELETE`.
-7. `housekeeping_comments` — `Admins manage housekeeping_comments` → manager-and-above `SELECT/INSERT/UPDATE`, owner-and-above `DELETE`.
-8. `housekeeping_tasks` — `Admins manage housekeeping_tasks` → manager-and-above `SELECT/INSERT/UPDATE`, owner-and-above `DELETE`.
-9. `invoices` — `Admins read invoices` → manager-and-above `SELECT`.
-10. `payment_transactions` — `Admins can view payment transactions` → manager-and-above `SELECT`.
-11. `properties` — `Admins manage properties` → manager-and-above `INSERT/UPDATE`, owner-and-above `DELETE`; `Admins view all cars` → manager-and-above `SELECT` with a corrected policy name.
-12. `property_documents` — `Admins manage car documents` → manager-and-above `SELECT/INSERT/UPDATE`, owner-and-above `DELETE`, with a corrected policy name.
-13. `property_events` — `Admins manage service events` → manager-and-above `SELECT/INSERT/UPDATE`, owner-and-above `DELETE`, with a corrected policy name.
-14. `property_investments` — `Admins manage car_investments` → manager-and-above `SELECT/INSERT/UPDATE`, owner-and-above `DELETE`, with a corrected policy name.
-15. `property_maintenance` — `Admins manage car_maintenance` → manager-and-above `SELECT/INSERT/UPDATE`, owner-and-above `DELETE`, with a corrected policy name.
-16. `room_status` — `Admins manage room_status` → manager-and-above `SELECT/INSERT/UPDATE`, owner-and-above `DELETE`.
-17. `signed_contracts` — `Admins manage signed contracts` → manager-and-above `SELECT/INSERT/UPDATE`, owner-and-above `DELETE`.
+## Table conversions
 
-These inherited short-term tables remain only until step 3; correcting their live access now prevents legacy roles from remaining active in the interim.
+`properties` → **`units`** (rename in place, so existing foreign keys survive).
+Drop: `price_per_night`, `price_tiers`, `max_guests`, `beds`, `category`, `year`, `ical_import_url`, `ical_last_sync_at`, `ical_last_status`, `extra_services`, `door_code`, `property_type`.
+Keep: `name`, `description`, `address`, `city`, `country`, `lat`, `lng`, `area_m2`, `rooms`, `amenities`, `cover_image_url`, `image_urls`, `features`, `is_active`, `sort_order`, `location_note`, timestamps.
+Add: `building_id uuid null → buildings`, `unit_number text not null default ''`, `floor int null`, `room_count int not null default 1`, `monthly_rent numeric(10,2) not null default 0`, `deposit numeric(10,2) not null default 0`, `status text not null default 'vacant'` (`vacant|occupied|reserved|renovation|inactive`), `is_listed boolean not null default false`, `notes text not null default ''`.
 
-### Owner-only configuration and oversight
-18. `content_templates` — `Admins manage content templates` → owner-and-above `ALL`.
-19. `content_translations` — `Admins manage content_translations` → owner-and-above `ALL`.
-20. `contract_templates` — `Admins manage contract templates` → owner-and-above `ALL`.
-21. `page_views` — `Admins read page_views` → owner-and-above `SELECT`.
-22. `property_settings` — replace all four policies individually:
-   - `Admins can delete property settings` → owner-and-above `DELETE`.
-   - `Admins can insert property settings` → owner-and-above `INSERT`.
-   - `Admins can update property settings` → owner-and-above `UPDATE`.
-   - `Admins can view property settings` → owner-and-above `SELECT`.
-23. `user_roles` — replace the three overlapping policies individually:
-   - `Admins manage roles`
-   - `Admins view all roles`
-   - `Only admins can modify roles`
+`property_events` → **`unit_events`** (`property_id`→`unit_id`; `reason` becomes `kind`: `occupied|vacated|renovation|inspection|other`; `mileage_km` dropped).
 
-   Consolidate them into one owner-and-above read policy and narrowly scoped mutation policies. Preserve `Users view own roles`. The trigger remains the final protection for developer assignments.
+`property_documents` → **`documents`** (`property_id`→`unit_id` nullable; add `lease_id`, `tenant_id`, `bucket text not null default 'documents'`; keeps `kind`, `title`, `file_path`, `mime_type`, `size_bytes`, `expires_at`, `uploaded_by`).
 
-## 3. Update every database function using a legacy role
-- `has_role` is replaced as described above.
-- `analytics_summary` checks owner-level access because analytics is owner-only.
-- `admin_get_door_code` uses manager-level access while the inherited function exists; the short-stay door-code function is removed with its underlying field in step 3.
-- Confirm no live function definition contains `admin`, `administrator`, or `housekeeper` as a role value after migration.
+`property_settings` → **`org_settings`**. Drop every short-term column (check-in/out times, quiet hours, min/max nights, max advance days, guests, children-free age, city tax, extra guest fee, pets/parties, auto-confirm, review request, deposit-per-stay, cancellation fields, `property_id`, `scope`). Keep and extend: display name, logos, brand colours, company/VAT/bank details, invoice series and next number, currency, timezone, default language, contact phone/email, notification toggles, `integrations`. Add: `reading_window_from_day int default 25`, `reading_window_to_day int default 5`, `require_meter_photo boolean default true`, `payment_due_day int default 10`, `default_notice_days int default 30`. Single-row enforced by a `singleton boolean primary-key`-style unique constraint. `claim_invoice_number()` repointed to it.
 
-## 4. Update application authorization
-Create one shared role vocabulary/helper and replace legacy role checks throughout the application:
+`property_investments` / `property_maintenance` / `expenses` keep their shape, `property_id`→`unit_id`.
 
-- `getMyRole` returns the raw roles plus `isDeveloper`, `isOwner`, `isManager`, `isTenant`; keep `isAdmin` only as a temporary compatibility alias for `isManager` if a staged edit needs it, then remove it before completion.
-- Highest-role display is `developer`, `owner`, `manager`, or `tenant`; remove the legacy `administrator` and `user` fallbacks.
-- Operational server functions use manager-level checks: properties, operations, dashboard operations, invoices, and the retained housekeeping/tenant-portal templates.
-- Owner-only server functions remain owner-level: API-key management, organization/settings changes, analytics, content/template configuration, translation management, email diagnostics, and user management.
-- Update `users.server.ts`, `properties.functions.ts`, `operations.functions.ts`, `dashboard.functions.ts`, `invoices.functions.ts`, `contracts.functions.ts`, `api-keys.functions.ts`, `property-settings.server.ts`, `content-templates.server.ts`, `auto-translate-auth.server.ts`, `translations.functions.ts`, and `email-test.functions.ts` accordingly.
-- Convert the retained `/staff` template and `staff-api-auth.server.ts` away from `admin | housekeeper`: its temporary gate accepts manager-and-above only. Tenant authorization is added in step 6 only after lease-scoped data exists; it must never inherit broad housekeeping access.
-- Update `housekeeping.functions.ts` role queries and author labels to `manager` semantics without granting tenant access to portfolio-wide data.
-- Update admin route/menu gating: manager can enter the operational admin area; settings, users, analytics, content/template configuration, and API settings stay owner-only. Remove legacy role names from comments and labels.
-- Update Lithuanian and English role labels to `developer`, `owner`, `manager`, `tenant`.
-- Do not edit the generated database types manually; regenerate them through the integration after the live schema migration.
+## New tables
 
-## 5. Separate staff invitations from tenant accounts
-- Change the generic Settings invitation flow to staff roles only:
-  - owner may invite `owner` or `manager`;
-  - developer may additionally invite `developer`;
-  - manager and tenant cannot use user management.
-- Remove `tenant` from the generic role selector and validator.
-- Keep developer accounts untouchable by non-developers; an owner cannot create, change, or delete one.
-- Do **not** add a free-standing “invite tenant” action in this step. The future tenant invitation starts from an existing `tenants` record, creates/reuses the auth account, assigns `tenant`, and writes `tenants.user_id`. That flow is implemented with the `tenants` table in step 3 and exposed from tenant detail in step 6. Creating a tenant record must continue to require no login account.
+All get `id uuid pk default gen_random_uuid()`, `created_at`, `updated_at` + touch trigger (except pure-append tables).
 
-## 6. Verification
-### Live database evidence
-- Preflight again immediately before migration: enum labels, all role rows, all dependent policies/functions, and grants.
-- Apply the checked-in migration through the database migration tool.
-- Query the live enum and confirm it contains exactly four labels in hierarchy order.
-- Query the live `user_roles` rows and confirm the existing developer assignment is preserved and no legacy role remains.
-- Query each of the 30 old policies by table/name and confirm it was removed or replaced by the explicitly listed policy set.
-- Query every replacement policy individually from `pg_policies`, checking command, target role, `USING`, and `WITH CHECK`; report any mismatch by table and policy.
-- Run a second exhaustive catalog search proving zero policy or function expressions reference `admin`, `administrator`, or `housekeeper` as role values.
-- Execute the helper truth table against the existing developer account: developer, owner, and manager checks are true; tenant is false. Confirm anonymous execution is unavailable.
-- Run the database linter and report any new security finding.
+- **buildings** — `name`, `address`, `city`, `postal_code`, `country default 'LT'`, `kind` (`apartment_building|dormitory|house|other`), `lat`, `lng`, `notes`, `is_active`.
+- **tenants** — `first_name`, `last_name`, `phone`, `email`, `notes`, `user_id uuid null` (unique, links a portal login; never assumed set), `is_active`.
+- **tenant_identity** — `tenant_id` (unique), `personal_code text`, `id_doc_type`, `id_doc_number`, `issued_by`, `valid_until`. Separate table so a manager cannot read it at all.
+- **leases** — `unit_id`, `tenant_id` (primary tenant), `start_date`, `end_date null`, `monthly_rent`, `deposit`, `deposit_paid numeric default 0`, `payment_day int default 10`, `notice_days int default 30`, `status` (`draft|active|ending|expired|terminated`), `renewal boolean default true`, `terminated_at`, `termination_reason`, `notes`. Exclusion constraint: no two non-terminated leases on the same unit with overlapping dates (one unit = one rentable room, so one active lease each).
+- **lease_occupants** — `lease_id`, `full_name`, `phone`, `email`, `relation`, `tenant_id null`.
+- **meters** — `unit_id null`, `building_id null` (exactly one set, checked), `type` (`electricity_day|electricity_night|cold_water|hot_water|gas|heating`), `serial_number`, `uom`, `initial_reading numeric default 0`, `digits int`, `is_active`, `notes`.
+- **meter_readings** — `meter_id`, `period date` (first day of month), `value numeric(12,3)`, `consumption numeric(12,3)`, `photo_path`, `submitted_by uuid null`, `submitted_at`, `status` (`submitted|approved|rejected`), `reviewed_by`, `reviewed_at`, `note`, `superseded_by uuid null`. Unique partial index on `(meter_id, period)` where `status <> 'rejected'` — one accepted reading per meter-period. Validation trigger (not a CHECK): value must be ≥ the last approved reading for that meter; a jump above a configurable multiple is accepted but flagged `needs_review`. No hard deletes — corrections insert a new row and set `superseded_by`.
+- **utility_rates** — `type`, `effective_from date`, `price_per_unit numeric(10,4)`, `fixed_monthly numeric(10,2) default 0`, `note`. Never updated in place; a new rate is a new row. Unique `(type, effective_from)`.
+- **charges** — `lease_id`, `period date`, `kind` (`rent|utility|fixed|one_off|penalty`), `meter_reading_id null`, `utility_rate_id null`, `description`, `quantity`, `unit_price`, `amount numeric(10,2)`, `invoice_id null`.
+- **payments** — `lease_id`, `paid_at date`, `amount numeric(10,2)`, `method` (`bank|cash|other`), `reference`, `note`, `recorded_by`.
+- **issues** — `unit_id`, `lease_id null`, `reported_by uuid null`, `reporter_name`, `category`, `title`, `description`, `photo_paths jsonb default '[]'`, `priority` (`low|normal|high|urgent`), `status` (`new|acknowledged|in_progress|waiting|resolved|rejected`), `assigned_to`, `cost numeric null`, `resolved_at`.
+- **issue_comments** — `issue_id`, `author_id null`, `author_role`, `body`, `photo_paths`, `is_internal boolean default false` (internal notes hidden from the tenant).
+- **rental_inquiries** — `unit_id null`, `name`, `phone`, `email`, `move_in_date null`, `message`, `status` (`new|contacted|viewing_scheduled|converted|dismissed`), `handled_by`, `converted_lease_id null`, `source text default 'public_site'`.
 
-### Application evidence
-- Search all non-generated source for legacy role literals; expected result is zero. Separately report legacy labels that remain only in generated historical types before regeneration, if regeneration is unavailable.
-- Run focused type validation and the normal preview validation.
-- In an authenticated browser session, verify `/admin`, `/admin/users`, and `/admin/settings` as the existing developer; confirm role label and invitation choices.
-- Verify `/`, `/auth`, `/admin`, and `/staff` have no new console errors.
-- Report database verification and application verification separately; do not claim a role path was end-to-end tested unless a real account with that role was used.
+## RLS sketch
 
-No core data tables, tenant portal screens, public vacancy pages, or other PLAN.md steps are included. Nothing else in this task.
+Roles resolve through the step-2 helpers (`is_manager` already includes owner and developer; `is_owner` includes developer).
+
+Two tenant-scoping helpers, both `security definer`:
+- `current_tenant_id()` — the `tenants.id` whose `user_id = auth.uid()`.
+- `tenant_owns_lease(lease_id)` / `tenant_owns_unit(unit_id)` — true when a lease of `current_tenant_id()` with status `active|ending` covers that lease/unit.
+
+| Table | developer / owner | manager | tenant | anon |
+|---|---|---|---|---|
+| buildings, units | all | read + write, no delete | read own unit only | none (public site reads the view, not the table) |
+| tenants | all | read + write, no delete | read own row | — |
+| tenant_identity | all | **none** | none | — |
+| leases, lease_occupants | all | read + write, no delete | read own lease | — |
+| meters | all | read + write, no delete | read meters of own unit | — |
+| meter_readings | all | read + write + approve, no delete | read own; insert own with `status='submitted'` and `submitted_by = auth.uid()`; no update after insert | — |
+| utility_rates | all | read only | none | — |
+| charges | all | read + write, no delete | read own lease | — |
+| payments | all | read + write, no delete | read own lease | — |
+| issues | all | read + write, no delete | read own unit; insert for own unit; update only own `new` issue | — |
+| issue_comments | all | read + write | read non-internal on own issue; insert | — |
+| documents | all | read + write, no delete | read documents attached to own lease/unit/self | — |
+| unit_events | all | read + write, no delete | none | — |
+| rental_inquiries | all | read + update, no delete | none | **insert only** (no read) |
+| org_settings | owner writes | read only | none | — |
+| utility/invoice tables kept from before | unchanged from step 2 | | | |
+
+Every new public table gets its GRANT block in the same migration (`authenticated` + `service_role`; `anon` only where a policy allows it — `rental_inquiries` insert and the vacancy view).
+
+## Availability (AGENTS.md 5.7) — exact logic
+
+A **view**, not a column, not a cron. `public.public_vacancies`, `security_invoker = off` so it can be read by `anon` without opening the `units` table itself, exposing only public-safe columns.
+
+```sql
+create view public.public_vacancies as
+select u.id, u.name, u.unit_number, u.description, u.city, u.address,
+       b.name as building_name, u.area_m2, u.room_count, u.floor,
+       u.monthly_rent, u.deposit, u.amenities, u.cover_image_url, u.image_urls,
+       case when u.status = 'vacant' then current_date
+            else l.end_date + 1 end as available_from,
+       (u.status = 'vacant')                    as vacant_now
+from public.units u
+left join public.buildings b on b.id = u.building_id
+left join lateral (
+  select l.end_date from public.leases l
+  where l.unit_id = u.id
+    and l.status in ('active','ending')
+    and l.start_date <= current_date
+    and (l.end_date is null or l.end_date >= current_date)
+    and l.renewal = false
+    and l.end_date is not null
+  order by l.end_date limit 1
+) l on true
+where u.is_active and u.is_listed
+  and ( u.status = 'vacant' or (u.status = 'occupied' and l.end_date is not null) )
+  -- hide anything already re-let: a future lease covering the free-from date
+  and not exists (
+    select 1 from public.leases f
+    where f.unit_id = u.id
+      and f.status in ('draft','active','ending')
+      and f.start_date > current_date
+  );
+```
+
+Read at request time, ordered by `available_from`, so a date can never go stale. `is_listed` gates visibility and can only hide, never invent, availability: an occupied unit with no notice given has no `end_date` row and therefore cannot appear. `reserved`, `renovation` and `inactive` never appear. `GRANT SELECT ON public.public_vacancies TO anon, authenticated;`
+
+## Storage buckets (AGENTS.md 5.3)
+
+Four buckets, created with the storage tool, policies written on `storage.objects` in the migration:
+
+| Bucket | Public | Limit | Contents | Access |
+|---|---|---|---|---|
+| `unit-photos` | yes | 10 MB | marketing photos of units | anyone reads; manager writes |
+| `documents` | **no** | 20 MB | leases, signed contracts, tenant ID documents | manager reads/writes; a tenant reads only paths under `lease/<own lease id>/` or `tenant/<own tenant id>/`; served through signed URLs only |
+| `meter-photos` | **no** | 10 MB | meter evidence photos | tenant writes into `<own unit id>/`, reads own; manager reads all |
+| `issue-photos` | **no** | 10 MB | fault and damage photos | same pattern as meter photos |
+
+Path convention `<scope>/<id>/<uuid>.<ext>` so the RLS policy can check ownership from `storage.foldername(name)`. Meter and fault photos keep a higher size ceiling than marketing images — a meter dial must stay readable. Deleting a tenant deletes their storage objects (a `before delete` trigger enqueues the paths; the delete pass runs in the same server function that deletes the tenant). The legacy public `car-images` bucket is emptied and dropped.
+
+## Technical notes
+
+- One migration, ordered: drop `payment_transactions` → rename/convert `properties`, `property_events`, `property_documents`, `property_settings` → create new tables → GRANTs → RLS enable → policies → triggers → view → storage policies.
+- `org_settings` is populated with `insert ... select` from the old settings row; no literal client values appear in SQL.
+- After the migration, `src/integrations/supabase/types.ts` regenerates and the code pass listed under "Scope correction" runs; `bunx tsgo --noEmit` must be clean before step 3 is called done.
+- Verification: every new policy is checked with a live `supabase--read_query` against `pg_policies`, plus a `tenant_identity` read attempt as a manager-scoped role, and a `public_vacancies` read as `anon`.
