@@ -91,8 +91,11 @@ Two tenant-scoping helpers, both `security definer`:
 | documents | all | read + write, no delete | read documents attached to own lease/unit/self | — |
 | unit_events | all | read + write, no delete | none | — |
 | rental_inquiries | all | read + update, no delete | none | **insert only** (no read) |
-| org_settings | owner writes | read only | none | — |
+| org_settings | owner (and developer) read + write | **read only — new policy, deliberate change** | none | — |
 | utility/invoice tables kept from before | unchanged from step 2 | | | |
+
+**Confirmed change from step 2:** under `property_settings` a manager had zero access. A manager now gets read access to `org_settings`, because the manager screens need the currency, timezone, invoice series, payment due day and the reading window to render anything sensible. Write access stays owner-only. This is not inherited — the migration drops the old owner-only policy set and creates a new, explicitly named `"Managers can read org settings"` `FOR SELECT TO authenticated USING (public.is_manager(auth.uid()))` policy alongside the owner write policy, and the verification query lists the policies on `org_settings` to prove both exist.
+
 
 Every new public table gets its GRANT block in the same migration (`authenticated` + `service_role`; `anon` only where a policy allows it — `rental_inquiries` insert and the vacancy view).
 
