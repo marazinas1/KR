@@ -90,3 +90,12 @@ export function daysBetween(fromIso: string, toIso: string): number {
   if (Number.isNaN(a) || Number.isNaN(b)) return 0;
   return Math.max(0, Math.round((b - a) / 86_400_000));
 }
+
+export const INQUIRY_STATUSES = [
+  "new",
+  "contacted",
+  "viewing_scheduled",
+  "converted",
+  "dismissed",
+] as const;
+export type InquiryStatus = (typeof INQUIRY_STATUSES)[number];
