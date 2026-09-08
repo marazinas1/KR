@@ -143,7 +143,7 @@ Four buckets, created with the storage tool, policies written on `storage.object
 | Bucket | Public | Limit | Contents | Access |
 |---|---|---|---|---|
 | `unit-photos` | yes | 10 MB | marketing photos of units | anyone reads; manager writes |
-| `documents` | **no** | 20 MB | leases, signed contracts, tenant ID documents | manager reads/writes; a tenant reads only paths under `lease/<own lease id>/` or `tenant/<own tenant id>/`; served through signed URLs only |
+| `documents` | **no** | 20 MB | every file in the `documents` table: contract PDFs, acts, ID scans, insurance | manager reads/writes; a tenant reads only paths under `lease/<own lease id>/` or `tenant/<own tenant id>/`; served through signed URLs only |
 | `meter-photos` | **no** | 10 MB | meter evidence photos | tenant writes into `<own unit id>/`, reads own; manager reads all |
 | `issue-photos` | **no** | 10 MB | fault and damage photos | same pattern as meter photos |
 
