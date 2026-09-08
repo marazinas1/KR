@@ -165,6 +165,11 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
+                  {isDeveloper && (
+                    <SelectItem value="developer">
+                      {t("settings.users.role_developer")}
+                    </SelectItem>
+                  )}
                   <SelectItem value="owner">{t("settings.users.role_owner")}</SelectItem>
                   <SelectItem value="manager">{t("settings.users.role_manager")}</SelectItem>
                 </SelectContent>
