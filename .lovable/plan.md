@@ -21,17 +21,28 @@ Confirmed before writing: every operational table is empty (`properties`, `prope
 ## Table conversions
 
 `properties` → **`units`** (rename in place, so existing foreign keys survive).
-Drop: `price_per_night`, `price_tiers`, `max_guests`, `beds`, `category`, `year`, `ical_import_url`, `ical_last_sync_at`, `ical_last_status`, `extra_services`, `door_code`, `property_type`.
-Keep: `name`, `description`, `address`, `city`, `country`, `lat`, `lng`, `area_m2`, `rooms`, `amenities`, `cover_image_url`, `image_urls`, `features`, `is_active`, `sort_order`, `location_note`, timestamps.
-Add: `building_id uuid null → buildings`, `unit_number text not null default ''`, `floor int null`, `room_count int not null default 1`, `monthly_rent numeric(10,2) not null default 0`, `deposit numeric(10,2) not null default 0`, `status text not null default 'vacant'` (`vacant|occupied|reserved|renovation|inactive`), `is_listed boolean not null default false`, `notes text not null default ''`.
+Drop: `price_per_night`, `price_tiers`, `max_guests`, `beds`, `category`, `year`, `ical_import_url`, `ical_last_sync_at`, `ical_last_status`, `extra_services`, `door_code`, `property_type`, **`rooms`** (it is a `jsonb` short-term room/bed configuration, not a count — the new `room_count int` replaces its only long-term use; keeping both would leave two competing sources).
+Keep: `name`, `description`, `address`, `city`, `country`, `lat`, `lng`, `area_m2`, `amenities`, `cover_image_url`, `image_urls`, `features`, `is_active`, `sort_order`, `location_note`, timestamps.
+Add: `building_id uuid null → buildings`, `unit_number text not null default ''`, `floor int null`, `room_count int not null default 1`, `monthly_rent numeric(10,2) not null default 0`, `deposit numeric(10,2) not null default 0`, `status text not null default 'vacant' CHECK (status IN ('vacant','occupied','reserved','renovation','inactive'))`, `is_listed boolean not null default false`, `notes text not null default ''`.
 
-`property_events` → **`unit_events`** (`property_id`→`unit_id`; `reason` becomes `kind`: `occupied|vacated|renovation|inspection|other`; `mileage_km` dropped).
+`property_events` → **`unit_events`** (`property_id`→`unit_id`; `reason` becomes `kind text not null CHECK (kind IN ('occupied','vacated','renovation','inspection','other'))`; `mileage_km` dropped).
 
 `property_documents` → **`documents`** (`property_id`→`unit_id` nullable; add `lease_id`, `tenant_id`, `bucket text not null default 'documents'`; keeps `kind`, `title`, `file_path`, `mime_type`, `size_bytes`, `expires_at`, `uploaded_by`).
+- `kind text not null CHECK (kind IN ('lease_contract','act','id_document','invoice','insurance','inspection','house_rules','other'))`.
+- `CHECK (unit_id IS NOT NULL OR lease_id IS NOT NULL OR tenant_id IS NOT NULL)` — a document must always be attached to something.
 
 `property_settings` → **`org_settings`**. Drop every short-term column (check-in/out times, quiet hours, min/max nights, max advance days, guests, children-free age, city tax, extra guest fee, pets/parties, auto-confirm, review request, deposit-per-stay, cancellation fields, `property_id`, `scope`). Keep and extend: display name, logos, brand colours, company/VAT/bank details, invoice series and next number, currency, timezone, default language, contact phone/email, notification toggles, `integrations`. Add: `reading_window_from_day int default 25`, `reading_window_to_day int default 5`, `require_meter_photo boolean default true`, `payment_due_day int default 10`, `default_notice_days int default 30`. Single-row enforced by a `singleton boolean primary-key`-style unique constraint. `claim_invoice_number()` repointed to it.
 
 `property_investments` / `property_maintenance` / `expenses` keep their shape, `property_id`→`unit_id`.
+
+## `documents` vs `signed_contracts` — decision
+
+They are **not** duplicates and a signed lease does **not** live in both as two competing records.
+
+- `signed_contracts` stays the system of record for a contract that this app generated and someone signed through it: it holds the rendered contract text, the signer, the signature and the signing timestamp, and it links to the `contract_templates` row it came from. Step 3 leaves it untouched — its foreign key still points at `bookings`, which also stays until step 6. Step 9 repoints it to `leases`.
+- `documents` is the file registry: anything uploaded or attached — scanned paper contracts signed off-app, hand-over acts, ID document scans, insurance, inspection reports, house rules. Every row is one file in a private bucket.
+- The overlap is deliberate and one-directional: when step 9 renders a signed contract to PDF, the **file** is stored in the `documents` bucket and gets one `documents` row with `kind = 'lease_contract'` and `signed_contract_id` set (that column is added in step 9, not now). The contract's content and signature stay only in `signed_contracts`; the PDF is only a file. Nothing is ever stored twice as authoritative data.
+
 
 ## New tables
 
