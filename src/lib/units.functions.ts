@@ -3,13 +3,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { requireManager, requireOwner } from "./admin-guard.server";
-import {
-  BUILDING_KINDS,
-  HOLDING_LEASE_STATUSES,
-  UNIT_STATUSES,
-  daysBetween,
-  todayIso,
-} from "./rental";
+import { fetchAvailability, fetchDebtors, fetchMissingReadings } from "./dashboard-queries.server";
+import { BUILDING_KINDS, UNIT_STATUSES, todayIso } from "./rental";
 
 export type UnitListRow = {
   id: string;
@@ -28,14 +23,20 @@ export type UnitListRow = {
   cover_image_url: string;
   building_id: string | null;
   building_name: string | null;
-  /** Days the unit has been standing empty (only for status `vacant`). */
+  /** Days the unit has been standing empty (only for status `vacant`) — from `unit_availability`. */
   vacant_days: number | null;
-  /** Real availability date, same rule the public vacancy view uses. */
+  /** Real availability date — `unit_availability_calc()`, the same rule the public view uses. */
   available_from: string | null;
   tenant_name: string | null;
+  lease_id: string | null;
   lease_end_date: string | null;
   lease_renewal: boolean | null;
+  /** Σ charges − Σ payments on the holding lease; 0 when no lease or nothing owed. */
+  balance: number;
+  /** Active meters of this unit (or its building) without a reading this period. */
+  missing_readings_count: number;
 };
+
 
 const unitInput = z.object({
   id: z.string().uuid().optional(),
@@ -66,7 +67,8 @@ export const listUnits = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<UnitListRow[]> => {
     await requireManager(context);
-    const [{ data: units, error }, { data: buildings }, { data: leases }, { data: tenants }] =
+    const today = todayIso();
+    const [{ data: units, error }, { data: buildings }, { data: tenants }, availability, debtors] =
       await Promise.all([
         context.supabase
           .from("units")
@@ -76,51 +78,49 @@ export const listUnits = createServerFn({ method: "GET" })
           .order("sort_order", { ascending: true })
           .order("name", { ascending: true }),
         context.supabase.from("buildings").select("id, name"),
-        context.supabase
-          .from("leases")
-          .select("id, unit_id, tenant_id, status, start_date, end_date, renewal"),
         context.supabase.from("tenants").select("id, first_name, last_name"),
+        // Availability is NOT recomputed here: the view is the single source (AGENTS.md 5.7).
+        fetchAvailability(context.supabase),
+        fetchDebtors(context.supabase, today),
       ]);
     if (error) throw new Error(error.message);
+    const { missing } = await fetchMissingReadings(context.supabase, availability);
 
-    const today = todayIso();
     const buildingName = new Map((buildings ?? []).map((b) => [b.id, b.name]));
     const tenantName = new Map(
       (tenants ?? []).map((t) => [t.id, `${t.first_name} ${t.last_name}`.trim()]),
     );
+    const avail = new Map(availability.map((a) => [a.unit_id, a]));
+    const balanceByLease = new Map(debtors.map((d) => [d.lease_id, d.balance]));
+    const missingByUnit = new Map<string, number>();
+    const missingByBuilding = new Map<string, number>();
+    for (const m of missing) {
+      if (m.unit_id) missingByUnit.set(m.unit_id, (missingByUnit.get(m.unit_id) ?? 0) + 1);
+      if (m.building_id)
+        missingByBuilding.set(m.building_id, (missingByBuilding.get(m.building_id) ?? 0) + 1);
+    }
 
     return (units ?? []).map((u) => {
-      const mine = (leases ?? []).filter((l) => l.unit_id === u.id);
-      const holding = mine.find(
-        (l) =>
-          HOLDING_LEASE_STATUSES.includes(l.status as never) &&
-          l.start_date <= today &&
-          (!l.end_date || l.end_date >= today),
-      );
-      // Empty-since: newest end date of a finished lease, else the unit's creation.
-      const finishedEnds = mine
-        .filter((l) => l.status === "expired" || l.status === "terminated")
-        .map((l) => l.end_date)
-        .filter((d): d is string => Boolean(d))
-        .sort();
-      const vacantSince = finishedEnds.at(-1) ?? String(u.created_at).slice(0, 10);
-
-      let availableFrom: string | null = null;
-      if (u.status === "vacant") availableFrom = today;
-      else if (u.status === "occupied" && holding && holding.renewal === false && holding.end_date)
-        availableFrom = holding.end_date;
-
+      const a = avail.get(u.id);
+      const leaseId = a?.holding_lease_id ?? null;
       return {
         ...u,
         building_name: u.building_id ? (buildingName.get(u.building_id) ?? null) : null,
-        vacant_days: u.status === "vacant" ? daysBetween(vacantSince, today) : null,
-        available_from: availableFrom,
-        tenant_name: holding?.tenant_id ? (tenantName.get(holding.tenant_id) ?? null) : null,
-        lease_end_date: holding?.end_date ?? null,
-        lease_renewal: holding?.renewal ?? null,
+        vacant_days: a?.vacant_days ?? null,
+        available_from: a?.available_from ?? null,
+        tenant_name: a?.holding_tenant_id ? (tenantName.get(a.holding_tenant_id) ?? null) : null,
+        lease_id: leaseId,
+        lease_end_date: a?.holding_end_date ?? null,
+        lease_renewal: a?.holding_renewal ?? null,
+        balance: leaseId ? (balanceByLease.get(leaseId) ?? 0) : 0,
+        // Shared building meters count against every occupied unit of that building.
+        missing_readings_count:
+          (missingByUnit.get(u.id) ?? 0) +
+          (leaseId && u.building_id ? (missingByBuilding.get(u.building_id) ?? 0) : 0),
       } as UnitListRow;
     });
   });
+
 
 export const getUnit = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])

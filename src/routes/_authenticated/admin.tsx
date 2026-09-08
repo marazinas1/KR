@@ -2,7 +2,7 @@ import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tan
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
-import { BarChart3, Building2, FileEdit, FileText, Globe, Home, Inbox, LayoutDashboard, LogOut, Menu, Receipt, Settings2, UserCog, Users, Wallet } from "lucide-react";
+import { BarChart3, Building2, FileEdit, FileText, Globe, Inbox, LayoutDashboard, LogOut, Menu, Receipt, Settings2, UserCog, Users, Wallet, Wrench } from "lucide-react";
 import { getMyRole } from "@/lib/properties.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
@@ -58,6 +58,7 @@ function AdminLayout() {
     { to: "/admin/units", label: t("rental.nav.units"), icon: Building2 },
     { to: "/admin/tenants", label: t("rental.nav.tenants"), icon: Users },
     { to: "/admin/inquiries", label: t("rental.nav.inquiries"), icon: Inbox },
+    { to: "/admin/issues", label: t("rental.nav.issues"), icon: Wrench },
     { to: "/admin/contracts", label: t("nav.contracts"), icon: FileText },
     { to: "/admin/invoices", label: t("nav.invoices"), icon: Receipt },
     { to: "/admin/expenses", label: t("nav.expenses"), icon: Wallet },

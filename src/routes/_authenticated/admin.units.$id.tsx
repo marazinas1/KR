@@ -15,8 +15,12 @@ import { IssuesTab } from "@/components/admin/units/IssuesTab";
 import { DocumentsTab } from "@/components/admin/units/DocumentsTab";
 import { UnitFormDialog, emptyUnit, type UnitDraft } from "@/components/admin/units/UnitFormDialog";
 
+const TABS = ["overview", "lease", "meters", "issues", "documents", "costs", "timeline"] as const;
+
 export const Route = createFileRoute("/_authenticated/admin/units/$id")({
   component: UnitDetail,
+  validateSearch: (s: Record<string, unknown>): { tab?: (typeof TABS)[number] } =>
+    TABS.includes(s["tab"] as never) ? { tab: s["tab"] as (typeof TABS)[number] } : {},
   head: () => ({
     meta: [
       { title: "Buto kortelė — nuomos administravimas" },
@@ -30,6 +34,7 @@ export const Route = createFileRoute("/_authenticated/admin/units/$id")({
 
 function UnitDetail() {
   const { id } = Route.useParams();
+  const { tab } = Route.useSearch();
   const { t } = useTranslation();
   const fetchUnit = useServerFn(getUnit);
   const toggleListed = useServerFn(setUnitListed);

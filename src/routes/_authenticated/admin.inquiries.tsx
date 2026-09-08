@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useTranslation } from "react-i18next";
@@ -33,19 +33,29 @@ import { listUnits } from "@/lib/units.functions";
 import { listTenants } from "@/lib/tenants.functions";
 import { INQUIRY_STATUSES, todayIso, type InquiryStatus } from "@/lib/rental";
 
+type InquiryFilter = "open" | "all" | InquiryStatus;
+
 export const Route = createFileRoute("/_authenticated/admin/inquiries")({
   component: InquiriesPage,
+  validateSearch: (s: Record<string, unknown>): { status?: InquiryFilter } =>
+    s["status"] === "all" || INQUIRY_STATUSES.includes(s["status"] as never)
+      ? { status: s["status"] as InquiryFilter }
+      : {},
 });
 
 function InquiriesPage() {
   const { t } = useTranslation();
   const qc = useQueryClient();
+  const navigate = useNavigate({ from: Route.fullPath });
   const fetchInquiries = useServerFn(listInquiries);
   const changeStatus = useServerFn(setInquiryStatus);
   const fetchUnits = useServerFn(listUnits);
   const fetchTenants = useServerFn(listTenants);
 
-  const [filter, setFilter] = useState<"open" | "all">("open");
+  const { status: statusParam } = Route.useSearch();
+  const filter: InquiryFilter = statusParam ?? "open";
+  const setFilter = (f: InquiryFilter) =>
+    navigate({ search: f === "open" ? {} : { status: f }, replace: true });
   const [converting, setConverting] = useState<InquiryRow | null>(null);
 
   const { data: inquiries = [], isLoading } = useQuery({
@@ -64,13 +74,12 @@ function InquiriesPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const rows = useMemo(
-    () =>
-      filter === "all"
-        ? inquiries
-        : inquiries.filter((i) => i.status !== "converted" && i.status !== "dismissed"),
-    [inquiries, filter],
-  );
+  const rows = useMemo(() => {
+    if (filter === "all") return inquiries;
+    if (filter === "open")
+      return inquiries.filter((i) => i.status !== "converted" && i.status !== "dismissed");
+    return inquiries.filter((i) => i.status === filter);
+  }, [inquiries, filter]);
 
   return (
     <div className="space-y-6">
