@@ -77,7 +77,23 @@ Manual selection stays available as the escape hatch: on a lease's charges list 
 - the record is written by the existing `createInvoiceRecord()` in `invoices.server.ts`, with seller taken from `org_settings` (white-label) and `lease_id` set,
 - the PDF is the existing `buildInvoicePdf` / `InvoiceViewerDialog`.
 
-The only change to that engine is an input path: `createInvoiceRecord` gains an optional `chargeIds` mode that turns charge rows into its existing `lineItems` shape (`gross` = charge `amount`; the engine keeps deriving net/VAT exactly as it does today) and stamps `invoice_id` on those charges inside the same call. The buyer block is filled from the lease's tenant instead of being typed by hand. `invoices` itself is untouched.
+The only change to that engine is an input path: `createInvoiceRecord` gains an optional `chargeIds` mode that turns charge rows into its existing `lineItems` shape (`gross` = charge `amount`; the engine keeps deriving net/VAT exactly as it does today). The buyer block is filled from the lease's tenant instead of being typed by hand. The `invoices` table itself is untouched.
+
+**Atomicity — one database function, not two application steps.** To your point: issuing an invoice and linking its charges must be all-or-nothing, so it follows the `convert_inquiry_to_lease` precedent from step 5/6. A new `SECURITY DEFINER` function does the whole money-moving part inside a single transaction:
+
+```text
+public.issue_invoice_for_charges(_charge_ids uuid[], _issue_date date, _notes text, ...)
+  RETURNS TABLE (invoice_id uuid, full_number text)
+  1. lock the charge rows: SELECT ... WHERE id = ANY(_charge_ids) FOR UPDATE
+  2. reject unless every row belongs to ONE lease and every invoice_id IS NULL
+     (raises — a charge already on an invoice can never be re-invoiced)
+  3. claim_invoice_number()            -- existing atomic series
+  4. INSERT INTO invoices (...)        -- lines/seller/buyer computed and passed in
+  5. UPDATE charges SET invoice_id = <new id> WHERE id = ANY(_charge_ids)
+  6. assert the UPDATE touched exactly array_length(_charge_ids, 1) rows, else RAISE
+```
+
+Any failure at any step rolls the whole thing back: no orphan invoice with unlinked charges, and no charge pointing at an invoice that was not created. The number claimed by a rolled-back attempt is the one acceptable gap (a sequence gap is normal in invoice numbering and preferable to a reused number). The application side only computes the line items and totals — it never performs step 4 and step 5 as separate round trips.
 
 ## 4. One balance arithmetic, shared
 
