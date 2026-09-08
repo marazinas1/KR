@@ -148,9 +148,13 @@ const KIND_ORDER: Record<string, number> = { rent: 0, utility: 1, fixed: 2, one_
  * function checks is_manager(auth.uid()) itself).
  */
 export async function issueInvoiceForCharges(
-  userDb: { from: (t: string) => any; rpc: (fn: string, args?: Record<string, unknown>) => Promise<{ data: any; error: any }> },
+  userClient: unknown,
   input: { chargeIds: string[]; issueDate?: string; notes?: string },
 ): Promise<{ id: string; full_number: string }> {
+  const userDb = userClient as {
+    from: (t: string) => any;
+    rpc: (fn: string, args?: Record<string, unknown>) => Promise<{ data: any; error: any }>;
+  };
   const { data: charges, error: cErr } = await userDb
     .from("charges")
     .select("id, lease_id, kind, description, quantity, amount, invoice_id, period")
