@@ -21,35 +21,51 @@ Confirmed before writing: every operational table is empty (`properties`, `prope
 ## Table conversions
 
 `properties` → **`units`** (rename in place, so existing foreign keys survive).
-Drop: `price_per_night`, `price_tiers`, `max_guests`, `beds`, `category`, `year`, `ical_import_url`, `ical_last_sync_at`, `ical_last_status`, `extra_services`, `door_code`, `property_type`.
-Keep: `name`, `description`, `address`, `city`, `country`, `lat`, `lng`, `area_m2`, `rooms`, `amenities`, `cover_image_url`, `image_urls`, `features`, `is_active`, `sort_order`, `location_note`, timestamps.
-Add: `building_id uuid null → buildings`, `unit_number text not null default ''`, `floor int null`, `room_count int not null default 1`, `monthly_rent numeric(10,2) not null default 0`, `deposit numeric(10,2) not null default 0`, `status text not null default 'vacant'` (`vacant|occupied|reserved|renovation|inactive`), `is_listed boolean not null default false`, `notes text not null default ''`.
+Drop: `price_per_night`, `price_tiers`, `max_guests`, `beds`, `category`, `year`, `ical_import_url`, `ical_last_sync_at`, `ical_last_status`, `extra_services`, `door_code`, `property_type`, **`rooms`** (it is a `jsonb` short-term room/bed configuration, not a count — the new `room_count int` replaces its only long-term use; keeping both would leave two competing sources).
+Keep: `name`, `description`, `address`, `city`, `country`, `lat`, `lng`, `area_m2`, `amenities`, `cover_image_url`, `image_urls`, `features`, `is_active`, `sort_order`, `location_note`, timestamps.
+Add: `building_id uuid null → buildings`, `unit_number text not null default ''`, `floor int null`, `room_count int not null default 1`, `monthly_rent numeric(10,2) not null default 0`, `deposit numeric(10,2) not null default 0`, `status text not null default 'vacant' CHECK (status IN ('vacant','occupied','reserved','renovation','inactive'))`, `is_listed boolean not null default false`, `notes text not null default ''`.
 
-`property_events` → **`unit_events`** (`property_id`→`unit_id`; `reason` becomes `kind`: `occupied|vacated|renovation|inspection|other`; `mileage_km` dropped).
+`property_events` → **`unit_events`** (`property_id`→`unit_id`; `reason` becomes `kind text not null CHECK (kind IN ('occupied','vacated','renovation','inspection','other'))`; `mileage_km` dropped).
 
 `property_documents` → **`documents`** (`property_id`→`unit_id` nullable; add `lease_id`, `tenant_id`, `bucket text not null default 'documents'`; keeps `kind`, `title`, `file_path`, `mime_type`, `size_bytes`, `expires_at`, `uploaded_by`).
+- `kind text not null CHECK (kind IN ('lease_contract','act','id_document','invoice','insurance','inspection','house_rules','other'))`.
+- `CHECK (unit_id IS NOT NULL OR lease_id IS NOT NULL OR tenant_id IS NOT NULL)` — a document must always be attached to something.
 
 `property_settings` → **`org_settings`**. Drop every short-term column (check-in/out times, quiet hours, min/max nights, max advance days, guests, children-free age, city tax, extra guest fee, pets/parties, auto-confirm, review request, deposit-per-stay, cancellation fields, `property_id`, `scope`). Keep and extend: display name, logos, brand colours, company/VAT/bank details, invoice series and next number, currency, timezone, default language, contact phone/email, notification toggles, `integrations`. Add: `reading_window_from_day int default 25`, `reading_window_to_day int default 5`, `require_meter_photo boolean default true`, `payment_due_day int default 10`, `default_notice_days int default 30`. Single-row enforced by a `singleton boolean primary-key`-style unique constraint. `claim_invoice_number()` repointed to it.
 
 `property_investments` / `property_maintenance` / `expenses` keep their shape, `property_id`→`unit_id`.
 
+## `documents` vs `signed_contracts` — decision
+
+They are **not** duplicates and a signed lease does **not** live in both as two competing records.
+
+- `signed_contracts` stays the system of record for a contract that this app generated and someone signed through it: it holds the rendered contract text, the signer, the signature and the signing timestamp, and it links to the `contract_templates` row it came from. Step 3 leaves it untouched — its foreign key still points at `bookings`, which also stays until step 6. Step 9 repoints it to `leases`.
+- `documents` is the file registry: anything uploaded or attached — scanned paper contracts signed off-app, hand-over acts, ID document scans, insurance, inspection reports, house rules. Every row is one file in a private bucket.
+- The overlap is deliberate and one-directional: when step 9 renders a signed contract to PDF, the **file** is stored in the `documents` bucket and gets one `documents` row with `kind = 'lease_contract'` and `signed_contract_id` set (that column is added in step 9, not now). The contract's content and signature stay only in `signed_contracts`; the PDF is only a file. Nothing is ever stored twice as authoritative data.
+
+
 ## New tables
 
 All get `id uuid pk default gen_random_uuid()`, `created_at`, `updated_at` + touch trigger (except pure-append tables).
 
-- **buildings** — `name`, `address`, `city`, `postal_code`, `country default 'LT'`, `kind` (`apartment_building|dormitory|house|other`), `lat`, `lng`, `notes`, `is_active`.
+Every status/type/kind text column below is written with an explicit `CHECK (col IN (...))` in the migration — never a comment listing the allowed values. The 5.7 view and the RLS policies match those strings exactly, so a typo must be impossible at database level.
+
+- **buildings** — `name`, `address`, `city`, `postal_code`, `country default 'LT'`, `kind text not null default 'apartment_building' CHECK (kind IN ('apartment_building','dormitory','house','other'))`, `lat`, `lng`, `notes`, `is_active`.
 - **tenants** — `first_name`, `last_name`, `phone`, `email`, `notes`, `user_id uuid null` (unique, links a portal login; never assumed set), `is_active`.
 - **tenant_identity** — `tenant_id` (unique), `personal_code text`, `id_doc_type`, `id_doc_number`, `issued_by`, `valid_until`. Separate table so a manager cannot read it at all.
-- **leases** — `unit_id`, `tenant_id` (primary tenant), `start_date`, `end_date null`, `monthly_rent`, `deposit`, `deposit_paid numeric default 0`, `payment_day int default 10`, `notice_days int default 30`, `status` (`draft|active|ending|expired|terminated`), `renewal boolean default true`, `terminated_at`, `termination_reason`, `notes`. Exclusion constraint: no two non-terminated leases on the same unit with overlapping dates (one unit = one rentable room, so one active lease each).
+- **leases** — `unit_id`, `tenant_id` (primary tenant), `start_date`, `end_date null`, `monthly_rent`, `deposit`, `deposit_paid numeric default 0`, `payment_day int default 10`, `notice_days int default 30`, `status text not null default 'draft' CHECK (status IN ('draft','active','ending','expired','terminated'))`, `renewal boolean default true`, `terminated_at`, `termination_reason`, `notes`. Exclusion constraint: no two non-terminated leases on the same unit with overlapping dates (one unit = one rentable room, so one active lease each).
 - **lease_occupants** — `lease_id`, `full_name`, `phone`, `email`, `relation`, `tenant_id null`.
-- **meters** — `unit_id null`, `building_id null` (exactly one set, checked), `type` (`electricity_day|electricity_night|cold_water|hot_water|gas|heating`), `serial_number`, `uom`, `initial_reading numeric default 0`, `digits int`, `is_active`, `notes`.
-- **meter_readings** — `meter_id`, `period date` (first day of month), `value numeric(12,3)`, `consumption numeric(12,3)`, `photo_path`, `submitted_by uuid null`, `submitted_at`, `status` (`submitted|approved|rejected`), `reviewed_by`, `reviewed_at`, `note`, `superseded_by uuid null`. Unique partial index on `(meter_id, period)` where `status <> 'rejected'` — one accepted reading per meter-period. Validation trigger (not a CHECK): value must be ≥ the last approved reading for that meter; a jump above a configurable multiple is accepted but flagged `needs_review`. No hard deletes — corrections insert a new row and set `superseded_by`.
-- **utility_rates** — `type`, `effective_from date`, `price_per_unit numeric(10,4)`, `fixed_monthly numeric(10,2) default 0`, `note`. Never updated in place; a new rate is a new row. Unique `(type, effective_from)`.
-- **charges** — `lease_id`, `period date`, `kind` (`rent|utility|fixed|one_off|penalty`), `meter_reading_id null`, `utility_rate_id null`, `description`, `quantity`, `unit_price`, `amount numeric(10,2)`, `invoice_id null`.
-- **payments** — `lease_id`, `paid_at date`, `amount numeric(10,2)`, `method` (`bank|cash|other`), `reference`, `note`, `recorded_by`.
-- **issues** — `unit_id`, `lease_id null`, `reported_by uuid null`, `reporter_name`, `category`, `title`, `description`, `photo_paths jsonb default '[]'`, `priority` (`low|normal|high|urgent`), `status` (`new|acknowledged|in_progress|waiting|resolved|rejected`), `assigned_to`, `cost numeric null`, `resolved_at`.
+- **meters** — `unit_id null`, `building_id null` (exactly one set, checked), `type text not null CHECK (type IN ('electricity_day','electricity_night','cold_water','hot_water','gas','heating'))`, `serial_number`, `uom`, `initial_reading numeric default 0`, `digits int`, `is_active`, `notes`.
+- **meter_readings** — `meter_id`, `period date` (first day of month), `value numeric(12,3)`, `consumption numeric(12,3)`, `photo_path`, `submitted_by uuid null`, `submitted_at`, `status text not null default 'submitted' CHECK (status IN ('submitted','approved','rejected'))`, `needs_review boolean default false`, `reviewed_by`, `reviewed_at`, `note`, `superseded_by uuid null`. Unique partial index on `(meter_id, period)` where `status <> 'rejected'` — one accepted reading per meter-period. Validation trigger (not a CHECK, because it reads other rows): value must be ≥ the last approved reading for that meter; a jump above a configurable multiple is accepted but flagged `needs_review`. No hard deletes — corrections insert a new row and set `superseded_by`.
+- **utility_rates** — `type` (same CHECK list as `meters.type`), `effective_from date`, `price_per_unit numeric(10,4)`, `fixed_monthly numeric(10,2) default 0`, `note`. Never updated in place; a new rate is a new row. Unique `(type, effective_from)`.
+- **charges** — `lease_id`, `period date`, `kind text not null CHECK (kind IN ('rent','utility','fixed','one_off','penalty'))`, `meter_reading_id null`, `utility_rate_id null`, `description`, `quantity`, `unit_price`, `amount numeric(10,2)`, `invoice_id null`.
+- **payments** — `lease_id`, `paid_at date`, `amount numeric(10,2)`, `method text not null default 'bank' CHECK (method IN ('bank','cash','other'))`, `reference`, `note`, `recorded_by`.
+- **issues** — `unit_id`, `lease_id null`, `reported_by uuid null`, `reporter_name`, `category`, `title`, `description`, `photo_paths jsonb default '[]'`, `priority text not null default 'normal' CHECK (priority IN ('low','normal','high','urgent'))`, `status text not null default 'new' CHECK (status IN ('new','acknowledged','in_progress','waiting','resolved','rejected'))`, `assigned_to`, `cost numeric null`, `resolved_at`.
 - **issue_comments** — `issue_id`, `author_id null`, `author_role`, `body`, `photo_paths`, `is_internal boolean default false` (internal notes hidden from the tenant).
-- **rental_inquiries** — `unit_id null`, `name`, `phone`, `email`, `move_in_date null`, `message`, `status` (`new|contacted|viewing_scheduled|converted|dismissed`), `handled_by`, `converted_lease_id null`, `source text default 'public_site'`.
+- **rental_inquiries** — `unit_id null`, `name`, `phone`, `email`, `move_in_date null`, `message`, `status text not null default 'new' CHECK (status IN ('new','contacted','viewing_scheduled','converted','dismissed'))`, `handled_by`, `converted_lease_id null`, `source text default 'public_site'`.
+
+Also carrying a CHECK, listed with their tables above: `units.status`, `unit_events.kind`, `documents.kind`.
+
 
 ## RLS sketch
 
@@ -75,8 +91,11 @@ Two tenant-scoping helpers, both `security definer`:
 | documents | all | read + write, no delete | read documents attached to own lease/unit/self | — |
 | unit_events | all | read + write, no delete | none | — |
 | rental_inquiries | all | read + update, no delete | none | **insert only** (no read) |
-| org_settings | owner writes | read only | none | — |
+| org_settings | owner (and developer) read + write | **read only — new policy, deliberate change** | none | — |
 | utility/invoice tables kept from before | unchanged from step 2 | | | |
+
+**Confirmed change from step 2:** under `property_settings` a manager had zero access. A manager now gets read access to `org_settings`, because the manager screens need the currency, timezone, invoice series, payment due day and the reading window to render anything sensible. Write access stays owner-only. This is not inherited — the migration drops the old owner-only policy set and creates a new, explicitly named `"Managers can read org settings"` `FOR SELECT TO authenticated USING (public.is_manager(auth.uid()))` policy alongside the owner write policy, and the verification query lists the policies on `org_settings` to prove both exist.
+
 
 Every new public table gets its GRANT block in the same migration (`authenticated` + `service_role`; `anon` only where a policy allows it — `rental_inquiries` insert and the vacancy view).
 
@@ -124,7 +143,7 @@ Four buckets, created with the storage tool, policies written on `storage.object
 | Bucket | Public | Limit | Contents | Access |
 |---|---|---|---|---|
 | `unit-photos` | yes | 10 MB | marketing photos of units | anyone reads; manager writes |
-| `documents` | **no** | 20 MB | leases, signed contracts, tenant ID documents | manager reads/writes; a tenant reads only paths under `lease/<own lease id>/` or `tenant/<own tenant id>/`; served through signed URLs only |
+| `documents` | **no** | 20 MB | every file in the `documents` table: contract PDFs, acts, ID scans, insurance | manager reads/writes; a tenant reads only paths under `lease/<own lease id>/` or `tenant/<own tenant id>/`; served through signed URLs only |
 | `meter-photos` | **no** | 10 MB | meter evidence photos | tenant writes into `<own unit id>/`, reads own; manager reads all |
 | `issue-photos` | **no** | 10 MB | fault and damage photos | same pattern as meter photos |
 
