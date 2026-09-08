@@ -34,11 +34,15 @@ import { Route as AuthenticatedAdminTenantsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminUnitsRouteImport } from './routes/_authenticated/admin.units'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedNuomininkasIndexRouteImport } from './routes/_authenticated/nuomininkas.index'
+import { Route as AuthenticatedNuomininkasDokumentaiRouteImport } from './routes/_authenticated/nuomininkas.dokumentai'
+import { Route as AuthenticatedNuomininkasGedimaiRouteImport } from './routes/_authenticated/nuomininkas.gedimai'
+import { Route as AuthenticatedNuomininkasRodmenysRouteImport } from './routes/_authenticated/nuomininkas.rodmenys'
 import { Route as ApiPublicNotificationsCronRouteImport } from './routes/api/public/notifications-cron'
 import { Route as EnButaiIndexRouteImport } from './routes/en/butai.index'
 import { Route as EnButaiIdRouteImport } from './routes/en/butai.$id'
 import { Route as AuthenticatedAdminTenantsIdRouteImport } from './routes/_authenticated/admin.tenants.$id'
 import { Route as AuthenticatedAdminUnitsIdRouteImport } from './routes/_authenticated/admin.units.$id'
+import { Route as AuthenticatedNuomininkasGedimaiIdRouteImport } from './routes/_authenticated/nuomininkas.gedimai.$id'
 import { Route as ApiPublicV1LegalRouteImport } from './routes/api/public/v1/legal'
 import { Route as ApiPublicV1PaymentDetailsRouteImport } from './routes/api/public/v1/payment-details'
 import { Route as ApiPublicV1PropertiesRouteImport } from './routes/api/public/v1/properties'
@@ -178,6 +182,24 @@ const AuthenticatedNuomininkasIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedNuomininkasRoute,
   } as any)
+const AuthenticatedNuomininkasDokumentaiRoute =
+  AuthenticatedNuomininkasDokumentaiRouteImport.update({
+    id: '/dokumentai',
+    path: '/dokumentai',
+    getParentRoute: () => AuthenticatedNuomininkasRoute,
+  } as any)
+const AuthenticatedNuomininkasGedimaiRoute =
+  AuthenticatedNuomininkasGedimaiRouteImport.update({
+    id: '/gedimai',
+    path: '/gedimai',
+    getParentRoute: () => AuthenticatedNuomininkasRoute,
+  } as any)
+const AuthenticatedNuomininkasRodmenysRoute =
+  AuthenticatedNuomininkasRodmenysRouteImport.update({
+    id: '/rodmenys',
+    path: '/rodmenys',
+    getParentRoute: () => AuthenticatedNuomininkasRoute,
+  } as any)
 const ApiPublicNotificationsCronRoute =
   ApiPublicNotificationsCronRouteImport.update({
     id: '/api/public/notifications-cron',
@@ -205,6 +227,12 @@ const AuthenticatedAdminUnitsIdRoute =
     id: '/$id',
     path: '/$id',
     getParentRoute: () => AuthenticatedAdminUnitsRoute,
+  } as any)
+const AuthenticatedNuomininkasGedimaiIdRoute =
+  AuthenticatedNuomininkasGedimaiIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedNuomininkasGedimaiRoute,
   } as any)
 const ApiPublicV1LegalRoute = ApiPublicV1LegalRouteImport.update({
   id: '/api/public/v1/legal',
@@ -251,6 +279,9 @@ export interface FileRoutesByFullPath {
   '/admin/tenants': typeof AuthenticatedAdminTenantsRouteWithChildren
   '/admin/units': typeof AuthenticatedAdminUnitsRouteWithChildren
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/nuomininkas/dokumentai': typeof AuthenticatedNuomininkasDokumentaiRoute
+  '/nuomininkas/gedimai': typeof AuthenticatedNuomininkasGedimaiRouteWithChildren
+  '/nuomininkas/rodmenys': typeof AuthenticatedNuomininkasRodmenysRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/en/butai/$id': typeof EnButaiIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -258,6 +289,7 @@ export interface FileRoutesByFullPath {
   '/en/butai/': typeof EnButaiIndexRoute
   '/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
+  '/nuomininkas/gedimai/$id': typeof AuthenticatedNuomininkasGedimaiIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
   '/api/public/v1/properties': typeof ApiPublicV1PropertiesRouteWithChildren
@@ -283,6 +315,9 @@ export interface FileRoutesByTo {
   '/admin/tenants': typeof AuthenticatedAdminTenantsRouteWithChildren
   '/admin/units': typeof AuthenticatedAdminUnitsRouteWithChildren
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/nuomininkas/dokumentai': typeof AuthenticatedNuomininkasDokumentaiRoute
+  '/nuomininkas/gedimai': typeof AuthenticatedNuomininkasGedimaiRouteWithChildren
+  '/nuomininkas/rodmenys': typeof AuthenticatedNuomininkasRodmenysRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/en/butai/$id': typeof EnButaiIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -290,6 +325,7 @@ export interface FileRoutesByTo {
   '/en/butai': typeof EnButaiIndexRoute
   '/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
+  '/nuomininkas/gedimai/$id': typeof AuthenticatedNuomininkasGedimaiIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
   '/api/public/v1/properties': typeof ApiPublicV1PropertiesRouteWithChildren
@@ -320,6 +356,9 @@ export interface FileRoutesById {
   '/_authenticated/admin/tenants': typeof AuthenticatedAdminTenantsRouteWithChildren
   '/_authenticated/admin/units': typeof AuthenticatedAdminUnitsRouteWithChildren
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/nuomininkas/dokumentai': typeof AuthenticatedNuomininkasDokumentaiRoute
+  '/_authenticated/nuomininkas/gedimai': typeof AuthenticatedNuomininkasGedimaiRouteWithChildren
+  '/_authenticated/nuomininkas/rodmenys': typeof AuthenticatedNuomininkasRodmenysRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/en/butai/$id': typeof EnButaiIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -327,6 +366,7 @@ export interface FileRoutesById {
   '/en/butai/': typeof EnButaiIndexRoute
   '/_authenticated/admin/tenants/$id': typeof AuthenticatedAdminTenantsIdRoute
   '/_authenticated/admin/units/$id': typeof AuthenticatedAdminUnitsIdRoute
+  '/_authenticated/nuomininkas/gedimai/$id': typeof AuthenticatedNuomininkasGedimaiIdRoute
   '/api/public/v1/legal': typeof ApiPublicV1LegalRoute
   '/api/public/v1/payment-details': typeof ApiPublicV1PaymentDetailsRoute
   '/api/public/v1/properties': typeof ApiPublicV1PropertiesRouteWithChildren
@@ -357,6 +397,9 @@ export interface FileRouteTypes {
     | '/admin/tenants'
     | '/admin/units'
     | '/admin/users'
+    | '/nuomininkas/dokumentai'
+    | '/nuomininkas/gedimai'
+    | '/nuomininkas/rodmenys'
     | '/api/public/notifications-cron'
     | '/en/butai/$id'
     | '/admin/'
@@ -364,6 +407,7 @@ export interface FileRouteTypes {
     | '/en/butai/'
     | '/admin/tenants/$id'
     | '/admin/units/$id'
+    | '/nuomininkas/gedimai/$id'
     | '/api/public/v1/legal'
     | '/api/public/v1/payment-details'
     | '/api/public/v1/properties'
@@ -389,6 +433,9 @@ export interface FileRouteTypes {
     | '/admin/tenants'
     | '/admin/units'
     | '/admin/users'
+    | '/nuomininkas/dokumentai'
+    | '/nuomininkas/gedimai'
+    | '/nuomininkas/rodmenys'
     | '/api/public/notifications-cron'
     | '/en/butai/$id'
     | '/admin'
@@ -396,6 +443,7 @@ export interface FileRouteTypes {
     | '/en/butai'
     | '/admin/tenants/$id'
     | '/admin/units/$id'
+    | '/nuomininkas/gedimai/$id'
     | '/api/public/v1/legal'
     | '/api/public/v1/payment-details'
     | '/api/public/v1/properties'
@@ -425,6 +473,9 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/tenants'
     | '/_authenticated/admin/units'
     | '/_authenticated/admin/users'
+    | '/_authenticated/nuomininkas/dokumentai'
+    | '/_authenticated/nuomininkas/gedimai'
+    | '/_authenticated/nuomininkas/rodmenys'
     | '/api/public/notifications-cron'
     | '/en/butai/$id'
     | '/_authenticated/admin/'
@@ -432,6 +483,7 @@ export interface FileRouteTypes {
     | '/en/butai/'
     | '/_authenticated/admin/tenants/$id'
     | '/_authenticated/admin/units/$id'
+    | '/_authenticated/nuomininkas/gedimai/$id'
     | '/api/public/v1/legal'
     | '/api/public/v1/payment-details'
     | '/api/public/v1/properties'
@@ -631,6 +683,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNuomininkasIndexRouteImport
       parentRoute: typeof AuthenticatedNuomininkasRoute
     }
+    '/_authenticated/nuomininkas/dokumentai': {
+      id: '/_authenticated/nuomininkas/dokumentai'
+      path: '/dokumentai'
+      fullPath: '/nuomininkas/dokumentai'
+      preLoaderRoute: typeof AuthenticatedNuomininkasDokumentaiRouteImport
+      parentRoute: typeof AuthenticatedNuomininkasRoute
+    }
+    '/_authenticated/nuomininkas/gedimai': {
+      id: '/_authenticated/nuomininkas/gedimai'
+      path: '/gedimai'
+      fullPath: '/nuomininkas/gedimai'
+      preLoaderRoute: typeof AuthenticatedNuomininkasGedimaiRouteImport
+      parentRoute: typeof AuthenticatedNuomininkasRoute
+    }
+    '/_authenticated/nuomininkas/rodmenys': {
+      id: '/_authenticated/nuomininkas/rodmenys'
+      path: '/rodmenys'
+      fullPath: '/nuomininkas/rodmenys'
+      preLoaderRoute: typeof AuthenticatedNuomininkasRodmenysRouteImport
+      parentRoute: typeof AuthenticatedNuomininkasRoute
+    }
     '/api/public/notifications-cron': {
       id: '/api/public/notifications-cron'
       path: '/api/public/notifications-cron'
@@ -665,6 +738,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/units/$id'
       preLoaderRoute: typeof AuthenticatedAdminUnitsIdRouteImport
       parentRoute: typeof AuthenticatedAdminUnitsRoute
+    }
+    '/_authenticated/nuomininkas/gedimai/$id': {
+      id: '/_authenticated/nuomininkas/gedimai/$id'
+      path: '/$id'
+      fullPath: '/nuomininkas/gedimai/$id'
+      preLoaderRoute: typeof AuthenticatedNuomininkasGedimaiIdRouteImport
+      parentRoute: typeof AuthenticatedNuomininkasGedimaiRoute
     }
     '/api/public/v1/legal': {
       id: '/api/public/v1/legal'
@@ -756,12 +836,36 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
 const AuthenticatedAdminRouteWithChildren =
   AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
+interface AuthenticatedNuomininkasGedimaiRouteChildren {
+  AuthenticatedNuomininkasGedimaiIdRoute: typeof AuthenticatedNuomininkasGedimaiIdRoute
+}
+
+const AuthenticatedNuomininkasGedimaiRouteChildren: AuthenticatedNuomininkasGedimaiRouteChildren =
+  {
+    AuthenticatedNuomininkasGedimaiIdRoute:
+      AuthenticatedNuomininkasGedimaiIdRoute,
+  }
+
+const AuthenticatedNuomininkasGedimaiRouteWithChildren =
+  AuthenticatedNuomininkasGedimaiRoute._addFileChildren(
+    AuthenticatedNuomininkasGedimaiRouteChildren,
+  )
+
 interface AuthenticatedNuomininkasRouteChildren {
+  AuthenticatedNuomininkasDokumentaiRoute: typeof AuthenticatedNuomininkasDokumentaiRoute
+  AuthenticatedNuomininkasGedimaiRoute: typeof AuthenticatedNuomininkasGedimaiRouteWithChildren
+  AuthenticatedNuomininkasRodmenysRoute: typeof AuthenticatedNuomininkasRodmenysRoute
   AuthenticatedNuomininkasIndexRoute: typeof AuthenticatedNuomininkasIndexRoute
 }
 
 const AuthenticatedNuomininkasRouteChildren: AuthenticatedNuomininkasRouteChildren =
   {
+    AuthenticatedNuomininkasDokumentaiRoute:
+      AuthenticatedNuomininkasDokumentaiRoute,
+    AuthenticatedNuomininkasGedimaiRoute:
+      AuthenticatedNuomininkasGedimaiRouteWithChildren,
+    AuthenticatedNuomininkasRodmenysRoute:
+      AuthenticatedNuomininkasRodmenysRoute,
     AuthenticatedNuomininkasIndexRoute: AuthenticatedNuomininkasIndexRoute,
   }
 
