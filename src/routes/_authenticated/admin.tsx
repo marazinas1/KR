@@ -49,6 +49,7 @@ function AdminLayout() {
     { to: "/admin", label: t("nav.dashboard"), icon: LayoutDashboard },
     { to: "/admin/housekeeping", label: t("nav.housekeeping"), icon: Sparkles },
     { to: "/admin/contracts", label: t("nav.contracts"), icon: FileText },
+    { to: "/admin/invoices", label: t("nav.invoices"), icon: Receipt },
     { to: "/admin/expenses", label: t("nav.expenses"), icon: Wallet },
     // Settings (and user management) are owner-level only.
     ...(role.isOwner
