@@ -102,11 +102,11 @@ export function TariffsSection({ canEdit }: { canEdit: boolean }) {
           </div>
           <div className="space-y-1">
             <Label>{t("rental.tariffs.price")}</Label>
-            <NumberInput value={price} onChange={setPrice} step={0.0001} min={0} />
+            <NumberInput value={price} onChange={(v) => setPrice(v ?? 0)} step={0.0001} min={0} />
           </div>
           <div className="space-y-1">
             <Label>{t("rental.tariffs.fixed")}</Label>
-            <NumberInput value={fixed} onChange={setFixed} step={0.01} min={0} />
+            <NumberInput value={fixed} onChange={(v) => setFixed(v ?? 0)} step={0.01} min={0} />
           </div>
           <div className="space-y-1">
             <Label>{t("rental.tariffs.note")}</Label>
