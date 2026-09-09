@@ -45,7 +45,7 @@ function AdminLayout() {
   const newInquiries = dashboard?.inquiries.newCount ?? 0;
   const openIssues = dashboard?.issues.open ?? 0;
 
-  const brandName = settingsData?.settings.displayName?.trim() || "Deerva";
+  const brandName = settingsData?.settings.displayName?.trim() || "";
   const { location } = useRouterState();
   const navigate = useNavigate();
   // Tenant-only logins belong in the tenant portal, not on a "no access" page.

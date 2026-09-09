@@ -144,7 +144,7 @@ function LoginPage() {
         <div className="relative flex flex-col items-center gap-6 px-12 text-center text-background">
           <BrandMark
             size="lg"
-            displayName={branding?.displayName || PLATFORM_NAME}
+            displayName={branding?.displayName ?? ""}
             tagline={branding?.tagline}
             logoUrl={branding?.logoUrl || undefined}
           />
