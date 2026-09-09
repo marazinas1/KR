@@ -106,8 +106,7 @@ export const getDashboard = createServerFn({ method: "GET" })
  * server function above and the AI assistant) share it, so no surface can
  * report a different number for the same thing.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function buildDashboard(db: SupabaseClient<any, any, any>): Promise<Dashboard> {
+export async function buildDashboard(db: SupabaseClient<Database>): Promise<Dashboard> {
   {
     const today = todayIso();
     const period = currentPeriod();
