@@ -3,6 +3,7 @@ import { useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
+import { BrandMark } from "@/components/BrandMark";
 import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
 import { LocaleLink } from "@/components/site/LocaleLink";
 import { mainNav } from "@/data/nav";
@@ -45,11 +46,12 @@ export function SiteHeader() {
       data-locale={locale}
     >
       <div className="mx-auto flex max-w-[84rem] items-center justify-between gap-6 px-6 py-4 lg:px-12">
-        <LocaleLink
-          to="/"
-          className="font-mono text-sm font-semibold uppercase tracking-[0.18em] text-foreground"
-        >
-          {brand}
+        <LocaleLink to="/" className="text-foreground">
+          <BrandMark
+            displayName={brand}
+            tagline={org?.tagline}
+            logoUrl={org?.logoUrl}
+          />
         </LocaleLink>
 
         <nav aria-label="Main" className="flex items-center gap-4 text-sm sm:gap-6">
