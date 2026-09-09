@@ -225,34 +225,39 @@
    (kr-home-concept-v2): popierius, viena tamsi „lentos" plokštuma ir statuso
    spalvos, naudojamos TIK laisvumui žymėti (niekada dekoracijai). */
 @theme {
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  /* Vienas šriftas visoje platformoje (viešoji dalis + admin) — Manrope. */
+  --font-sans: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
 
-  --color-paper: oklch(0.951 0.006 92);
-  --color-linen: oklch(0.951 0.006 92);
+  --color-paper: oklch(1 0 0);
+  --color-linen: oklch(0.982 0 0);
   --color-warm-white: oklch(1 0 0);
-  --color-ink: oklch(0.212 0.006 285);
-  --color-graphite: oklch(0.487 0.006 120);
-  --color-stone: oklch(0.487 0.006 120);
-  --color-hairline: oklch(0.886 0.011 95);
-  --color-board: oklch(0.196 0.008 255);
-  --color-board-foreground: oklch(0.929 0.002 95);
-  --color-sage: oklch(0.503 0.084 160);
-  --color-sage-deep: oklch(0.43 0.075 160);
-  --color-clay: oklch(0.606 0.111 68);
+  --color-sand: oklch(0.982 0 0);
+  --color-ink: oklch(0.219 0 0);
+  --color-graphite: oklch(0.437 0 0);
+  --color-stone: oklch(0.437 0 0);
+  --color-line: oklch(0.916 0 0);
+  --color-hairline: oklch(0.916 0 0);
+  --color-board: oklch(0.219 0 0);
+  --color-board-foreground: oklch(1 0 0);
+  --color-brand: oklch(0.452 0.185 26.5);
+  --color-sage: oklch(0.219 0 0);
+  --color-sage-deep: oklch(0.16 0 0);
+  --color-clay: oklch(0.452 0.185 26.5);
 
   /* Statuso spalvos — tik laisvumo būsenai. */
-  --color-available: oklch(0.503 0.084 160);
-  --color-available-bg: oklch(0.937 0.017 160);
-  --color-soon: oklch(0.606 0.111 68);
-  --color-soon-bg: oklch(0.936 0.021 80);
-  --color-occupied: oklch(0.61 0.006 120);
-  --color-occupied-bg: oklch(0.925 0.006 95);
+  --color-available: oklch(0.219 0 0);
+  --color-available-bg: oklch(0.955 0 0);
+  --color-soon: oklch(0.452 0.185 26.5);
+  --color-soon-bg: oklch(0.958 0.014 26.5);
+  --color-occupied: oklch(0.62 0 0);
+  --color-occupied-bg: oklch(0.972 0 0);
 
-  --shadow-soft: 0 1px 2px oklch(0.212 0.006 285 / 0.04), 0 12px 32px -16px oklch(0.212 0.006 285 / 0.14);
-  --shadow-lift: 0 2px 4px oklch(0.212 0.006 285 / 0.05), 0 24px 48px -24px oklch(0.212 0.006 285 / 0.2);
+  --shadow-soft: 0 1px 2px oklch(0.219 0 0 / 0.04), 0 12px 32px -16px oklch(0.219 0 0 / 0.14);
+  --shadow-lift: 0 2px 4px oklch(0.219 0 0 / 0.05), 0 24px 48px -24px oklch(0.219 0 0 / 0.2);
 }
+
 
 /*
  * Semantinės spalvos perrašomos TIK viešuosiuose puslapiuose (.site-theme apvalkalas),
