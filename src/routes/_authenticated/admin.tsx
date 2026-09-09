@@ -10,6 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getPropertySettings } from "@/lib/property-settings.functions";
+import { getDashboard } from "@/lib/dashboard.functions";
+
 import { useDefaultLanguage } from "@/hooks/useDefaultLanguage";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
