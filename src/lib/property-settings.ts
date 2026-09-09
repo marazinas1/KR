@@ -160,6 +160,7 @@ export const DEFAULT_PROPERTY_SETTINGS: PropertySettings = {
 /** camelCase form <-> snake_case DB columns (public.org_settings) */
 export const SETTINGS_COLUMN_MAP: Record<keyof PropertySettings, string> = {
   displayName: "display_name",
+  tagline: "tagline",
   address: "address",
   city: "city",
   postalCode: "postal_code",
