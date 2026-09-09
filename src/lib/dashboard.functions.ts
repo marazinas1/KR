@@ -96,7 +96,17 @@ export const getDashboard = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<Dashboard> => {
     await requireManager(context);
-    const db = context.supabase;
+    return buildDashboard(context.supabase);
+  });
+
+/**
+ * The one dashboard computation. Server-side callers (the admin dashboard
+ * server function above and the AI assistant) share it, so no surface can
+ * report a different number for the same thing.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function buildDashboard(db: SupabaseClient<any, any, any>): Promise<Dashboard> {
+  {
     const today = todayIso();
     const period = currentPeriod();
     const plus = (days: number) => {
