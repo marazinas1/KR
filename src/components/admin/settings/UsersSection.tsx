@@ -25,7 +25,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Check, Pencil, Trash2, X } from "lucide-react";
+import { Check, Loader2, Pencil, ShieldCheck, Trash2, UserPlus, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import {
   approveDeveloperInvite,
   deleteUser,
@@ -182,14 +183,16 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
         </CardHeader>
         <CardContent>
           <form
-            className="flex flex-col gap-3 sm:flex-row sm:items-end"
+            className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_14rem_auto] sm:items-end"
             onSubmit={(e) => {
               e.preventDefault();
               m.mutate();
             }}
           >
-            <div className="flex-1 space-y-1.5">
-              <Label htmlFor="invite-email">{t("settings.users.email")}</Label>
+            <div>
+              <Label className="flex h-5 items-end" htmlFor="invite-email">
+                {t("settings.users.email")}
+              </Label>
               <Input
                 id="invite-email"
                 type="email"
@@ -197,26 +200,30 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={!canEdit}
+                className="mt-1.5 h-10"
               />
             </div>
-            <div className="flex-1 space-y-1.5">
-              <Label htmlFor="invite-name">{t("settings.users.name")}</Label>
+            <div>
+              <Label className="flex h-5 items-end" htmlFor="invite-name">
+                {t("settings.users.name")}
+              </Label>
               <Input
                 id="invite-name"
                 value={fullName}
                 placeholder={t("settings.users.namePlaceholder")}
                 onChange={(e) => setFullName(e.target.value)}
                 disabled={!canEdit}
+                className="mt-1.5 h-10"
               />
             </div>
-            <div className="space-y-1.5 sm:w-56">
-              <Label>{t("settings.users.role")}</Label>
+            <div>
+              <Label className="flex h-5 items-end">{t("settings.users.role")}</Label>
               <Select
                 value={role}
                 onValueChange={(v) => setRole(v as InvitableRole)}
                 disabled={!canEdit}
               >
-                <SelectTrigger>
+                <SelectTrigger className="mt-1.5 h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -230,7 +237,12 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
                 </SelectContent>
               </Select>
             </div>
-            <Button type="submit" disabled={!canEdit || m.isPending}>
+            <Button className="h-10" type="submit" disabled={!canEdit || m.isPending}>
+              {m.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <UserPlus className="h-4 w-4" />
+              )}
               {m.isPending ? t("settings.users.sending") : t("settings.users.invite")}
             </Button>
           </form>
@@ -366,7 +378,10 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
                       <td className="py-2">{u.email || u.userId}</td>
                       <td className="py-2">
                         {u.role === "developer" || u.userId === myUserId || !canEdit ? (
-                          ROLE_LABEL_KEYS[u.role] ? t(ROLE_LABEL_KEYS[u.role]) : u.role
+                          <Badge variant="outline" className="gap-1 font-medium">
+                            <ShieldCheck className="h-3 w-3" />
+                            {ROLE_LABEL_KEYS[u.role] ? t(ROLE_LABEL_KEYS[u.role]) : u.role}
+                          </Badge>
                         ) : (
                           <Select
                             value={u.role}
