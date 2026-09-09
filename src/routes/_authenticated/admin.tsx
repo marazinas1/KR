@@ -113,31 +113,51 @@ function AdminLayout() {
           logoUrl={settingsData?.settings.brandLogoUrl || undefined}
         />
       </div>
-      <nav className="flex-1 space-y-1 px-2">
-          {links.map((l) => {
-            const Icon = l.icon;
-            const active =
-              l.to === "/admin"
-                ? location.pathname === "/admin"
-                : location.pathname.startsWith(l.to);
+      <nav className="flex-1 space-y-5 px-2">
+        {groups.map((group) => (
+          <div key={group.label} className="space-y-1">
+            <p className="px-3 pb-1 text-[10px] font-medium uppercase tracking-[0.18em] text-sidebar-foreground/45">
+              {group.label}
+            </p>
+            {group.items.map((l) => {
+              const Icon = l.icon;
+              const active =
+                l.to === "/admin"
+                  ? location.pathname === "/admin"
+                  : location.pathname.startsWith(l.to);
+              const badge = "badge" in l ? (l.badge as number | undefined) : undefined;
 
-            return (
-              <Link
-                key={l.to}
-                to={l.to}
-                onClick={() => setNavOpen(false)}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm ${
-                  active
-                    ? "bg-sidebar-primary font-medium text-sidebar-primary-foreground"
-                    : "text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                {l.label}
-              </Link>
-            );
-          })}
+              return (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  onClick={() => setNavOpen(false)}
+                  className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm ${
+                    active
+                      ? "bg-sidebar-primary font-medium text-sidebar-primary-foreground"
+                      : "text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="flex-1 truncate">{l.label}</span>
+                  {badge ? (
+                    <span
+                      className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold ${
+                        active
+                          ? "bg-sidebar-primary-foreground/20 text-sidebar-primary-foreground"
+                          : "bg-sidebar-accent text-sidebar-accent-foreground"
+                      }`}
+                    >
+                      {badge}
+                    </span>
+                  ) : null}
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </nav>
+
       <div className="mt-auto space-y-1 border-t border-sidebar-border px-2 py-3 text-sidebar-foreground">
           {/* Signed-in user: name/email + role */}
           <div className="mb-2 rounded-md px-3 py-2">
