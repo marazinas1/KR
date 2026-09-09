@@ -43,7 +43,7 @@ function AdminLayout() {
     staleTime: 60_000,
   });
   const newInquiries = dashboard?.inquiries.newCount ?? 0;
-  const openIssues = dashboard?.issues.count ?? 0;
+  const openIssues = dashboard?.issues.open ?? 0;
 
   const brandName = settingsData?.settings.displayName?.trim() || "Deerva";
   const { location } = useRouterState();
