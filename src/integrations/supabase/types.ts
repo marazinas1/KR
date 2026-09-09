@@ -1940,60 +1940,6 @@ export type Database = {
           },
         ]
       }
-      signed_contracts: {
-        Row: {
-          booking_id: string
-          contract_content: string
-          created_at: string
-          customer_email: string
-          customer_name: string
-          id: string
-          pdf_url: string | null
-          signature_text: string
-          signed_at: string
-          template_id: string | null
-        }
-        Insert: {
-          booking_id: string
-          contract_content: string
-          created_at?: string
-          customer_email?: string
-          customer_name: string
-          id?: string
-          pdf_url?: string | null
-          signature_text: string
-          signed_at?: string
-          template_id?: string | null
-        }
-        Update: {
-          booking_id?: string
-          contract_content?: string
-          created_at?: string
-          customer_email?: string
-          customer_name?: string
-          id?: string
-          pdf_url?: string | null
-          signature_text?: string
-          signed_at?: string
-          template_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "signed_contracts_booking_id_fkey"
-            columns: ["booking_id"]
-            isOneToOne: false
-            referencedRelation: "bookings"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "signed_contracts_template_id_fkey"
-            columns: ["template_id"]
-            isOneToOne: false
-            referencedRelation: "contract_templates"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       tenant_identity: {
         Row: {
           created_at: string

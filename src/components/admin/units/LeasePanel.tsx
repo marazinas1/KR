@@ -29,6 +29,7 @@ import {
   type LeaseRow,
 } from "@/lib/leases.functions";
 import { HOLDING_LEASE_STATUSES, todayIso } from "@/lib/rental";
+import { ContractDialog } from "./ContractDialog";
 
 function useLeaseError() {
   const { t } = useTranslation();
@@ -72,6 +73,7 @@ export function LeasePanel({
   const [newOpen, setNewOpen] = useState(false);
   const [renewOpen, setRenewOpen] = useState(false);
   const [terminateOpen, setTerminateOpen] = useState(false);
+  const [contractOpen, setContractOpen] = useState(false);
 
   const done = () => {
     refetch();
@@ -118,6 +120,9 @@ export function LeasePanel({
               <Link to="/admin/charges" search={{ lease: active.id }}>
                 {t("rental.nav.charges")}
               </Link>
+            </Button>
+            <Button variant="outline" onClick={() => setContractOpen(true)}>
+              {t("contracts.lease.action")}
             </Button>
             <Button variant="destructive" onClick={() => setTerminateOpen(true)}>
               {t("rental.lease.terminate")}
