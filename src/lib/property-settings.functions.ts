@@ -64,20 +64,21 @@ export const savePropertySettings = createServerFn({ method: "POST" })
 
 /** Public (unauthenticated) branding for the sign-in screen. */
 export const getPublicBranding = createServerFn({ method: "GET" }).handler(
-  async (): Promise<{ displayName: string; logoUrl: string }> => {
+  async (): Promise<{ displayName: string; tagline: string; logoUrl: string }> => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin
       .from("org_settings")
-      .select("display_name, brand_logo_url")
+      .select("display_name, tagline, brand_logo_url")
       .eq("singleton", true)
       .maybeSingle();
     if (error) {
       console.error("[getPublicBranding]", error.message);
-      return { displayName: "", logoUrl: "" };
+      return { displayName: "", tagline: "", logoUrl: "" };
     }
     const row = (data ?? {}) as Record<string, unknown>;
     return {
       displayName: String(row["display_name"] ?? ""),
+      tagline: String(row["tagline"] ?? ""),
       logoUrl: String(row["brand_logo_url"] ?? ""),
     };
   },
