@@ -90,6 +90,7 @@ export const settingsSchemas = {
     notifyNewInquiry: z.boolean(),
   }),
   branding: z.object({
+    tagline: optionalText(120),
     brandPrimaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/, "settings.validation.hexColor"),
     brandSecondaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/, "settings.validation.hexColor"),
     brandLogoUrl: optionalText(500),
@@ -148,6 +149,7 @@ export const DEFAULT_PROPERTY_SETTINGS: PropertySettings = {
   notifyIssueUpdate: true,
   notifyNewInquiry: true,
 
+  tagline: "Ilgalaikė nuoma",
   brandPrimaryColor: "#0F172A",
   brandSecondaryColor: "#64748B",
   brandLogoUrl: "",
@@ -317,6 +319,7 @@ export const SETTINGS_SECTIONS: SectionDef[] = [
     titleKey: "settings.sections.branding.title",
     descriptionKey: "settings.sections.branding.description",
     fields: [
+      { name: "tagline", labelKey: "settings.sections.branding.fields.tagline.label", type: "text", helpKey: "settings.sections.branding.fields.tagline.help" },
       { name: "brandPrimaryColor", labelKey: "settings.sections.branding.fields.brandPrimaryColor.label", type: "color" },
       { name: "brandSecondaryColor", labelKey: "settings.sections.branding.fields.brandSecondaryColor.label", type: "color" },
       { name: "brandLogoUrl", labelKey: "settings.sections.branding.fields.brandLogoUrl.label", type: "url" },
