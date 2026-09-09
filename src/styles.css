@@ -274,16 +274,17 @@
   --primary-foreground: var(--color-paper);
   --secondary: var(--color-warm-white);
   --secondary-foreground: var(--color-ink);
-  --muted: oklch(0.932 0.007 92);
-  --muted-foreground: var(--color-graphite);
-  --accent: oklch(0.932 0.007 92);
+  --muted: var(--color-sand);
+  --muted-foreground: oklch(0.534 0 0);
+  --accent: var(--color-sand);
   --accent-foreground: var(--color-ink);
+  --destructive: var(--color-brand);
   --destructive-foreground: var(--color-warm-white);
-  --border: var(--color-hairline);
-  --input: var(--color-hairline);
+  --border: var(--color-line);
+  --input: var(--color-line);
   --ring: var(--color-ink);
-  /* Sąmoningai santūrūs apvalinimai; admin lieka 0.875rem. */
-  --radius: 5px;
+  --radius: 0.5rem;
+
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
