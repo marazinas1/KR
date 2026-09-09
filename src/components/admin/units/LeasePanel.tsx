@@ -176,6 +176,14 @@ export function LeasePanel({
           onError={onError}
         />
       )}
+      {active && (
+        <ContractDialog
+          open={contractOpen}
+          onOpenChange={setContractOpen}
+          leaseId={active.id}
+          onSaved={done}
+        />
+      )}
     </div>
   );
 }
