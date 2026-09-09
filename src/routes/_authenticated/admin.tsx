@@ -74,7 +74,10 @@ function AdminLayout() {
       items: [
         { to: "/admin", label: t("nav.dashboard"), icon: LayoutDashboard },
         { to: "/admin/inquiries", label: t("rental.nav.inquiries"), icon: Inbox, badge: newInquiries },
-        { to: "/admin/issues", label: t("rental.nav.issues"), icon: Wrench, badge: openIssues },
+        // Site-visit analytics belongs with the overview group.
+        ...(role.isOwner
+          ? [{ to: "/admin/analytics", label: t("nav.analytics"), icon: BarChart3 }]
+          : []),
       ],
     },
     {
@@ -83,6 +86,8 @@ function AdminLayout() {
         { to: "/admin/units", label: t("rental.nav.units"), icon: Building2 },
         { to: "/admin/tenants", label: t("rental.nav.tenants"), icon: Users },
         { to: "/admin/contracts", label: t("nav.contracts"), icon: FileText },
+        // Faults concern the units themselves.
+        { to: "/admin/issues", label: t("rental.nav.issues"), icon: Wrench, badge: openIssues },
       ],
     },
     {
@@ -91,9 +96,6 @@ function AdminLayout() {
         { to: "/admin/charges", label: t("rental.nav.charges"), icon: Coins },
         { to: "/admin/invoices", label: t("nav.invoices"), icon: Receipt },
         { to: "/admin/expenses", label: t("nav.expenses"), icon: Wallet },
-        ...(role.isOwner
-          ? [{ to: "/admin/analytics", label: t("nav.analytics"), icon: BarChart3 }]
-          : []),
       ],
     },
     {
