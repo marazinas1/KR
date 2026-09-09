@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { BarChart3, Building2, FileEdit, FileText, Globe, Inbox, LayoutDashboard, LogOut, Menu, Receipt,
   Coins, Settings2, UserCog, Users, Wallet, Wrench } from "lucide-react";
 import { getMyRole } from "@/lib/properties.functions";
+import { BrandMark } from "@/components/BrandMark";
 import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -83,9 +84,12 @@ function AdminLayout() {
 
   const navContent = (
     <>
-      <div className="flex items-center gap-2 px-4 py-4 font-semibold text-sidebar-foreground">
-        <Building2 className="h-5 w-5 text-sidebar-foreground/80" />
-        <span>{brandName}</span>
+      <div className="px-4 py-4 text-sidebar-foreground">
+        <BrandMark
+          displayName={brandName}
+          tagline={settingsData?.settings.tagline}
+          logoUrl={settingsData?.settings.brandLogoUrl || undefined}
+        />
       </div>
       <nav className="flex-1 space-y-1 px-2">
           {links.map((l) => {

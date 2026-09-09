@@ -744,6 +744,10 @@
           },
           "brandSecondaryColor": {
             "label": "Secondary colour"
+          },
+          "tagline": {
+            "label": "Tagline",
+            "help": "Short line under the name (e.g. \"Long-term apartment rentals\"), shown when no logo is uploaded."
           }
         },
         "title": "Branding"

@@ -11,6 +11,7 @@ import { getPublicBranding } from "@/lib/property-settings.functions";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PLATFORM_NAME } from "@/lib/brand";
+import { BrandMark } from "@/components/BrandMark";
 import { useTranslation } from "react-i18next";
 
 export const Route = createFileRoute("/auth")({
@@ -145,16 +146,12 @@ function LoginPage() {
           className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,color-mix(in_oklab,var(--primary)_22%,transparent),transparent_60%),radial-gradient(circle_at_80%_80%,color-mix(in_oklab,var(--primary)_14%,transparent),transparent_55%)]"
         />
         <div className="relative flex flex-col items-center gap-6 px-12 text-center">
-          <img
-            src={branding?.logoUrl || "/logo-deerva.png"}
-            alt={branding?.displayName || PLATFORM_NAME}
-            className="max-h-40 w-auto max-w-[22rem] object-contain drop-shadow-sm"
+          <BrandMark
+            size="lg"
+            displayName={branding?.displayName || PLATFORM_NAME}
+            tagline={branding?.tagline}
+            logoUrl={branding?.logoUrl || undefined}
           />
-          {branding?.logoUrl && branding.displayName ? (
-            <p className="text-sm uppercase tracking-[0.3em] text-muted-foreground">
-              {branding.displayName}
-            </p>
-          ) : null}
         </div>
       </div>
     </div>

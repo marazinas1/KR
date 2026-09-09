@@ -105,23 +105,33 @@ export const getVacancy = createServerFn({ method: "GET" })
 
 export type PublicOrg = {
   displayName: string;
+  tagline: string;
+  logoUrl: string;
   phone: string;
   email: string;
   address: string;
   city: string;
 };
 
-/** White-label details: one name, set once in Settings, used by admin and site. */
+/**
+ * White-label details: one name, set once in Settings, used by admin and site.
+ * Read server-side with the admin client (org_settings has no anonymous
+ * policy — it also holds bank/VAT details); only these safe public columns
+ * are ever returned.
+ */
 export const getPublicOrg = createServerFn({ method: "GET" }).handler(
   async (): Promise<PublicOrg> => {
-    const { data } = await publicClient()
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data } = await supabaseAdmin
       .from("org_settings")
-      .select("display_name, phone, email, address, city")
+      .select("display_name, tagline, brand_logo_url, phone, email, address, city")
       .eq("singleton", true)
       .maybeSingle();
     const row = (data ?? {}) as Record<string, unknown>;
     return {
       displayName: String(row["display_name"] ?? "").trim(),
+      tagline: String(row["tagline"] ?? "").trim(),
+      logoUrl: String(row["brand_logo_url"] ?? "").trim(),
       phone: String(row["phone"] ?? "").trim(),
       email: String(row["email"] ?? "").trim(),
       address: String(row["address"] ?? "").trim(),
