@@ -10,6 +10,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getPropertySettings } from "@/lib/property-settings.functions";
+import { getDashboard } from "@/lib/dashboard.functions";
+
 import { useDefaultLanguage } from "@/hooks/useDefaultLanguage";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
@@ -32,6 +34,17 @@ function AdminLayout() {
     queryKey: ["property-settings"],
     queryFn: () => fetchSettings(),
   });
+  // Same cache entry the dashboard page uses, so the badges cost no extra request there.
+  const fetchDashboard = useServerFn(getDashboard);
+  const { data: dashboard } = useQuery({
+    queryKey: ["admin-dashboard"],
+    queryFn: () => fetchDashboard(),
+    enabled: role?.isManager === true,
+    staleTime: 60_000,
+  });
+  const newInquiries = dashboard?.inquiries.newCount ?? 0;
+  const openIssues = dashboard?.issues.open ?? 0;
+
   const brandName = settingsData?.settings.displayName?.trim() || "Deerva";
   const { location } = useRouterState();
   const navigate = useNavigate();
@@ -55,27 +68,49 @@ function AdminLayout() {
     );
   }
 
-  const links = [
-    { to: "/admin", label: t("nav.dashboard"), icon: LayoutDashboard },
-    { to: "/admin/units", label: t("rental.nav.units"), icon: Building2 },
-    { to: "/admin/tenants", label: t("rental.nav.tenants"), icon: Users },
-    { to: "/admin/inquiries", label: t("rental.nav.inquiries"), icon: Inbox },
-    { to: "/admin/issues", label: t("rental.nav.issues"), icon: Wrench },
-    { to: "/admin/contracts", label: t("nav.contracts"), icon: FileText },
-    { to: "/admin/charges", label: t("rental.nav.charges"), icon: Coins },
-    { to: "/admin/invoices", label: t("nav.invoices"), icon: Receipt },
-    { to: "/admin/expenses", label: t("nav.expenses"), icon: Wallet },
+  const groups = [
+    {
+      label: t("nav.group.overview"),
+      items: [
+        { to: "/admin", label: t("nav.dashboard"), icon: LayoutDashboard },
+        { to: "/admin/inquiries", label: t("rental.nav.inquiries"), icon: Inbox, badge: newInquiries },
+        { to: "/admin/issues", label: t("rental.nav.issues"), icon: Wrench, badge: openIssues },
+      ],
+    },
+    {
+      label: t("nav.group.portfolio"),
+      items: [
+        { to: "/admin/units", label: t("rental.nav.units"), icon: Building2 },
+        { to: "/admin/tenants", label: t("rental.nav.tenants"), icon: Users },
+        { to: "/admin/contracts", label: t("nav.contracts"), icon: FileText },
+      ],
+    },
+    {
+      label: t("nav.group.finance"),
+      items: [
+        { to: "/admin/charges", label: t("rental.nav.charges"), icon: Coins },
+        { to: "/admin/invoices", label: t("nav.invoices"), icon: Receipt },
+        { to: "/admin/expenses", label: t("nav.expenses"), icon: Wallet },
+        ...(role.isOwner
+          ? [{ to: "/admin/analytics", label: t("nav.analytics"), icon: BarChart3 }]
+          : []),
+      ],
+    },
+    {
+      label: t("nav.group.system"),
+      items: [
+        // User management and settings are owner-level only.
+        ...(role.isOwner
+          ? [
+              { to: "/admin/users", label: t("nav.users"), icon: UserCog },
+              { to: "/admin/settings", label: t("nav.settings"), icon: Settings2 },
+            ]
+          : []),
+        { to: "/admin/content", label: t("nav.content"), icon: FileEdit },
+      ],
+    },
+  ].filter((g) => g.items.length > 0);
 
-    // Settings (and user management) are owner-level only.
-    ...(role.isOwner
-      ? ([
-          { to: "/admin/analytics", label: t("nav.analytics"), icon: BarChart3 },
-          { to: "/admin/users", label: t("nav.users"), icon: UserCog },
-          { to: "/admin/settings", label: t("nav.settings"), icon: Settings2 },
-        ] as const)
-      : []),
-    { to: "/admin/content", label: t("nav.content"), icon: FileEdit },
-  ] as const;
 
   const roleLabel = t(`settings.users.role_${role.role}`, {
     defaultValue: role.role,
@@ -91,31 +126,51 @@ function AdminLayout() {
           logoUrl={settingsData?.settings.brandLogoUrl || undefined}
         />
       </div>
-      <nav className="flex-1 space-y-1 px-2">
-          {links.map((l) => {
-            const Icon = l.icon;
-            const active =
-              l.to === "/admin"
-                ? location.pathname === "/admin"
-                : location.pathname.startsWith(l.to);
+      <nav className="flex-1 space-y-5 px-2">
+        {groups.map((group) => (
+          <div key={group.label} className="space-y-1">
+            <p className="px-3 pb-1 text-[10px] font-medium uppercase tracking-[0.18em] text-sidebar-foreground/45">
+              {group.label}
+            </p>
+            {group.items.map((l) => {
+              const Icon = l.icon;
+              const active =
+                l.to === "/admin"
+                  ? location.pathname === "/admin"
+                  : location.pathname.startsWith(l.to);
+              const badge = "badge" in l ? (l.badge as number | undefined) : undefined;
 
-            return (
-              <Link
-                key={l.to}
-                to={l.to}
-                onClick={() => setNavOpen(false)}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm ${
-                  active
-                    ? "bg-sidebar-primary font-medium text-sidebar-primary-foreground"
-                    : "text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                {l.label}
-              </Link>
-            );
-          })}
+              return (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  onClick={() => setNavOpen(false)}
+                  className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm ${
+                    active
+                      ? "bg-sidebar-primary font-medium text-sidebar-primary-foreground"
+                      : "text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="flex-1 truncate">{l.label}</span>
+                  {badge ? (
+                    <span
+                      className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold ${
+                        active
+                          ? "bg-sidebar-primary-foreground/20 text-sidebar-primary-foreground"
+                          : "bg-sidebar-accent text-sidebar-accent-foreground"
+                      }`}
+                    >
+                      {badge}
+                    </span>
+                  ) : null}
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </nav>
+
       <div className="mt-auto space-y-1 border-t border-sidebar-border px-2 py-3 text-sidebar-foreground">
           {/* Signed-in user: name/email + role */}
           <div className="mb-2 rounded-md px-3 py-2">

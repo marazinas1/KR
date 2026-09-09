@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { VacancyDetailPage } from "@/pages/public/VacancyDetailPage";
-import { vacancyQuery } from "@/lib/public-queries";
+import { publicOrgQuery, vacancyQuery } from "@/lib/public-queries";
 import { pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/butai/$id")({
@@ -13,7 +13,11 @@ export const Route = createFileRoute("/butai/$id")({
         "Objekto informacija: kambariai, plotas, aukštas, mėnesio nuoma, depozitas ir tiksli atsilaisvinimo data. Užklausą galima pateikti iš karto.",
       locale: "lt",
     }),
-  loader: ({ context, params }) => context.queryClient.ensureQueryData(vacancyQuery(params.id)),
+  loader: ({ context, params }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(publicOrgQuery),
+      context.queryClient.ensureQueryData(vacancyQuery(params.id)),
+    ]),
   component: function LtVacancyDetail() {
     const { id } = Route.useParams();
     return <VacancyDetailPage id={id} locale="lt" />;
