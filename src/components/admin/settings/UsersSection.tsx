@@ -27,14 +27,19 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Check, Pencil, Trash2, X } from "lucide-react";
 import {
+  approveDeveloperInvite,
   deleteUser,
   inviteUser,
+  listDeveloperInvites,
   listUsersWithRoles,
+  rejectDeveloperInvite,
   updateUserName,
+  updateUserRole,
 } from "@/lib/users.functions";
 import { getMyRole } from "@/lib/properties.functions";
 
 type InvitableRole = "developer" | "owner" | "manager";
+type AssignableRole = "owner" | "manager" | "tenant";
 
 const ROLE_LABEL_KEYS: Record<string, string> = {
   developer: "settings.users.role_developer",
@@ -42,6 +47,7 @@ const ROLE_LABEL_KEYS: Record<string, string> = {
   manager: "settings.users.role_manager",
   tenant: "settings.users.role_tenant",
 };
+
 
 function fmt(value: string | null | undefined, withTime = false) {
   if (!value) return "—";
@@ -57,6 +63,10 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
   const fetchUsers = useServerFn(listUsersWithRoles);
   const removeUser = useServerFn(deleteUser);
   const renameUser = useServerFn(updateUserName);
+  const changeRole = useServerFn(updateUserRole);
+  const fetchInvites = useServerFn(listDeveloperInvites);
+  const approveInvite = useServerFn(approveDeveloperInvite);
+  const rejectInvite = useServerFn(rejectDeveloperInvite);
   const qc = useQueryClient();
 
   const [email, setEmail] = useState("");
@@ -70,13 +80,23 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
     queryFn: () => fetchUsers(),
   });
 
-  // Only a developer may invite another developer (AGENTS.md 5.2).
+  // Only a developer may propose another developer (AGENTS.md 5.2).
   const fetchMyRole = useServerFn(getMyRole);
   const { data: myRole } = useQuery({
     queryKey: ["my-role"],
     queryFn: () => fetchMyRole(),
   });
   const isDeveloper = myRole?.isDeveloper === true;
+  const myUserId = myRole?.userId ?? "";
+
+  const { data: invites } = useQuery({
+    queryKey: ["developer-invites"],
+    queryFn: () => fetchInvites(),
+    enabled: isDeveloper,
+  });
+
+  const redirectTo =
+    typeof window !== "undefined" ? `${window.location.origin}/reset-password` : undefined;
 
   const m = useMutation({
     mutationFn: () =>
@@ -85,17 +105,19 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
           email,
           role,
           ...(fullName.trim() ? { fullName: fullName.trim() } : {}),
-          redirectTo:
-            typeof window !== "undefined"
-              ? `${window.location.origin}/reset-password`
-              : undefined,
+          redirectTo,
         },
       }),
-    onSuccess: () => {
-      toast.success(t("settings.users.inviteSent"));
+    onSuccess: (res) => {
+      toast.success(
+        res && (res as { pending?: boolean }).pending
+          ? t("settings.users.devInvitePending")
+          : t("settings.users.inviteSent"),
+      );
       setEmail("");
       setFullName("");
       qc.invalidateQueries({ queryKey: ["users-with-roles"] });
+      qc.invalidateQueries({ queryKey: ["developer-invites"] });
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : t("settings.users.inviteFailed")),
   });
@@ -110,6 +132,38 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
     onError: (e) => toast.error(e instanceof Error ? e.message : "Error"),
   });
 
+  const roleChange = useMutation({
+    mutationFn: (vars: { userId: string; role: AssignableRole }) => changeRole({ data: vars }),
+    onSuccess: () => {
+      toast.success(t("settings.users.roleSaved"));
+      qc.invalidateQueries({ queryKey: ["users-with-roles"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Error"),
+  });
+
+  const approve = useMutation({
+    mutationFn: (inviteId: string) => approveInvite({ data: { inviteId, redirectTo } }),
+    onSuccess: (res) => {
+      toast.success(
+        res && (res as { approved?: boolean }).approved
+          ? t("settings.users.inviteSent")
+          : t("settings.users.devInviteApproved"),
+      );
+      qc.invalidateQueries({ queryKey: ["developer-invites"] });
+      qc.invalidateQueries({ queryKey: ["users-with-roles"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Error"),
+  });
+
+  const reject = useMutation({
+    mutationFn: (inviteId: string) => rejectInvite({ data: { inviteId } }),
+    onSuccess: () => {
+      toast.success(t("settings.users.devInviteRejected"));
+      qc.invalidateQueries({ queryKey: ["developer-invites"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Error"),
+  });
+
   const del = useMutation({
     mutationFn: (userId: string) => removeUser({ data: { userId } }),
     onSuccess: () => {
@@ -118,6 +172,7 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : t("settings.users.deleteFailed")),
   });
+
 
   return (
     <div className="space-y-6">
@@ -184,6 +239,54 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
           </p>
         </CardContent>
       </Card>
+
+      {isDeveloper && (invites ?? []).length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">{t("settings.users.devInvitesTitle")}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-xs text-muted-foreground">{t("settings.users.devInvitesHint")}</p>
+            {(invites ?? []).map((inv) => (
+              <div
+                key={inv.id}
+                className="flex flex-col gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">{inv.fullName || inv.email}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {inv.email} · {t("settings.users.devInviteApprovals", {
+                      count: inv.approvals,
+                      total: inv.totalDevelopers,
+                    })}
+                  </p>
+                </div>
+                <div className="flex shrink-0 gap-2">
+                  <Button
+                    size="sm"
+                    disabled={inv.approvedByMe || approve.isPending}
+                    onClick={() => approve.mutate(inv.id)}
+                  >
+                    {inv.approvedByMe
+                      ? t("settings.users.devInviteApprovedByMe")
+                      : t("settings.users.devInviteApprove")}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={reject.isPending}
+                    onClick={() => reject.mutate(inv.id)}
+                  >
+                    {t("settings.users.devInviteReject")}
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+
 
       <Card>
         <CardHeader>
@@ -261,7 +364,28 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
                         )}
                       </td>
                       <td className="py-2">{u.email || u.userId}</td>
-                      <td className="py-2">{ROLE_LABEL_KEYS[u.role] ? t(ROLE_LABEL_KEYS[u.role]) : u.role}</td>
+                      <td className="py-2">
+                        {u.role === "developer" || u.userId === myUserId || !canEdit ? (
+                          ROLE_LABEL_KEYS[u.role] ? t(ROLE_LABEL_KEYS[u.role]) : u.role
+                        ) : (
+                          <Select
+                            value={u.role}
+                            disabled={roleChange.isPending}
+                            onValueChange={(v) =>
+                              roleChange.mutate({ userId: u.userId, role: v as AssignableRole })
+                            }
+                          >
+                            <SelectTrigger className="h-8 w-40">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="owner">{t("settings.users.role_owner")}</SelectItem>
+                              <SelectItem value="manager">{t("settings.users.role_manager")}</SelectItem>
+                              <SelectItem value="tenant">{t("settings.users.role_tenant")}</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      </td>
                       <td className="py-2 text-muted-foreground">{fmt(u.createdAt)}</td>
                       <td className="py-2 text-muted-foreground">
                         {u.lastSignInAt ? fmt(u.lastSignInAt, true) : t("settings.users.neverSignedIn")}
@@ -272,12 +396,18 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
                             <Button
                               variant="ghost"
                               size="icon"
-                              disabled={!canEdit || u.role === "developer" || del.isPending}
+                              disabled={
+                                !canEdit ||
+                                del.isPending ||
+                                (u.role === "developer" && u.userId !== myUserId) ||
+                                (u.role !== "developer" && u.userId === myUserId)
+                              }
                               aria-label={t("settings.users.deleteAria")}
                             >
                               <Trash2 className="h-4 w-4 text-destructive" />
                             </Button>
                           </AlertDialogTrigger>
+
                           <AlertDialogContent>
                             <AlertDialogHeader>
                               <AlertDialogTitle>{t("settings.users.deleteTitle")}</AlertDialogTitle>

@@ -937,7 +937,17 @@
       "role_owner": "Owner",
       "role_tenant": "Tenant",
       "saveName": "Save",
-      "sending": "Sending…"
+      "sending": "Sending…",
+      "roleSaved": "Role updated.",
+      "devInvitesTitle": "Pending developer invitations",
+      "devInvitesHint": "A new developer is created only after every existing developer approves the invitation.",
+      "devInvitePending": "Proposal saved – waiting for the other developers to approve.",
+      "devInviteApprovals": "approvals: {{count}} of {{total}}",
+      "devInviteApprove": "Approve",
+      "devInviteApprovedByMe": "You approved",
+      "devInviteApproved": "Your approval was recorded.",
+      "devInviteReject": "Reject",
+      "devInviteRejected": "Invitation rejected."
     },
     "validation": {
       "email": "Invalid email format",
