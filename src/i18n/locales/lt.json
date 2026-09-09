@@ -744,6 +744,10 @@
           },
           "brandSecondaryColor": {
             "label": "Antrinė spalva"
+          },
+          "tagline": {
+            "label": "Šūkis",
+            "help": "Trumpa eilutė po pavadinimu (pvz. „Ilgalaikė butų nuoma“), rodoma, kai neįkeltas logotipas."
           }
         },
         "title": "Prekės ženklas"
