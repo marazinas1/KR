@@ -189,7 +189,7 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
               m.mutate();
             }}
           >
-            <div className="space-y-1.5">
+            <div>
               <Label className="flex h-5 items-end" htmlFor="invite-email">
                 {t("settings.users.email")}
               </Label>
@@ -200,10 +200,10 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={!canEdit}
-                className="h-10"
+                className="mt-1.5 h-10"
               />
             </div>
-            <div className="space-y-1.5">
+            <div>
               <Label className="flex h-5 items-end" htmlFor="invite-name">
                 {t("settings.users.name")}
               </Label>
@@ -213,17 +213,17 @@ export function UsersSection({ canEdit }: { canEdit: boolean }) {
                 placeholder={t("settings.users.namePlaceholder")}
                 onChange={(e) => setFullName(e.target.value)}
                 disabled={!canEdit}
-                className="h-10"
+                className="mt-1.5 h-10"
               />
             </div>
-            <div className="space-y-1.5">
+            <div>
               <Label className="flex h-5 items-end">{t("settings.users.role")}</Label>
               <Select
                 value={role}
                 onValueChange={(v) => setRole(v as InvitableRole)}
                 disabled={!canEdit}
               >
-                <SelectTrigger className="h-10">
+                <SelectTrigger className="mt-1.5 h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
