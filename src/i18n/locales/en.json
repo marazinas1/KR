@@ -1622,5 +1622,24 @@
     "uploadFailed": "Photo upload failed",
     "back": "Back",
     "upcoming": "Upcoming charges"
+  },
+  "assistant": {
+    "name": "Eva",
+    "subtitle": "System assistant",
+    "open": "Open the assistant",
+    "send": "Send",
+    "clear": "Clear conversation",
+    "placeholder": "Ask about the system or the current numbers…",
+    "greeting": "Hi! I can explain how the system works and report the current dashboard numbers. I never change data.",
+    "disclaimer": "The assistant only explains and reports — it changes nothing and never sees tenant personal data.",
+    "error": "Could not get an answer. Please try again.",
+    "empty": "Sorry, I could not form an answer. Try asking differently.",
+    "linkFailed": "Could not open that page.",
+    "suggestions": [
+      "What needs attention today?",
+      "How many units are vacant right now?",
+      "How do I generate this month's charges?",
+      "How do I add a new tenant and lease?"
+    ]
   }
 }

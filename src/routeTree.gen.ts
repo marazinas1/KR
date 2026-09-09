@@ -37,6 +37,7 @@ import { Route as AuthenticatedNuomininkasIndexRouteImport } from './routes/_aut
 import { Route as AuthenticatedNuomininkasDokumentaiRouteImport } from './routes/_authenticated/nuomininkas.dokumentai'
 import { Route as AuthenticatedNuomininkasGedimaiRouteImport } from './routes/_authenticated/nuomininkas.gedimai'
 import { Route as AuthenticatedNuomininkasRodmenysRouteImport } from './routes/_authenticated/nuomininkas.rodmenys'
+import { Route as ApiAssistantChatRouteImport } from './routes/api/assistant/chat'
 import { Route as ApiPublicNotificationsCronRouteImport } from './routes/api/public/notifications-cron'
 import { Route as EnButaiIndexRouteImport } from './routes/en/butai.index'
 import { Route as EnButaiIdRouteImport } from './routes/en/butai.$id'
@@ -203,6 +204,11 @@ const AuthenticatedNuomininkasRodmenysRoute =
     path: '/rodmenys',
     getParentRoute: () => AuthenticatedNuomininkasRoute,
   } as any)
+const ApiAssistantChatRoute = ApiAssistantChatRouteImport.update({
+  id: '/api/assistant/chat',
+  path: '/api/assistant/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicNotificationsCronRoute =
   ApiPublicNotificationsCronRouteImport.update({
     id: '/api/public/notifications-cron',
@@ -297,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/nuomininkas/dokumentai': typeof AuthenticatedNuomininkasDokumentaiRoute
   '/nuomininkas/gedimai': typeof AuthenticatedNuomininkasGedimaiRouteWithChildren
   '/nuomininkas/rodmenys': typeof AuthenticatedNuomininkasRodmenysRoute
+  '/api/assistant/chat': typeof ApiAssistantChatRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/en/butai/$id': typeof EnButaiIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -335,6 +342,7 @@ export interface FileRoutesByTo {
   '/nuomininkas/dokumentai': typeof AuthenticatedNuomininkasDokumentaiRoute
   '/nuomininkas/gedimai': typeof AuthenticatedNuomininkasGedimaiRouteWithChildren
   '/nuomininkas/rodmenys': typeof AuthenticatedNuomininkasRodmenysRoute
+  '/api/assistant/chat': typeof ApiAssistantChatRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/en/butai/$id': typeof EnButaiIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -378,6 +386,7 @@ export interface FileRoutesById {
   '/_authenticated/nuomininkas/dokumentai': typeof AuthenticatedNuomininkasDokumentaiRoute
   '/_authenticated/nuomininkas/gedimai': typeof AuthenticatedNuomininkasGedimaiRouteWithChildren
   '/_authenticated/nuomininkas/rodmenys': typeof AuthenticatedNuomininkasRodmenysRoute
+  '/api/assistant/chat': typeof ApiAssistantChatRoute
   '/api/public/notifications-cron': typeof ApiPublicNotificationsCronRoute
   '/en/butai/$id': typeof EnButaiIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -421,6 +430,7 @@ export interface FileRouteTypes {
     | '/nuomininkas/dokumentai'
     | '/nuomininkas/gedimai'
     | '/nuomininkas/rodmenys'
+    | '/api/assistant/chat'
     | '/api/public/notifications-cron'
     | '/en/butai/$id'
     | '/admin/'
@@ -459,6 +469,7 @@ export interface FileRouteTypes {
     | '/nuomininkas/dokumentai'
     | '/nuomininkas/gedimai'
     | '/nuomininkas/rodmenys'
+    | '/api/assistant/chat'
     | '/api/public/notifications-cron'
     | '/en/butai/$id'
     | '/admin'
@@ -501,6 +512,7 @@ export interface FileRouteTypes {
     | '/_authenticated/nuomininkas/dokumentai'
     | '/_authenticated/nuomininkas/gedimai'
     | '/_authenticated/nuomininkas/rodmenys'
+    | '/api/assistant/chat'
     | '/api/public/notifications-cron'
     | '/en/butai/$id'
     | '/_authenticated/admin/'
@@ -527,6 +539,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ButaiIdRoute: typeof ButaiIdRoute
   ButaiIndexRoute: typeof ButaiIndexRoute
+  ApiAssistantChatRoute: typeof ApiAssistantChatRoute
   ApiPublicNotificationsCronRoute: typeof ApiPublicNotificationsCronRoute
   ApiPublicV1LegalRoute: typeof ApiPublicV1LegalRoute
   ApiPublicV1PaymentDetailsRoute: typeof ApiPublicV1PaymentDetailsRoute
@@ -730,6 +743,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/nuomininkas/rodmenys'
       preLoaderRoute: typeof AuthenticatedNuomininkasRodmenysRouteImport
       parentRoute: typeof AuthenticatedNuomininkasRoute
+    }
+    '/api/assistant/chat': {
+      id: '/api/assistant/chat'
+      path: '/api/assistant/chat'
+      fullPath: '/api/assistant/chat'
+      preLoaderRoute: typeof ApiAssistantChatRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/notifications-cron': {
       id: '/api/public/notifications-cron'
@@ -948,6 +968,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ButaiIdRoute: ButaiIdRoute,
   ButaiIndexRoute: ButaiIndexRoute,
+  ApiAssistantChatRoute: ApiAssistantChatRoute,
   ApiPublicNotificationsCronRoute: ApiPublicNotificationsCronRoute,
   ApiPublicV1LegalRoute: ApiPublicV1LegalRoute,
   ApiPublicV1PaymentDetailsRoute: ApiPublicV1PaymentDetailsRoute,

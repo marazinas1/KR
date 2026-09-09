@@ -7,7 +7,9 @@
  * Availability is read from `unit_availability` — never recomputed.
  */
 import { createServerFn } from "@tanstack/react-start";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database } from "@/integrations/supabase/types";
 import { requireManager } from "./admin-guard.server";
 import {
   fetchAvailability,
@@ -96,7 +98,16 @@ export const getDashboard = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<Dashboard> => {
     await requireManager(context);
-    const db = context.supabase;
+    return buildDashboard(context.supabase);
+  });
+
+/**
+ * The one dashboard computation. Server-side callers (the admin dashboard
+ * server function above and the AI assistant) share it, so no surface can
+ * report a different number for the same thing.
+ */
+export async function buildDashboard(db: SupabaseClient<Database>): Promise<Dashboard> {
+  {
     const today = todayIso();
     const period = currentPeriod();
     const plus = (days: number) => {
@@ -294,4 +305,5 @@ export const getDashboard = createServerFn({ method: "GET" })
         preview: (expDocs ?? []).slice(0, 5) as Dashboard["documents"]["preview"],
       },
     };
-  });
+  }
+}
