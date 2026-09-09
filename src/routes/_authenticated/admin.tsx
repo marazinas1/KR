@@ -32,6 +32,17 @@ function AdminLayout() {
     queryKey: ["property-settings"],
     queryFn: () => fetchSettings(),
   });
+  // Same cache entry the dashboard page uses, so the badges cost no extra request there.
+  const fetchDashboard = useServerFn(getDashboard);
+  const { data: dashboard } = useQuery({
+    queryKey: ["admin-dashboard"],
+    queryFn: () => fetchDashboard(),
+    enabled: role?.isManager === true,
+    staleTime: 60_000,
+  });
+  const newInquiries = dashboard?.inquiries.newCount ?? 0;
+  const openIssues = dashboard?.issues.count ?? 0;
+
   const brandName = settingsData?.settings.displayName?.trim() || "Deerva";
   const { location } = useRouterState();
   const navigate = useNavigate();
