@@ -63,46 +63,48 @@
 }
 
 :root {
-  --radius: 0.875rem;
-  --background: oklch(0.962 0.0155 86.43);
-  --foreground: oklch(0.25 0.02 183);
-  --card: oklch(0.99 0.006 86);
-  --card-foreground: oklch(0.25 0.02 183);
-  --popover: oklch(0.99 0.006 86);
-  --popover-foreground: oklch(0.25 0.02 183);
-  --primary: oklch(0.6407 0.0671 182.89);
-  --primary-foreground: oklch(0.985 0.006 86);
-  --primary-glow: oklch(0.7300 0.0640 181.4);
-  --secondary: oklch(0.935 0.014 86);
-  --secondary-foreground: oklch(0.3 0.03 183);
-  --muted: oklch(0.935 0.014 86);
-  --muted-foreground: oklch(0.5 0.02 120);
-  --accent: oklch(0.9 0.03 183);
-  --accent-foreground: oklch(0.35 0.05 183);
-  --destructive: oklch(0.58 0.2 27);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.9 0.014 86);
-  --input: oklch(0.9 0.014 86);
-  --ring: oklch(0.6407 0.0671 182.89);
-  --gradient-hero: linear-gradient(135deg, oklch(0.5320 0.0590 183.6) 0%, oklch(0.6407 0.0671 182.89) 60%, oklch(0.7300 0.0640 181.4) 100%);
+  /* Halliday Architects paletė: popierius / smėlis / rašalas / akmuo / linija. */
+  --radius: 0.5rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.219 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.219 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.219 0 0);
+  --primary: oklch(0.219 0 0);
+  --primary-foreground: oklch(1 0 0);
+  --primary-glow: oklch(0.437 0 0);
+  --secondary: oklch(0.982 0 0);
+  --secondary-foreground: oklch(0.219 0 0);
+  --muted: oklch(0.982 0 0);
+  --muted-foreground: oklch(0.534 0 0);
+  --accent: oklch(0.982 0 0);
+  --accent-foreground: oklch(0.219 0 0);
+  --destructive: oklch(0.452 0.185 26.5);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.916 0 0);
+  --input: oklch(0.916 0 0);
+  --ring: oklch(0.219 0 0);
+  --gradient-hero: linear-gradient(135deg, oklch(0.219 0 0) 0%, oklch(0.32 0 0) 60%, oklch(0.437 0 0) 100%);
   --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-glow));
-  --shadow-elegant: 0 20px 50px -20px color-mix(in oklab, var(--primary) 35%, transparent);
-  --shadow-card: 0 8px 30px -12px oklch(0.3 0.02 183 / 0.15);
+  --shadow-elegant: 0 24px 48px -20px oklch(0.219 0 0 / 0.16);
+  --shadow-card: 0 4px 6px -1px oklch(0.219 0 0 / 0.05), 0 2px 4px -2px oklch(0.219 0 0 / 0.05);
 
-  --chart-1: oklch(0.6407 0.0671 182.89);
-  --chart-2: oklch(0.7300 0.0640 181.4);
-  --chart-3: oklch(0.5320 0.0590 183.6);
-  --chart-4: oklch(0.753 0.057 64.1);
-  --chart-5: oklch(0.646 0.13 41.1);
-  --sidebar: oklch(0.6407 0.0671 182.89);
-  --sidebar-foreground: oklch(0.985 0.006 86);
-  --sidebar-primary: oklch(0.985 0.006 86);
-  --sidebar-primary-foreground: oklch(0.5320 0.0590 183.6);
-  --sidebar-accent: oklch(0.5320 0.0590 183.6);
-  --sidebar-accent-foreground: oklch(0.985 0.006 86);
-  --sidebar-border: oklch(0.985 0.006 86 / 18%);
-  --sidebar-ring: oklch(0.985 0.006 86 / 45%);
+  --chart-1: oklch(0.219 0 0);
+  --chart-2: oklch(0.437 0 0);
+  --chart-3: oklch(0.62 0 0);
+  --chart-4: oklch(0.76 0 0);
+  --chart-5: oklch(0.452 0.185 26.5);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.219 0 0);
+  --sidebar-primary: oklch(0.219 0 0);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.982 0 0);
+  --sidebar-accent-foreground: oklch(0.219 0 0);
+  --sidebar-border: oklch(0.916 0 0);
+  --sidebar-ring: oklch(0.452 0.185 26.5);
 }
+
 
 
 .dark {
@@ -149,6 +151,8 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-weight: 400;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -159,7 +163,10 @@
   h5,
   h6 {
     font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
+
 }
 
 /* Rich text (Tiptap) turinio stiliai — sąrašai, pastraipos, antraštės */
@@ -223,34 +230,39 @@
    (kr-home-concept-v2): popierius, viena tamsi „lentos" plokštuma ir statuso
    spalvos, naudojamos TIK laisvumui žymėti (niekada dekoracijai). */
 @theme {
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  /* Vienas šriftas visoje platformoje (viešoji dalis + admin) — Manrope. */
+  --font-sans: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
 
-  --color-paper: oklch(0.951 0.006 92);
-  --color-linen: oklch(0.951 0.006 92);
+  --color-paper: oklch(1 0 0);
+  --color-linen: oklch(0.982 0 0);
   --color-warm-white: oklch(1 0 0);
-  --color-ink: oklch(0.212 0.006 285);
-  --color-graphite: oklch(0.487 0.006 120);
-  --color-stone: oklch(0.487 0.006 120);
-  --color-hairline: oklch(0.886 0.011 95);
-  --color-board: oklch(0.196 0.008 255);
-  --color-board-foreground: oklch(0.929 0.002 95);
-  --color-sage: oklch(0.503 0.084 160);
-  --color-sage-deep: oklch(0.43 0.075 160);
-  --color-clay: oklch(0.606 0.111 68);
+  --color-sand: oklch(0.982 0 0);
+  --color-ink: oklch(0.219 0 0);
+  --color-graphite: oklch(0.437 0 0);
+  --color-stone: oklch(0.437 0 0);
+  --color-line: oklch(0.916 0 0);
+  --color-hairline: oklch(0.916 0 0);
+  --color-board: oklch(0.219 0 0);
+  --color-board-foreground: oklch(1 0 0);
+  --color-brand: oklch(0.452 0.185 26.5);
+  --color-sage: oklch(0.219 0 0);
+  --color-sage-deep: oklch(0.16 0 0);
+  --color-clay: oklch(0.452 0.185 26.5);
 
   /* Statuso spalvos — tik laisvumo būsenai. */
-  --color-available: oklch(0.503 0.084 160);
-  --color-available-bg: oklch(0.937 0.017 160);
-  --color-soon: oklch(0.606 0.111 68);
-  --color-soon-bg: oklch(0.936 0.021 80);
-  --color-occupied: oklch(0.61 0.006 120);
-  --color-occupied-bg: oklch(0.925 0.006 95);
+  --color-available: oklch(0.219 0 0);
+  --color-available-bg: oklch(0.955 0 0);
+  --color-soon: oklch(0.452 0.185 26.5);
+  --color-soon-bg: oklch(0.958 0.014 26.5);
+  --color-occupied: oklch(0.62 0 0);
+  --color-occupied-bg: oklch(0.972 0 0);
 
-  --shadow-soft: 0 1px 2px oklch(0.212 0.006 285 / 0.04), 0 12px 32px -16px oklch(0.212 0.006 285 / 0.14);
-  --shadow-lift: 0 2px 4px oklch(0.212 0.006 285 / 0.05), 0 24px 48px -24px oklch(0.212 0.006 285 / 0.2);
+  --shadow-soft: 0 1px 2px oklch(0.219 0 0 / 0.04), 0 12px 32px -16px oklch(0.219 0 0 / 0.14);
+  --shadow-lift: 0 2px 4px oklch(0.219 0 0 / 0.05), 0 24px 48px -24px oklch(0.219 0 0 / 0.2);
 }
+
 
 /*
  * Semantinės spalvos perrašomos TIK viešuosiuose puslapiuose (.site-theme apvalkalas),
@@ -267,16 +279,17 @@
   --primary-foreground: var(--color-paper);
   --secondary: var(--color-warm-white);
   --secondary-foreground: var(--color-ink);
-  --muted: oklch(0.932 0.007 92);
-  --muted-foreground: var(--color-graphite);
-  --accent: oklch(0.932 0.007 92);
+  --muted: var(--color-sand);
+  --muted-foreground: oklch(0.534 0 0);
+  --accent: var(--color-sand);
   --accent-foreground: var(--color-ink);
+  --destructive: var(--color-brand);
   --destructive-foreground: var(--color-warm-white);
-  --border: var(--color-hairline);
-  --input: var(--color-hairline);
+  --border: var(--color-line);
+  --input: var(--color-line);
   --ring: var(--color-ink);
-  /* Sąmoningai santūrūs apvalinimai; admin lieka 0.875rem. */
-  --radius: 5px;
+  --radius: 0.5rem;
+
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }

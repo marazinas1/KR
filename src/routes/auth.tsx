@@ -139,21 +139,19 @@ function LoginPage() {
         </div>
       </div>
 
-      {/* Dešinė pusė — prekės ženklo logotipas */}
-      <div className="relative hidden items-center justify-center overflow-hidden bg-muted lg:flex">
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,color-mix(in_oklab,var(--primary)_22%,transparent),transparent_60%),radial-gradient(circle_at_80%_80%,color-mix(in_oklab,var(--primary)_14%,transparent),transparent_55%)]"
-        />
-        <div className="relative flex flex-col items-center gap-6 px-12 text-center">
+      {/* Dešinė pusė — tamsi prekės ženklo plokštuma */}
+      <div className="relative hidden items-center justify-center overflow-hidden bg-foreground lg:flex">
+        <div className="relative flex flex-col items-center gap-6 px-12 text-center text-background">
           <BrandMark
             size="lg"
             displayName={branding?.displayName || PLATFORM_NAME}
             tagline={branding?.tagline}
             logoUrl={branding?.logoUrl || undefined}
           />
+          <div className="h-px w-12 bg-background/25" />
         </div>
       </div>
+
     </div>
   );
 }
