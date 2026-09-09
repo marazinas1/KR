@@ -1623,5 +1623,24 @@
     "uploadFailed": "Nepavyko įkelti nuotraukos",
     "back": "Atgal",
     "upcoming": "Būsimi priskaitymai"
+  },
+  "assistant": {
+    "name": "Eva",
+    "subtitle": "Sistemos asistentė",
+    "open": "Atidaryti asistentę",
+    "send": "Siųsti",
+    "clear": "Išvalyti pokalbį",
+    "placeholder": "Klauskite apie sistemą arba dabartinius skaičius…",
+    "greeting": "Sveiki! Galiu paaiškinti, kaip veikia sistema, ir pasakyti dabartinius skaičius iš skydelio. Duomenų nekeičiu.",
+    "disclaimer": "Asistentė tik paaiškina ir pateikia suvestinę – duomenų nekeičia ir nemato nuomininkų asmens duomenų.",
+    "error": "Nepavyko gauti atsakymo. Pabandykite dar kartą.",
+    "empty": "Atsiprašau, atsakymo suformuluoti nepavyko. Pabandykite paklausti kitaip.",
+    "linkFailed": "Nepavyko atidaryti puslapio.",
+    "suggestions": [
+      "Kas šiandien reikalauja dėmesio?",
+      "Kiek butų šiuo metu laisvų?",
+      "Kaip sugeneruoti mėnesio mokesčius?",
+      "Kaip pridėti naują nuomininką ir sutartį?"
+    ]
   }
 }
