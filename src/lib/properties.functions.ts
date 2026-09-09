@@ -13,7 +13,9 @@ export type MyRole = {
   isManager: boolean;
   isTenant: boolean;
   email: string;
+  userId: string;
 };
+
 
 export const getMyRole = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -26,7 +28,9 @@ export const getMyRole = createServerFn({ method: "GET" })
       isManager: false,
       isTenant: false,
       email,
+      userId: context.userId,
     };
+
     const { data, error } = await context.supabase
       .from("user_roles")
       .select("role")
@@ -47,7 +51,9 @@ export const getMyRole = createServerFn({ method: "GET" })
       isManager,
       isTenant: roles.includes("tenant"),
       email,
+      userId: context.userId,
     };
+
   });
 
 /** Minimal unit list for pickers (expenses, settings, filters). */

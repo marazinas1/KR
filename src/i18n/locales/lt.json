@@ -937,7 +937,17 @@
       "role_owner": "Savininkas",
       "role_tenant": "Nuomininkas",
       "saveName": "Išsaugoti",
-      "sending": "Siunčiama…"
+      "sending": "Siunčiama…",
+      "roleSaved": "Rolė pakeista.",
+      "devInvitesTitle": "Laukiantys developerio kvietimai",
+      "devInvitesHint": "Naujas developeris sukuriamas tik tada, kai kvietimą patvirtina visi esami developeriai.",
+      "devInvitePending": "Pasiūlymas išsaugotas – laukiama kitų developerių patvirtinimo.",
+      "devInviteApprovals": "patvirtinimai: {{count}} iš {{total}}",
+      "devInviteApprove": "Patvirtinti",
+      "devInviteApprovedByMe": "Jūs patvirtinote",
+      "devInviteApproved": "Jūsų patvirtinimas įskaitytas.",
+      "devInviteReject": "Atmesti",
+      "devInviteRejected": "Kvietimas atmestas."
     },
     "validation": {
       "email": "Neteisingas el. pašto formatas",

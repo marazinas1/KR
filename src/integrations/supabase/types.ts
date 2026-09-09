@@ -731,6 +731,68 @@ export type Database = {
         }
         Relationships: []
       }
+      developer_invite_approvals: {
+        Row: {
+          approver_id: string
+          created_at: string
+          id: string
+          invite_id: string
+        }
+        Insert: {
+          approver_id: string
+          created_at?: string
+          id?: string
+          invite_id: string
+        }
+        Update: {
+          approver_id?: string
+          created_at?: string
+          id?: string
+          invite_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "developer_invite_approvals_invite_id_fkey"
+            columns: ["invite_id"]
+            isOneToOne: false
+            referencedRelation: "developer_invites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      developer_invites: {
+        Row: {
+          created_at: string
+          email: string
+          expires_at: string
+          full_name: string
+          id: string
+          proposed_by: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          expires_at?: string
+          full_name?: string
+          id?: string
+          proposed_by: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          expires_at?: string
+          full_name?: string
+          id?: string
+          proposed_by?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       documents: {
         Row: {
           bucket: string
@@ -2291,6 +2353,7 @@ export type Database = {
     Functions: {
       analytics_summary: { Args: { _from: string; _to: string }; Returns: Json }
       cancel_expired_pending_bookings: { Args: never; Returns: number }
+      claim_developer_invite: { Args: { _invite_id: string }; Returns: boolean }
       claim_invoice_number: {
         Args: never
         Returns: {
