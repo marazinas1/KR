@@ -55,27 +55,49 @@ function AdminLayout() {
     );
   }
 
-  const links = [
-    { to: "/admin", label: t("nav.dashboard"), icon: LayoutDashboard },
-    { to: "/admin/units", label: t("rental.nav.units"), icon: Building2 },
-    { to: "/admin/tenants", label: t("rental.nav.tenants"), icon: Users },
-    { to: "/admin/inquiries", label: t("rental.nav.inquiries"), icon: Inbox },
-    { to: "/admin/issues", label: t("rental.nav.issues"), icon: Wrench },
-    { to: "/admin/contracts", label: t("nav.contracts"), icon: FileText },
-    { to: "/admin/charges", label: t("rental.nav.charges"), icon: Coins },
-    { to: "/admin/invoices", label: t("nav.invoices"), icon: Receipt },
-    { to: "/admin/expenses", label: t("nav.expenses"), icon: Wallet },
+  const groups = [
+    {
+      label: t("nav.group.overview"),
+      items: [
+        { to: "/admin", label: t("nav.dashboard"), icon: LayoutDashboard },
+        { to: "/admin/inquiries", label: t("rental.nav.inquiries"), icon: Inbox, badge: newInquiries },
+        { to: "/admin/issues", label: t("rental.nav.issues"), icon: Wrench, badge: openIssues },
+      ],
+    },
+    {
+      label: t("nav.group.portfolio"),
+      items: [
+        { to: "/admin/units", label: t("rental.nav.units"), icon: Building2 },
+        { to: "/admin/tenants", label: t("rental.nav.tenants"), icon: Users },
+        { to: "/admin/contracts", label: t("nav.contracts"), icon: FileText },
+      ],
+    },
+    {
+      label: t("nav.group.finance"),
+      items: [
+        { to: "/admin/charges", label: t("rental.nav.charges"), icon: Coins },
+        { to: "/admin/invoices", label: t("nav.invoices"), icon: Receipt },
+        { to: "/admin/expenses", label: t("nav.expenses"), icon: Wallet },
+        ...(role.isOwner
+          ? [{ to: "/admin/analytics", label: t("nav.analytics"), icon: BarChart3 }]
+          : []),
+      ],
+    },
+    {
+      label: t("nav.group.system"),
+      items: [
+        // User management and settings are owner-level only.
+        ...(role.isOwner
+          ? [
+              { to: "/admin/users", label: t("nav.users"), icon: UserCog },
+              { to: "/admin/settings", label: t("nav.settings"), icon: Settings2 },
+            ]
+          : []),
+        { to: "/admin/content", label: t("nav.content"), icon: FileEdit },
+      ],
+    },
+  ].filter((g) => g.items.length > 0);
 
-    // Settings (and user management) are owner-level only.
-    ...(role.isOwner
-      ? ([
-          { to: "/admin/analytics", label: t("nav.analytics"), icon: BarChart3 },
-          { to: "/admin/users", label: t("nav.users"), icon: UserCog },
-          { to: "/admin/settings", label: t("nav.settings"), icon: Settings2 },
-        ] as const)
-      : []),
-    { to: "/admin/content", label: t("nav.content"), icon: FileEdit },
-  ] as const;
 
   const roleLabel = t(`settings.users.role_${role.role}`, {
     defaultValue: role.role,
