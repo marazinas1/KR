@@ -304,4 +304,5 @@ export async function buildDashboard(db: SupabaseClient<any, any, any>): Promise
         preview: (expDocs ?? []).slice(0, 5) as Dashboard["documents"]["preview"],
       },
     };
-  });
+  }
+}
