@@ -42,7 +42,7 @@ export function BrandMark({
     <span className={cn("flex flex-col leading-tight", className)}>
       <span
         className={cn(
-          "font-semibold tracking-tight text-foreground",
+          "font-extrabold tracking-tight text-current",
           size === "lg" ? "text-3xl" : "text-base",
         )}
       >
@@ -51,13 +51,14 @@ export function BrandMark({
       {tagline ? (
         <span
           className={cn(
-            "font-mono uppercase tracking-[0.18em] text-muted-foreground",
+            "font-mono font-medium uppercase tracking-[0.18em] text-current opacity-60",
             size === "lg" ? "mt-1.5 text-xs" : "mt-0.5 text-[10px]",
           )}
         >
           {tagline}
         </span>
       ) : null}
+
     </span>
   );
 }
