@@ -59,7 +59,7 @@ export async function buildUnitsSummary(db: Db, lang: AssistantLang) {
   const [{ data: units }, { data: buildings }] = await Promise.all([
     db
       .from("units")
-      .select("id, name, building_id, status, monthly_rent, is_listed, is_active, photos")
+      .select("id, name, building_id, status, monthly_rent, is_listed, is_active, image_urls")
       .order("name", { ascending: true })
       .limit(200),
     db.from("buildings").select("id, name"),
@@ -69,7 +69,7 @@ export async function buildUnitsSummary(db: Db, lang: AssistantLang) {
   }
   const buildingName = new Map((buildings ?? []).map((b) => [b.id, b.name]));
   const lines = units.map((u) => {
-    const photos = Array.isArray(u.photos) ? u.photos.length : 0;
+    const photos = Array.isArray(u.image_urls) ? u.image_urls.length : 0;
     const parts = [
       u.name,
       buildingName.get(u.building_id ?? "") ?? (en ? "no building" : "be pastato"),
