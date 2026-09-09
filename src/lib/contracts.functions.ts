@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
+import { buildLeaseContract } from "./contracts.server";
 
 function publicClient() {
   return createClient<Database>(
@@ -66,7 +67,7 @@ export const upsertContractTemplate = createServerFn({ method: "POST" })
         name: z.string().trim().min(1).max(200),
         content: z.string().max(200000).default(""),
         language: z.enum(["lt", "en"]).default("lt"),
-        kind: z.string().max(50).default("rental"),
+        kind: z.enum(["rental", "privacy", "lease"]).default("rental"),
         is_active: z.boolean().default(true),
       })
       .parse(d),
@@ -97,4 +98,39 @@ export const deleteContractTemplate = createServerFn({ method: "POST" })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+/** Lease contracts (step 9): fill an active `lease` template with real lease data. */
+export const previewLeaseContract = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) =>
+    z
+      .object({ lease_id: z.string().uuid(), template_id: z.string().uuid() })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    await ensureAdmin(context);
+    const { data: tpl, error } = await context.supabase
+      .from("contract_templates")
+      .select("id, name, content, kind")
+      .eq("id", data.template_id)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!tpl) throw new Error("TemplateNotFound");
+    if (tpl.kind !== "lease") throw new Error("NotALeaseTemplate");
+    const filled = await buildLeaseContract(context, data.lease_id, tpl.content ?? "");
+    return { ...filled, template_name: tpl.name };
+  });
+
+export const listLeaseTemplates = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await ensureAdmin(context);
+    const { data, error } = await context.supabase
+      .from("contract_templates")
+      .select("id, name, language, is_active")
+      .eq("kind", "lease")
+      .order("is_active", { ascending: false })
+      .order("updated_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return data ?? [];
   });

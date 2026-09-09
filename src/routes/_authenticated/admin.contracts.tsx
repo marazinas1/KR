@@ -30,6 +30,7 @@ import {
   List as ListIcon, ListOrdered, Pilcrow,
 } from "lucide-react";
 import { toast } from "sonner";
+import { CONTRACT_VARS } from "@/lib/contract-vars";
 import { PLATFORM_NAME } from "@/lib/brand";
 import { useBrandedTitle } from "@/hooks/useBrandedTitle";
 
@@ -38,24 +39,28 @@ export const Route = createFileRoute("/_authenticated/admin/contracts")({
   component: ContractsPage,
 });
 
-const VARIABLES: { key: string; labelKey: string }[] = [
+const BOOKING_VARIABLES = [
   "kliento_vardas",
   "objektas",
   "vieta",
   "nuo",
   "iki",
-  "naktys",
-  "sveciai",
   "suma",
-  "rezervacijos_nr",
   "data",
 ].map((k) => ({ key: `{{${k}}}`, labelKey: `contracts.vars.${k}` }));
+
+const LEASE_VARIABLES = CONTRACT_VARS.map((k) => ({
+  key: `{{${k}}}`,
+  labelKey: `contracts.leaseVars.${k}`,
+}));
+
+type TemplateKind = "rental" | "privacy" | "lease";
 
 type Template = {
   id: string;
   name: string;
   language: "lt" | "en";
-  kind: "rental" | "privacy";
+  kind: TemplateKind;
   content: string;
   is_active: boolean;
   created_at: string;
@@ -64,6 +69,7 @@ type Template = {
 const KIND_LABEL_KEYS: Record<string, string> = {
   rental: "contracts.kindRental",
   privacy: "contracts.kindPrivacy",
+  lease: "contracts.kindLease",
 };
 
 function ContractsPage() {
@@ -208,13 +214,13 @@ function TemplateDialog({
   initial: Template | null;
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: { name: string; language: "lt" | "en"; kind: "rental" | "privacy"; content: string; is_active: boolean }) => void;
+  onSubmit: (data: { name: string; language: "lt" | "en"; kind: TemplateKind; content: string; is_active: boolean }) => void;
   submitting: boolean;
 }) {
   const { t: tr } = useTranslation();
   const [name, setName] = useState(initial?.name ?? "");
   const [language, setLanguage] = useState<"lt" | "en">(initial?.language ?? "lt");
-  const [kind, setKind] = useState<"rental" | "privacy">(initial?.kind ?? "rental");
+  const [kind, setKind] = useState<TemplateKind>(initial?.kind ?? "lease");
   const [isActive, setIsActive] = useState(initial?.is_active ?? false);
 
   const editor = useEditor({
@@ -254,11 +260,12 @@ function TemplateDialog({
             </div>
             <div className="space-y-1">
               <Label>{tr("contracts.kind")}</Label>
-              <Select value={kind} onValueChange={(v) => setKind(v as "rental" | "privacy")}>
+              <Select value={kind} onValueChange={(v) => setKind(v as TemplateKind)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="rental">{tr("contracts.kindRental")}</SelectItem>
                   <SelectItem value="privacy">{tr("contracts.kindPrivacy")}</SelectItem>
+                  <SelectItem value="lease">{tr("contracts.kindLease")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -282,7 +289,7 @@ function TemplateDialog({
           <div className="space-y-2">
             <Label>{tr("contracts.variables")}</Label>
             <div className="flex flex-wrap gap-1.5">
-              {VARIABLES.map((v) => (
+              {(kind === "lease" ? LEASE_VARIABLES : BOOKING_VARIABLES).map((v) => (
                 <button
                   key={v.key}
                   type="button"

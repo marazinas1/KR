@@ -43,4 +43,4 @@
 ## Later
 - [x] Step 8 — tariffs, charges, invoices per lease, payments, one shared balance calc (done, verified with live fixtures)
 - Step 10 lease/reading/payment notification jobs (runScheduledNotifications is a stub)
-- [ ] Step 9 — lease contracts: template variables, PDF, save to lease, drop signed_contracts, kind CHECK
+- [x] Step 9 — lease contracts: template variables, PDF, save to lease, drop signed_contracts, kind CHECK
