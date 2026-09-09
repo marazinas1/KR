@@ -1495,6 +1495,7 @@ export type Database = {
           reading_window_to_day: number
           require_meter_photo: boolean
           singleton: boolean
+          tagline: string
           timezone: string
           updated_at: string
           updated_by: string | null
@@ -1543,6 +1544,7 @@ export type Database = {
           reading_window_to_day?: number
           require_meter_photo?: boolean
           singleton?: boolean
+          tagline?: string
           timezone?: string
           updated_at?: string
           updated_by?: string | null
@@ -1591,6 +1593,7 @@ export type Database = {
           reading_window_to_day?: number
           require_meter_photo?: boolean
           singleton?: boolean
+          tagline?: string
           timezone?: string
           updated_at?: string
           updated_by?: string | null
