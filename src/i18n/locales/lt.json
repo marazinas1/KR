@@ -514,13 +514,19 @@
     "content": "Turinys",
     "contracts": "Sutartys",
     "dashboard": "Skydelis",
-    "expenses": "Finansai",
+    "expenses": "Išlaidos",
     "invoices": "Sąskaitos",
     "properties": "Objektai",
     "settings": "Bendrieji nustatymai",
     "signOut": "Atsijungti",
     "users": "Vartotojai",
-    "website": "Svetainė"
+    "website": "Svetainė",
+    "group": {
+      "overview": "Apžvalga",
+      "portfolio": "Nuoma",
+      "finance": "Finansai",
+      "system": "Sistema"
+    }
   },
   "properties": {
     "active": "Aktyvus",

@@ -514,13 +514,19 @@
     "content": "Content",
     "contracts": "Contracts",
     "dashboard": "Dashboard",
-    "expenses": "Finances",
+    "expenses": "Expenses",
     "invoices": "Invoices",
     "properties": "Properties",
     "settings": "General settings",
     "signOut": "Sign out",
     "users": "Users",
-    "website": "Website"
+    "website": "Website",
+    "group": {
+      "overview": "Overview",
+      "portfolio": "Rentals",
+      "finance": "Finance",
+      "system": "System"
+    }
   },
   "properties": {
     "active": "Active",
